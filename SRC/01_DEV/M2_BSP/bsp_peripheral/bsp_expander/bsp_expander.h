@@ -1,0 +1,48 @@
+/*
+ * bsp_expander.h
+ *
+ *  Created on: Oct 16, 2025
+ *      Author: Admin
+ */
+
+#ifndef BSP_BSP_EXPANDER_H_
+#define BSP_BSP_EXPANDER_H_
+
+enum
+{
+	Heat_I2C4_EN2 = 0,
+	POW_ONOFF_LASER,
+	POW_ONOFF_PHOTO,
+	POW_ONOFF_CAM,
+	POW_ONOFF_HD4,
+	POW_ONOFF_TEC,
+	POW_ONOFF_HEATER,
+	POW_ONOFF_SOLENOID,
+	TEC_EN_2 ,
+	TEC_SWEN_2,
+	TEC_EN_4,
+	TEC_SWEN_4,
+	TEC_EN_1 ,
+	TEC_SWEN_1,
+	TEC_EN_3,
+	TEC_SWEN_3,
+	SOLENOID_CTR_4,
+	SOLENOID_CTR_12,
+	SOLENOID_CTR_3,
+	SOLENOID_CTR_5,
+	SOLENOID_CTR_2,
+	SOLENOID_CTR_6,
+	SOLENOID_CTR_11,
+	SOLENOID_CTR_10,
+	SOLENOID_CTR_9,
+	SOLENOID_CTR_7,
+	SOLENOID_CTR_8,
+	SOLENOID_CTR_1,
+	HD4_I2C_EN,
+	PWM_I2C_nOE,
+	RAM_SPI_nCS
+};
+
+uint32_t bsp_expander_init(void);
+uint32_t bsp_expander_ctrl(uint32_t index, uint32_t status);
+#endif /* BSP_BSP_EXPANDER_H_ */

@@ -1,0 +1,12 @@
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/rpmsg/m33_rpmsg.c:67:16:M33_RPMSG_Init	8	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/rpmsg/m33_rpmsg.c:80:6:M33_RPMSG_WaitForLinkUp	8	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/rpmsg/m33_rpmsg.c:87:16:M33_RPMSG_CreateEndpoint	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/rpmsg/m33_rpmsg.c:114:16:M33_RPMSG_AnnounceNameservice	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/rpmsg/m33_rpmsg.c:126:16:M33_RPMSG_AllocTxBuffer	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/rpmsg/m33_rpmsg.c:137:16:M33_RPMSG_SendNoCopy	40	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/rpmsg/m33_rpmsg.c:146:16:M33_RPMSG_SendCopy	48	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/rpmsg/m33_rpmsg.c:171:16:M33_RPMSG_ReceiveNoCopy	40	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/rpmsg/m33_rpmsg.c:181:16:M33_RPMSG_ReleaseRxBuffer	24	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/rpmsg/m33_rpmsg.c:190:9:M33_RPMSG_ReceiveCopy	48	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/rpmsg/m33_rpmsg.c:213:16:M33_RPMSG_DestroyEndpoint	8	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/rpmsg/m33_rpmsg.c:228:6:M33_RPMSG_Deinit	8	static
