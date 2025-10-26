@@ -11,10 +11,10 @@
 /**
  * A 32 bit variable that can be interpreted as int, uint or float
  */
-typedef union value32_t{
+typedef union value16_t{
     int16_t i;
     uint16_t u;
-} value32_t;
+} value16_t;
 typedef enum {
     TABLE_ID_1 = 0,
     TABLE_ID_2,
@@ -25,37 +25,37 @@ typedef enum {
 } table_id_t;
 
 typedef struct {
-    value32_t *data;
-    uint32_t   size;
+    value16_t *data;
+    uint16_t   size;
 } table_info_t;
 
 
 typedef struct prof_type0_t
 {
-	uint32_t	pri_NTC;
-	uint32_t	sec_NTC;
-	uint32_t	duty;
-	uint32_t	heaters_list;
-    uint32_t	tecs_list;
-	int32_t		setpoint;
+	uint16_t	pri_NTC;
+	uint16_t	sec_NTC;
+	uint16_t	duty;
+	uint16_t	heaters_list;
+    uint16_t	tecs_list;
+	int16_t		setpoint;
 } prof_type0_t;
 
 
 typedef struct prof_type0_ena_t
 {
-	uint32_t	master_ena;
-	uint32_t	prof_ena[6];
+	uint16_t	master_ena;
+	uint16_t	prof_ena[6];
 } prof_type0_ena_t;
 
 
 typedef struct exp_profile_t
 {
-    uint32_t pre_time_ms;
-    uint32_t sampling_time_ms;
-    uint32_t post_time_ms;
+    uint16_t pre_time_ms;
+    uint16_t sampling_time_ms;
+    uint16_t post_time_ms;
 
-    uint32_t sampling_rate_khz;
-    uint32_t laser_intensity;
+    uint16_t sampling_rate_khz;
+    uint16_t laser_intensity;
 } exp_profile_t;
 
 typedef enum {
@@ -209,6 +209,7 @@ typedef enum {
     temp_ntc_9,
     temp_ntc_10,
     temp_ntc_11,
+    temp_board,
 
     sen1_data_0,
     sen1_data_1,
@@ -228,24 +229,28 @@ typedef enum {
 
 uint32_t m33_data_init(void);
 
-uint32_t m33_data_set_u(uint32_t table_id,uint32_t index, uint32_t value);
-uint32_t m33_data_set_i(uint32_t table_id,uint32_t index, int32_t value);
-uint32_t m33_data_set_f(uint32_t table_id,uint32_t index, float value);
+uint32_t m33_data_set_u(uint16_t table_id,uint16_t index, uint16_t value);
+uint32_t m33_data_set_i(uint16_t table_id,uint16_t index, int16_t value);
+uint32_t m33_data_set_u_lock(uint16_t table_id,uint16_t index, uint16_t value);
+uint32_t m33_data_set_i_lock(uint16_t table_id,uint16_t index, int16_t value);
 
-uint32_t m33_data_get_i(uint32_t table_id,uint32_t index, int32_t * value);
-uint32_t m33_data_get_u(uint32_t table_id,uint32_t index, uint32_t * value);
-uint32_t m33_data_get_f(uint32_t table_id,uint32_t index, float * value);
+uint32_t m33_data_get_i(uint16_t table_id,uint16_t index, int16_t * value);
+uint32_t m33_data_get_u(uint16_t table_id,uint16_t index, uint16_t * value);
+uint32_t m33_data_get_i_lock(uint16_t table_id,uint16_t index, int16_t * value);
+uint32_t m33_data_get_u_lock(uint16_t table_id,uint16_t index, uint16_t * value);
 
-uint32_t m33_data_update_NTC(int32_t* p_data);
-uint32_t     m33_data_ntc_temp_get(int32_t* p_data);
-uint32_t data_prof_type0_get(prof_type0_t *profile, uint32_t index);
+uint32_t m33_data_update_NTC(int16_t* p_data);
+uint32_t m33_data_ntc_temp_get(int16_t* p_data);
+uint32_t m33_data_update_board_temp(int16_t data);
+uint32_t m33_data_get_board_temp(int16_t* p_data);
+uint32_t data_prof_type0_get(prof_type0_t *profile, uint16_t index);
 uint32_t data_prof_type0_ena_get(prof_type0_ena_t *enaProfile);
 uint32_t m33_data_exp_profile_get(exp_profile_t *profile);
-uint32_t m33_get_is_start_exp(uint32_t *is_start);
-uint32_t m33_get_get_mon_delay(uint32_t *mon_delay);
-uint32_t m33_get_set_mon_delay(uint32_t mon_delay);
-uint32_t m33_get_get_mon_interval(uint32_t *mon_interval);
-uint32_t m33_get_set_mon_interval(uint32_t mon_interval);
+uint32_t m33_get_is_start_exp(uint16_t *is_start);
+uint32_t m33_get_get_mon_delay(uint16_t *mon_delay);
+uint32_t m33_get_set_mon_delay(uint16_t mon_delay);
+uint32_t m33_get_get_mon_interval(uint16_t *mon_interval);
+uint32_t m33_get_set_mon_interval(uint16_t mon_interval);
 
 
 #endif /* MIDDLEWARE_FLIGHTSYSTEM_SYSTEM_M33_DATA_H_ */

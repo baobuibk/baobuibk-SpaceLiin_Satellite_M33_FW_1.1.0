@@ -1,0 +1,15 @@
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_i2c_sensor/bsp_i2c_sensor.c:164:6:bsp_i2c_sensor_init	4	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_i2c_sensor/bsp_i2c_sensor.c:173:6:bsp_i2c_sensor_read_value	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_i2c_sensor/bsp_i2c_sensor.c:182:9:BMP390_init	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_i2c_sensor/bsp_i2c_sensor.c:308:9:BMP390_read_value	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_i2c_sensor/bsp_i2c_sensor.c:339:6:Is_BMP390_Init_Complete	4	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_i2c_sensor/bsp_i2c_sensor.c:350:6:Is_BMP390_Read_Complete	4	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_i2c_sensor/bsp_i2c_sensor.c:361:6:Is_BMP390_Calib_Complete	4	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_i2c_sensor/bsp_i2c_sensor.c:385:16:BMP390_Write	24	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_i2c_sensor/bsp_i2c_sensor.c:394:16:BMP390_Read	24	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_i2c_sensor/bsp_i2c_sensor.c:408:13:BMP390_is_value_ready	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_i2c_sensor/bsp_i2c_sensor.c:429:13:BMP390_read_uncompensated_value	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_i2c_sensor/bsp_i2c_sensor.c:442:13:BMP390_compensate_value	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_i2c_sensor/bsp_i2c_sensor.c:477:13:BMP390_compensate_temp	32	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_i2c_sensor/bsp_i2c_sensor.c:488:13:BMP390_compensate_pressure	72	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_i2c_sensor/bsp_i2c_sensor.c:518:13:BMP390_compensate_altitude	16	static

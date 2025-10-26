@@ -1,0 +1,4 @@
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M1_SysApp/Interface/RemoteCall/remote_call.c:37:6:RemoteCall_UpdateRemoteAddr	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M1_SysApp/Interface/RemoteCall/remote_call.c:42:16:RemoteCall_SendResponse	32	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M1_SysApp/Interface/RemoteCall/remote_call.c:83:16:RemoteCall_SendCommand	32	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M1_SysApp/Interface/RemoteCall/remote_call.c:124:16:RemoteCall_SendFileRequest	32	static

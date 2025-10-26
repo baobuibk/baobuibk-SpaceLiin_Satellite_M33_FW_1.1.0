@@ -14,6 +14,7 @@
   "iis.configDir": "",
   "files.associations": {
     "bsp.h": "c",
-    "bsp_expander.h": "c"
+    "bsp_expander.h": "c",
+    "m33_data.h": "c"
   }
 }

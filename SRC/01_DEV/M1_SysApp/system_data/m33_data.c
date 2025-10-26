@@ -12,14 +12,11 @@
 static osSemaphore m33_data_sem = NULL;
 #define M33_DATA_SEMAPHOR_TIMEOUT 2000
 
-__attribute__((aligned(32))) value32_t table1_data[TABLE1_TOTAL_COUNT];
-
-__attribute__((aligned(32))) value32_t table2_data[TABLE2_TOTAL_COUNT];
-__attribute__((aligned(32))) value32_t table3_data[TABLE3_TOTAL_COUNT];
-__attribute__((aligned(32))) value32_t table5_data[TABLE5_TOTAL_COUNT];
-__attribute__((aligned(32))) value32_t table6_data[TABLE6_TOTAL_COUNT];
-
-
+ value16_t table1_data[TABLE1_TOTAL_COUNT];
+ value16_t table2_data[TABLE2_TOTAL_COUNT];
+ value16_t table3_data[TABLE3_TOTAL_COUNT];
+ value16_t table5_data[TABLE5_TOTAL_COUNT];
+ value16_t table6_data[TABLE6_TOTAL_COUNT];
 
 table_info_t tables[TABLE_ID_TOTAL_COUNT] = {
     [TABLE_ID_1] = { table1_data, TABLE1_TOTAL_COUNT },
@@ -49,7 +46,7 @@ uint32_t m33_data_init()
     return (uint32_t)sem_ret;
 }
 
-uint32_t m33_data_set_u(uint32_t table_id,uint32_t index, uint32_t value)
+uint32_t m33_data_set_u(uint16_t table_id,uint16_t index, uint16_t value)
 {
     if (table_id >= TABLE_ID_TOTAL_COUNT) return 1; // tránh out of range
     if (index >= tables[table_id].size) return 1;   // tránh vượt giới hạn bảng
@@ -58,15 +55,21 @@ uint32_t m33_data_set_u(uint32_t table_id,uint32_t index, uint32_t value)
     return 0;
 }
 
-// uint32_t m33_data_set_f(uint32_t table_id,uint32_t index, float value)
-// {
-//     if (table_id >= TABLE_ID_TOTAL_COUNT) return 1; // tránh out of range
-//     if (index >= tables[table_id].size) return 1;   // tránh vượt giới hạn bảng
+uint32_t m33_data_set_u_lock(uint16_t table_id,uint16_t index, uint16_t value)
+{
+    int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
 
-//     tables[table_id].data[index].f = value;
-//     return 0;
-// }
-uint32_t m33_data_set_i(uint32_t table_id,uint32_t index, int32_t value)
+    if (sem_ret != pdPASS)
+    {
+        return (uint32_t)sem_ret;
+    }
+    m33_data_set_u(table_id, index, value);
+    osSemaphoreGiven(&m33_data_sem);
+    return 0;
+}
+
+
+uint32_t m33_data_set_i(uint16_t table_id,uint16_t index, int16_t value)
 {
     if (table_id >= TABLE_ID_TOTAL_COUNT) return 1; // tránh out of range
     if (index >= tables[table_id].size) return 1;   // tránh vượt giới hạn bảng
@@ -74,8 +77,20 @@ uint32_t m33_data_set_i(uint32_t table_id,uint32_t index, int32_t value)
     tables[table_id].data[index].i = value;
     return 0;
 }
+uint32_t m33_data_set_i_lock(uint16_t table_id,uint16_t index, int16_t value)
+{
+    int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
 
-uint32_t m33_data_get_i(uint32_t table_id,uint32_t index, int32_t * value)
+    if (sem_ret != pdPASS)
+    {
+        return (uint32_t)sem_ret;
+    }
+    m33_data_set_i(table_id, index, value);
+    osSemaphoreGiven(&m33_data_sem);
+    return 0;
+}
+
+uint32_t m33_data_get_i(uint16_t table_id,uint16_t index, int16_t * value)
 {
     if (table_id >= TABLE_ID_TOTAL_COUNT) return 1; // tránh out of range
     if (index >= tables[table_id].size) return 1;   // tránh vượt giới hạn bảng
@@ -83,7 +98,21 @@ uint32_t m33_data_get_i(uint32_t table_id,uint32_t index, int32_t * value)
     *value = tables[table_id].data[index].i;
     return 0;
 }
-uint32_t m33_data_get_u(uint32_t table_id,uint32_t index, uint32_t * value)
+uint32_t m33_data_get_i_lock(uint16_t table_id,uint16_t index, int16_t * value)
+{
+    int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
+
+    if (sem_ret != pdPASS)
+    {
+        return (uint32_t)sem_ret;
+    }
+    m33_data_get_i(table_id, index, value);
+    osSemaphoreGiven(&m33_data_sem);
+    return 0;
+}
+
+
+uint32_t m33_data_get_u(uint16_t table_id,uint16_t index, uint16_t * value)
 {
     if (table_id >= TABLE_ID_TOTAL_COUNT) return 1; // tránh out of range
     if (index >= tables[table_id].size) return 1;   // tránh vượt giới hạn bảng
@@ -91,6 +120,19 @@ uint32_t m33_data_get_u(uint32_t table_id,uint32_t index, uint32_t * value)
     return 0;
   
 }
+uint32_t m33_data_get_u_lock(uint16_t table_id,uint16_t index, uint16_t * value)
+{
+    int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
+
+    if (sem_ret != pdPASS)
+    {
+        return (uint32_t)sem_ret;
+    }
+    m33_data_get_u(table_id, index, value);
+    osSemaphoreGiven(&m33_data_sem);
+    return 0;
+}
+
 // uint32_t m33_data_get_f(uint32_t table_id,uint32_t index, float * value)
 // {
 //     if (table_id >= TABLE_ID_TOTAL_COUNT) return 1; // tránh out of range
@@ -100,7 +142,7 @@ uint32_t m33_data_get_u(uint32_t table_id,uint32_t index, uint32_t * value)
 //     return 0;
 // }
 
-uint32_t m33_data_update_NTC(int32_t* p_data)
+uint32_t m33_data_update_NTC(int16_t* p_data)
 {
     int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
 
@@ -127,8 +169,20 @@ uint32_t m33_data_update_NTC(int32_t* p_data)
 
     return sem_ret;
 }
+uint32_t m33_data_update_board_temp(int16_t data)
+{
+    int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
 
-uint32_t     m33_data_ntc_temp_get(int32_t* p_data)
+    if (sem_ret != pdPASS)
+    {
+        return (uint32_t)sem_ret;
+    }
+    m33_data_set_i(TABLE_ID_6, temp_board, data);   
+    osSemaphoreGiven(&m33_data_sem);
+    return sem_ret;
+}
+
+uint32_t     m33_data_ntc_temp_get(int16_t* p_data)
 {
     int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
 
@@ -152,6 +206,18 @@ uint32_t     m33_data_ntc_temp_get(int32_t* p_data)
     osSemaphoreGiven(&m33_data_sem);
     return (uint32_t)sem_ret;
 }
+uint32_t m33_data_get_board_temp(int16_t* p_data)
+{
+    int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
+
+    if (sem_ret != pdPASS)
+    {
+        return (uint32_t)sem_ret;
+    }
+    sem_ret = m33_data_get_i(TABLE_ID_6, temp_board, p_data);
+    osSemaphoreGiven(&m33_data_sem);
+    return (uint32_t)sem_ret;
+}
 
 uint32_t data_prof_type0_ena_get(prof_type0_ena_t *enaProfile)
 {
@@ -172,7 +238,7 @@ uint32_t data_prof_type0_ena_get(prof_type0_ena_t *enaProfile)
     return (uint32_t)sem_ret;
 }
 
-uint32_t data_prof_type0_get(prof_type0_t *profile, uint32_t index)
+uint32_t data_prof_type0_get(prof_type0_t *profile, uint16_t index)
 {
     int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
 
@@ -254,7 +320,7 @@ uint32_t m33_data_exp_profile_get(exp_profile_t *profile)
     return (uint32_t)sem_ret; 
 }
 
-uint32_t m33_get_is_start_exp(uint32_t *is_start)
+uint32_t m33_get_is_start_exp(uint16_t *is_start)
 {
     int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
 
@@ -266,7 +332,7 @@ uint32_t m33_get_is_start_exp(uint32_t *is_start)
     osSemaphoreGiven(&m33_data_sem);   
     return (uint32_t)sem_ret; 
 }
-uint32_t m33_get_get_mon_delay(uint32_t *mon_delay)
+uint32_t m33_get_get_mon_delay(uint16_t *mon_delay)
 {
     int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
 
@@ -278,7 +344,7 @@ uint32_t m33_get_get_mon_delay(uint32_t *mon_delay)
     osSemaphoreGiven(&m33_data_sem);   
     return (uint32_t)sem_ret; 
 }
-uint32_t m33_get_set_mon_delay(uint32_t mon_delay)
+uint32_t m33_get_set_mon_delay(uint16_t mon_delay)
 {
     int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
 
@@ -290,7 +356,7 @@ uint32_t m33_get_set_mon_delay(uint32_t mon_delay)
     osSemaphoreGiven(&m33_data_sem);   
     return (uint32_t)sem_ret; 
 }
-uint32_t m33_get_get_mon_interval(uint32_t *mon_interval)
+uint32_t m33_get_get_mon_interval(uint16_t *mon_interval)
 {
     int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
 
@@ -302,7 +368,7 @@ uint32_t m33_get_get_mon_interval(uint32_t *mon_interval)
     osSemaphoreGiven(&m33_data_sem);   
     return (uint32_t)sem_ret; 
 }
-uint32_t m33_get_set_mon_interval(uint32_t mon_interval)
+uint32_t m33_get_set_mon_interval(uint16_t mon_interval)
 {
     int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
 

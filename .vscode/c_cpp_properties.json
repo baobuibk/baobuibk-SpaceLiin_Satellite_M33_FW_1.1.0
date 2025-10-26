@@ -4,7 +4,7 @@
     {
       "name": "IntelliSense Configuration",
       "compileCommands": [
-        "${workspaceFolder}/SRC/armgcc/debug/compile_commands.json"
+        "${workspaceFolder}/SRC/armgcc/release/compile_commands.json"
       ],
       "intelliSenseMode": "gcc-arm"
     }

@@ -1,0 +1,7 @@
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M5_Utils/CRC/crc16_xmodem.c:8:17:UpdateCRC16_XMODEM	24	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M5_Utils/CRC/crc16_xmodem.c:19:6:CRC16_XMODEM_Init	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M5_Utils/CRC/crc16_xmodem.c:26:5:CRC16_XMODEM_Begin	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M5_Utils/CRC/crc16_xmodem.c:37:6:CRC16_XMODEM_UpdateByte	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M5_Utils/CRC/crc16_xmodem.c:43:6:CRC16_XMODEM_UpdateBuffer	32	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M5_Utils/CRC/crc16_xmodem.c:51:10:CRC16_XMODEM_Get	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M5_Utils/CRC/crc16_xmodem.c:57:10:CRC16_XMODEM_Finish	24	static

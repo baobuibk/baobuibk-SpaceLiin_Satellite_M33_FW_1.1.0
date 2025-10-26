@@ -1,0 +1,9 @@
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/sp_spi/port/NXP/sp_spi_port.c:71:6:SP_SPI_master_blocking_init	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/sp_spi/port/NXP/sp_spi_port.c:87:6:SP_SPI_master_transfer_blocking	32	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/sp_spi/port/NXP/sp_spi_port.c:104:6:SP_SPI_build_default_blocking_frame	32	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/sp_spi/port/NXP/sp_spi_port.c:125:6:SP_SPI_master_irq_init	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/sp_spi/port/NXP/sp_spi_port.c:149:6:SP_SPI_master_transfer_irq	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/sp_spi/port/NXP/sp_spi_port.c:159:6:SP_SPI_build_default_irq_frame	32	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/sp_spi/port/NXP/sp_spi_port.c:213:6:SP_SPI_IRQ_subhandle	24	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/sp_spi/port/NXP/sp_spi_port.c:244:16:SP_SPI_build_standard_header	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/sp_spi/port/NXP/sp_spi_port.c:250:13:SP_SPI_IRQ_prime_transmit	32	static

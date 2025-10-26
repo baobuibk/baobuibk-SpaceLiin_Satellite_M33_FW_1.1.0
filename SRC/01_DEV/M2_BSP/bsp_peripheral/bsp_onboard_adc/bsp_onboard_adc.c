@@ -3,6 +3,7 @@
 #include "bsp_board.h"
 #include "bsp_onboard_adc.h"
 #include "bsp_debug_console.h"
+#include "m33_data.h"
 
 #include "spi_io.h"
 #include "do.h"
@@ -70,6 +71,8 @@ static 	float    adc0_volt_mv[16] = {0.0};
 static  float	 adc1_volt_mv[16] = {0.0};
 
 static  int16_t  NTC_temperature[NTC_CHANNEL_NUM] = {0};
+uint16_t        eFUSE_current_ma[EFUSE_CHANNEL_NUM] = {0};
+static int16_t  t_dC = 0; // Onboard temperature in dC
 
 static  uint8_t  TEC_channel_map[TEC_CHANNEL_NUM] = {0, 2, 3, 1};
 static  uint8_t  NTC_channel_map[NTC_CHANNEL_NUM] = {11, 9, 4, 3, 0, 7, 1, 2, 6, 5, 10, 8};
@@ -98,6 +101,11 @@ ad4114_t onboard_adc_dev1 =
 };
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Public Function ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+uint32_t bsp_onboard_update_m33_data()
+{
+    m33_data_update_NTC(NTC_temperature);
+    m33_data_update_board_temp(t_dC);
+}
 uint32_t bsp_onboard_adc_init()
 {
 	uint32_t ret;
@@ -195,7 +203,7 @@ void bsp_convert_NTC()
 
 void bsp_convert_eFUSE_Current()
 {
-	uint16_t eFUSE_current_ma[EFUSE_CHANNEL_NUM] = {0};
+
 
 	eFUSE_current_ma[0] = (uint16_t)(adc1_volt_mv[PIN_EFUSE_12V_PHOTO] * 3.343);
 	eFUSE_current_ma[1] = (uint16_t)(adc1_volt_mv[PIN_EFUSE_12V_PHOTO + 1] * 3.343);
@@ -208,7 +216,7 @@ void bsp_convert_eFUSE_Current()
 
 void bsp_convert_onboard_temp()
 {
-	int32_t t_dC = (uint16_t)adc1_volt_mv[PIN_TEMP_SENSOR] - 500;
+	t_dC = (uint16_t)adc1_volt_mv[PIN_TEMP_SENSOR] - 500;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Function ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */

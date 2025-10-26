@@ -97,10 +97,10 @@ void task_temperature_control_profile_type0(void *param)
 {
 	prof_type0_t profile;
 	prof_type0_ena_t enaProfile;
-	int32_t	NTC_temperature[NUM_NTC];
-	int32_t	pri_temperature, sec_temperature;
+	int16_t	NTC_temperature[NUM_NTC];
+	int16_t	pri_temperature, sec_temperature;
 	portTick xLastWakeTime = osTaskGetTickCount();
-	int32_t	 prof0_ctrl_state[6] = {TEMP_PROF0_STOP};
+	int16_t	 prof0_ctrl_state[6] = {TEMP_PROF0_STOP};
 	uint32_t i =0;
 	for ( i = 0; i < 6; i++) pid_init(&PID_Controller[i], KP, KI, KD);
 	while (1)

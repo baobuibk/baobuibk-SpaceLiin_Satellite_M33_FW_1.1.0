@@ -1,0 +1,12 @@
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:46:10:spi_io_set_mode	40	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:103:10:spi_io_read_sync	40	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:167:10:spi_io_write_sync	40	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:224:10:spi_io_transfer_sync	40	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:287:10:spi_io_read_async	24	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:293:10:spi_io_write_async	24	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:299:10:spi_io_transfer_async	24	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:305:10:spi_io_write_and_read_async	24	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:314:10:spi_io_read_dma	24	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:320:10:spi_io_write_dma	24	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:326:10:spi_io_transfer_dma	24	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:332:10:spi_io_write_and_read_dma	24	static

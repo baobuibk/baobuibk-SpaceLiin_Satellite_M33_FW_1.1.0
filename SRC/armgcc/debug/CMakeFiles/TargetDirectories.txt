@@ -1,0 +1,3 @@
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/armgcc/debug/CMakeFiles/payexp_m33.elf.dir
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/armgcc/debug/CMakeFiles/edit_cache.dir
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/armgcc/debug/CMakeFiles/rebuild_cache.dir

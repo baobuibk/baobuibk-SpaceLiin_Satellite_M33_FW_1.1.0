@@ -19,6 +19,7 @@
 #include "bsp_core.h"
 #include "m33_data.h"
 #include "bsp.h"
+#include "printf.h"
 
 #define CREATE_TASK(task_func, task_name, stack, param, priority, handle) \
     if (xTaskCreate(task_func, task_name, stack, param, priority, handle) != pdPASS) { \
@@ -28,6 +29,7 @@
 #define MIN_STACK_SIZE	configMINIMAL_STACK_SIZE
 #define ROOT_PRIORITY   1
 #define ROOT_STACK_SIZE (configMINIMAL_STACK_SIZE * 20)
+#define REPORT_INTERVAL 5
 
 static StackType_t root_stack[ROOT_STACK_SIZE];
 static StaticTask_t root_tcb;
@@ -36,6 +38,8 @@ Std_ReturnType EXP_AppInit(void);
 
 static char app_buf[512];
 uint32_t remote_addr;
+
+osSemaphore exp_task_sem;
 
 /*************************************************
  *               TASK DEFINE                     *
@@ -68,12 +72,63 @@ void EXP_RootTask(void *pvParameters)
 
         // Pull up RAM SPI nCS
         bsp_expander_ctrl(RAM_SPI_nCS, 1);
+        osSemaphoreCreate(&exp_task_sem);   //semaphore to notify experiment task to start experiment
+
     if (EXP_AppInit() != E_OK)
     {
 
     }
     PRINTF("===== i.MX93 Shell started SUCCESSFULLY=====\r\n");
+    uint16_t is_start_exp = 0;
+    uint16_t exp_remain_time = 0;
+    uint8_t  local_counter = 0;
+    int16_t board_temperature = 0;
+    char msg_buf[256];
+    
+    while (1)
+    {
+        vTaskDelay(pdMS_TO_TICKS(1000));    //update system and collect data every 1 second
+        local_counter++;
+        //check if experiment is enabled
+        m33_data_get_u_lock(TABLE_ID_5, exp_mon_start, &is_start_exp);
+        m33_data_get_u_lock(TABLE_ID_5, exp_mon_delay, &exp_remain_time);
+        if (is_start_exp == 1)  // experiment started                     
+        {
+            if (exp_remain_time > 0)    // still in delay period
+            {
+                exp_remain_time--;
+                m33_data_set_u_lock(TABLE_ID_5, exp_mon_delay, exp_remain_time);
+            }
+            else    // delay period finished, reset delay time for next cycle, trigger experiment task
+            {
+                m33_data_get_u_lock(TABLE_ID_5, exp_mon_interval, &exp_remain_time);
+                m33_data_set_u_lock(TABLE_ID_5, exp_mon_delay, exp_remain_time);
+                //notify experiment task to start experiment
+                osSemaphoreGiven(&exp_task_sem);
+            }
+        }
+        if (local_counter >= REPORT_INTERVAL)
+        {
+            local_counter = 0;
+            int16_t NTC_temps[12];
+            m33_data_ntc_temp_get(NTC_temps);
+            m33_data_get_i_lock(TABLE_ID_6, temp_board, &board_temperature);
 
+        snprintf(msg_buf, 256,
+        "NTC1: %04X, NTC2: %04X, NTC3: %04X, NTC4: %04X, "
+        "NTC5: %04X, NTC6: %04X, NTC7: %04X, NTC8: %04X, "
+        "NTC9: %04X, NTC10: %04X, NTC11: %04X, NTC12: %04X\r\n",
+        (unsigned int) NTC_temps[0], (unsigned int) NTC_temps[1], (unsigned int) NTC_temps[2], (unsigned int) NTC_temps[3],
+        (unsigned int) NTC_temps[4], (unsigned int) NTC_temps[5], (unsigned int) NTC_temps[6], (unsigned int) NTC_temps[7],
+        (unsigned int) NTC_temps[8], (unsigned int) NTC_temps[9], (unsigned int) NTC_temps[10], (unsigned int) NTC_temps[11]);
+       
+        RemoteCall_SendCommand(msg_buf);
+        PRINTF("%s", msg_buf);
+        snprintf(msg_buf, 256, "BoardTemp: %04X", board_temperature);
+        RemoteCall_SendCommand(msg_buf);
+        PRINTF("%s", msg_buf);
+        }
+    }
 
     vTaskDelete(NULL);
     while(1){
