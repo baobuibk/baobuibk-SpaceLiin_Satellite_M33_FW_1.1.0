@@ -53,7 +53,6 @@ add_executable(${MCUX_SDK_PROJECT_NAME}
     "${SRC_ROOT}/Core/Src/main.c"
     "${SRC_ROOT}/Core/Src/MIMX9352cm33_it.c"
     "${SRC_ROOT}/Core/Src/pin_mux.c"
-    #"${SRC_ROOT}/Core/Startup/startup_MIMX9352_cm33.S"
 
     # ==== 01_DEV / M0_App ====
     "${SRC_ROOT}/01_DEV/M0_App/Boot/boot_manager.c"
@@ -66,13 +65,15 @@ add_executable(${MCUX_SDK_PROJECT_NAME}
     "${SRC_ROOT}/01_DEV/M1_SysApp/Services/cmdline.c"
     "${SRC_ROOT}/01_DEV/M1_SysApp/system_data/m33_command.c"
     "${SRC_ROOT}/01_DEV/M1_SysApp/system_data/m33_data.c"
-   
+    "${SRC_ROOT}/01_DEV/M1_SysApp/task_update_onboard_adc/task_update_onboard_adc.c"
+    "${SRC_ROOT}/01_DEV/M1_SysApp/task_temperature/app_temperature.c"
+    "${SRC_ROOT}/01_DEV/M1_SysApp/task_experiment/task_experiment.c"
 
     # ==== 01_DEV / M2_BSP ====
     "${SRC_ROOT}/01_DEV/M2_BSP/remoteproc/m33_remoteproc.c"
     "${SRC_ROOT}/01_DEV/M2_BSP/remoteproc/rsc_table.c"
     "${SRC_ROOT}/01_DEV/M2_BSP/rpmsg/m33_rpmsg.c"
-        # ---- BSP Core & Board ----
+    #     # ---- BSP Core & Board ----
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_board/bsp.c"
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_core/bsp_core.c"
 
@@ -82,8 +83,8 @@ add_executable(${MCUX_SDK_PROJECT_NAME}
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_heater/bsp_heater.c"
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_i2c_sensor/bsp_i2c_sensor.c"
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_laser/bsp_laser.c"
-    #"${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_libcsp_can/bsp_libcsp_can.c"
-    "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_onboard_adc/bsp_onboard_adc.c"
+    # #"${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_libcsp_can/bsp_libcsp_can.c"
+     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_onboard_adc/bsp_onboard_adc.c"
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_photo/bsp_photo.c"
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_power/bsp_power.c"
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_spi_sensor/bsp_spi_sensor.c"
@@ -150,7 +151,10 @@ target_include_directories(${MCUX_SDK_PROJECT_NAME} PRIVATE
     "${SRC_ROOT}/01_DEV/M1_SysApp/Interface/RemoteCall"
     "${SRC_ROOT}/01_DEV/M1_SysApp/Interface/SimpleShell"
     "${SRC_ROOT}/01_DEV/M1_SysApp/Services"
-      "${SRC_ROOT}/01_DEV/M1_SysApp/system_data"
+    "${SRC_ROOT}/01_DEV/M1_SysApp/system_data"
+    "${SRC_ROOT}/01_DEV/M1_SysApp/task_update_onboard_adc"
+    "${SRC_ROOT}/01_DEV/M1_SysApp/task_temperature"
+    "${SRC_ROOT}/01_DEV/M1_SysApp/task_experiment"
 
     # M2_BSP
     "${SRC_ROOT}/01_DEV/M2_BSP"

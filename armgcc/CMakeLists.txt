@@ -147,19 +147,19 @@ add_executable(${MCUX_SDK_PROJECT_NAME}
     "${UserSourceDirPath}/Drivers/Devices/MCP4902/mcp4902.c"
 
     # MiddleWare
-    # "${UserSourceDirPath}/MiddleWare/FlightSystem/os/freertos/osDelay.c"
-    # "${UserSourceDirPath}/MiddleWare/FlightSystem/os/freertos/osMalloc.c"
-    # "${UserSourceDirPath}/MiddleWare/FlightSystem/os/freertos/osQueue.c"
-    # "${UserSourceDirPath}/MiddleWare/FlightSystem/os/freertos/osScheduler.c"
+    "${UserSourceDirPath}/MiddleWare/FlightSystem/os/freertos/osDelay.c"
+    "${UserSourceDirPath}/MiddleWare/FlightSystem/os/freertos/osMalloc.c"
+    "${UserSourceDirPath}/MiddleWare/FlightSystem/os/freertos/osQueue.c"
+    "${UserSourceDirPath}/MiddleWare/FlightSystem/os/freertos/osScheduler.c"
     "${UserSourceDirPath}/MiddleWare/FlightSystem/os/freertos/osSemphr.c"
-    # "${UserSourceDirPath}/MiddleWare/FlightSystem/os/freertos/osThread.c"
+    "${UserSourceDirPath}/MiddleWare/FlightSystem/os/freertos/osThread.c"
 
-    # "${UserSourceDirPath}/MiddleWare/FlightSystem/drivers/stm32/cpu.c"
-    # "${UserSourceDirPath}/MiddleWare/FlightSystem/drivers/stm32/i2c.c"
-    # "${UserSourceDirPath}/MiddleWare/FlightSystem/drivers/stm32/init.c"
-    # "${UserSourceDirPath}/MiddleWare/FlightSystem/drivers/stm32/mem.c"
+    "${UserSourceDirPath}/MiddleWare/FlightSystem/drivers/stm32/cpu.c"
+    "${UserSourceDirPath}/MiddleWare/FlightSystem/drivers/stm32/i2c.c"
+    "${UserSourceDirPath}/MiddleWare/FlightSystem/drivers/stm32/init.c"
+    "${UserSourceDirPath}/MiddleWare/FlightSystem/drivers/stm32/mem.c"
 
-    # "${UserSourceDirPath}/Drivers/Components/devices/lt8722/lt8722.c"
+    "${UserSourceDirPath}/Drivers/Components/devices/lt8722/lt8722.c"
 )
 
 target_include_directories(${MCUX_SDK_PROJECT_NAME} PRIVATE

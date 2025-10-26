@@ -48,6 +48,8 @@ static int bsp_core_init_laser_adc(void);
 /*******************************************************************************
  * Variables
  ******************************************************************************/
+ static   lpi2c_master_config_t i2c_masterConfig;
+ static   lpi2c_master_config_t *masterConfig = &i2c_masterConfig;
 // const volatile uint32_t temp[1*1024] = {0xAA};
 /*******************************************************************************
  * Code
@@ -58,10 +60,11 @@ static int bsp_core_init_laser_adc(void);
  */
 void bsp_core_init(void)
 {
-    bsp_core_init_uart();
-    bsp_core_init_can();
+//   bsp_core_init_uart();
+//    bsp_core_init_can();
 
-    bsp_core_init_io_expander_i2c();
+
+     bsp_core_init_io_expander_i2c();
     bsp_core_init_tec_cs_gpio();
 
     bsp_core_init_onboard_adc_spi();
@@ -172,7 +175,7 @@ i2c_io_t io_expander_i2c =
 };
 static void bsp_core_init_io_expander_i2c(void)
 {
-    lpi2c_master_config_t i2c_masterConfig;
+
 
     /* clang-format off */
     const clock_root_config_t lpi2cClkCfg =
@@ -183,8 +186,8 @@ static void bsp_core_init_io_expander_i2c(void)
     };
     /* clang-format on */
 
-    CLOCK_SetRootClock(IO_EXPAN_CLOCK_ROOT, &lpi2cClkCfg);
-    CLOCK_EnableClock(IO_EXPAN_CLOCK_GATE);
+     CLOCK_SetRootClock(IO_EXPAN_CLOCK_ROOT, &lpi2cClkCfg);
+     CLOCK_EnableClock(IO_EXPAN_CLOCK_GATE);
 
     /*
      * i2c_masterConfig.debugEnable = false;
@@ -196,16 +199,18 @@ static void bsp_core_init_io_expander_i2c(void)
      * i2c_masterConfig.sdaGlitchFilterWidth_ns = 0;
      * i2c_masterConfig.sclGlitchFilterWidth_ns = 0;
      */
-    LPI2C_MasterGetDefaultConfig(&i2c_masterConfig);
 
-    /* Change the default baudrate configuration */
-    i2c_masterConfig.baudRate_Hz = IO_EXPAN_BAUDRATE_HZ;
 
-    /* Initialize the LPI2C master peripheral */
-    LPI2C_MasterInit(IO_EXPAN_BASE, &i2c_masterConfig, IO_EXPAN_CLK_FREQ);
+     LPI2C_MasterGetDefaultConfig(&i2c_masterConfig);
 
-    // i2c_io_init(&io_expander_i2c);
-    // i2c_io_init(&heater_i2c);
+    // /* Change the default baudrate configuration */
+      i2c_masterConfig.baudRate_Hz = IO_EXPAN_BAUDRATE_HZ;
+
+    // // /* Initialize the LPI2C master peripheral */
+      LPI2C_MasterInit(IO_EXPAN_BASE, masterConfig, IO_EXPAN_CLK_FREQ);
+
+    //  i2c_io_init(&io_expander_i2c);
+    //  i2c_io_init(&heater_i2c);
 }
 
 static void bsp_core_init_tec_cs_gpio(void)

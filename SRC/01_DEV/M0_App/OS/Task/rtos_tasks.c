@@ -13,6 +13,12 @@
 #include "fsl_debug_console.h"
 #include "rpmsg/m33_rpmsg.h"
 #include "Interface/RemoteCall/remote_call.h"
+#include "task_update_onboard_adc.h"
+#include  "app_temperature.h"
+#include "task_experiment.h"
+#include "bsp_core.h"
+#include "m33_data.h"
+#include "bsp.h"
 
 #define CREATE_TASK(task_func, task_name, stack, param, priority, handle) \
     if (xTaskCreate(task_func, task_name, stack, param, priority, handle) != pdPASS) { \
@@ -21,7 +27,7 @@
 
 #define MIN_STACK_SIZE	configMINIMAL_STACK_SIZE
 #define ROOT_PRIORITY   1
-#define ROOT_STACK_SIZE (configMINIMAL_STACK_SIZE * 5)
+#define ROOT_STACK_SIZE (configMINIMAL_STACK_SIZE * 20)
 
 static StackType_t root_stack[ROOT_STACK_SIZE];
 static StaticTask_t root_tcb;
@@ -45,11 +51,29 @@ static void RPMSG_Task(void *pvParameters);
 void EXP_RootTask(void *pvParameters)
 {
     PRINTF("===== i.MX93 Shell started =====\r\n");
+    bsp_core_init();
+    m33_data_init();
+            spi_io_init(&onboard_adc_spi);
+        spi_io_init(&photo_adc_spi);
 
+        i2c_io_init(&io_expander_i2c);
+
+        /* Init board peripheral. */
+        bsp_debug_console_init();
+        bsp_expander_init();
+        bsp_heater_init();
+        bsp_onboard_adc_init();
+        bsp_laser_init();
+        bsp_photo_init();
+
+        // Pull up RAM SPI nCS
+        bsp_expander_ctrl(RAM_SPI_nCS, 1);
     if (EXP_AppInit() != E_OK)
     {
 
     }
+    PRINTF("===== i.MX93 Shell started SUCCESSFULLY=====\r\n");
+
 
     vTaskDelete(NULL);
     while(1){
@@ -89,6 +113,10 @@ Std_ReturnType EXP_AppInit(void)
     CREATE_TASK(Shell_Task, 		"ShellTask", 		MIN_STACK_SIZE * 2, 	NULL, 	1, NULL);
 
     CREATE_TASK(RPMSG_Task, 		"RPMSGTask", 		MIN_STACK_SIZE * 10, 	NULL, 	1, NULL);
+    CREATE_TASK(Task_Update_Onboard_ADC, 		"Task_Update_Onboard_ADC", 		MIN_STACK_SIZE * 2, 	NULL, 	1, NULL);
+     CREATE_TASK(task_temperature_control_profile_type0, 		"task_temperature_control_profile_type0", 		MIN_STACK_SIZE * 2, 	NULL, 	1, NULL);
+
+     CREATE_TASK(Task_Experiment, 		"Task_Experiment", 		MIN_STACK_SIZE * 2, 	NULL, 	1, NULL);
 
     ret = E_OK;
     return ret;

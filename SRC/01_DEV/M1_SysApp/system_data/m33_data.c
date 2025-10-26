@@ -19,6 +19,8 @@ __attribute__((aligned(32))) value32_t table3_data[TABLE3_TOTAL_COUNT];
 __attribute__((aligned(32))) value32_t table5_data[TABLE5_TOTAL_COUNT];
 __attribute__((aligned(32))) value32_t table6_data[TABLE6_TOTAL_COUNT];
 
+
+
 table_info_t tables[TABLE_ID_TOTAL_COUNT] = {
     [TABLE_ID_1] = { table1_data, TABLE1_TOTAL_COUNT },
     [TABLE_ID_2] = { table2_data, TABLE2_TOTAL_COUNT },
@@ -56,14 +58,14 @@ uint32_t m33_data_set_u(uint32_t table_id,uint32_t index, uint32_t value)
     return 0;
 }
 
-uint32_t m33_data_set_f(uint32_t table_id,uint32_t index, float value)
-{
-    if (table_id >= TABLE_ID_TOTAL_COUNT) return 1; // tránh out of range
-    if (index >= tables[table_id].size) return 1;   // tránh vượt giới hạn bảng
+// uint32_t m33_data_set_f(uint32_t table_id,uint32_t index, float value)
+// {
+//     if (table_id >= TABLE_ID_TOTAL_COUNT) return 1; // tránh out of range
+//     if (index >= tables[table_id].size) return 1;   // tránh vượt giới hạn bảng
 
-    tables[table_id].data[index].f = value;
-    return 0;
-}
+//     tables[table_id].data[index].f = value;
+//     return 0;
+// }
 uint32_t m33_data_set_i(uint32_t table_id,uint32_t index, int32_t value)
 {
     if (table_id >= TABLE_ID_TOTAL_COUNT) return 1; // tránh out of range
@@ -89,14 +91,14 @@ uint32_t m33_data_get_u(uint32_t table_id,uint32_t index, uint32_t * value)
     return 0;
   
 }
-uint32_t m33_data_get_f(uint32_t table_id,uint32_t index, float * value)
-{
-    if (table_id >= TABLE_ID_TOTAL_COUNT) return 1; // tránh out of range
-    if (index >= tables[table_id].size) return 1;   // tránh vượt giới hạn bảng
+// uint32_t m33_data_get_f(uint32_t table_id,uint32_t index, float * value)
+// {
+//     if (table_id >= TABLE_ID_TOTAL_COUNT) return 1; // tránh out of range
+//     if (index >= tables[table_id].size) return 1;   // tránh vượt giới hạn bảng
 
-    *value = tables[table_id].data[index].f;
-    return 0;
-}
+//     *value = tables[table_id].data[index].f;
+//     return 0;
+// }
 
 uint32_t m33_data_update_NTC(int32_t* p_data)
 {
@@ -231,6 +233,84 @@ uint32_t data_prof_type0_get(prof_type0_t *profile, uint32_t index)
         default:
             break;
     }
+    osSemaphoreGiven(&m33_data_sem);   
+    return (uint32_t)sem_ret; 
+}
+
+uint32_t m33_data_exp_profile_get(exp_profile_t *profile)
+{
+    int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
+
+    if (sem_ret != pdPASS)
+    {
+        return (uint32_t)sem_ret;
+    }
+    sem_ret += m33_data_get_u(TABLE_ID_5, exp_pre_time, &profile->pre_time_ms);
+    sem_ret += m33_data_get_u(TABLE_ID_5, exp_samp_time, &profile->sampling_time_ms);
+    sem_ret += m33_data_get_u(TABLE_ID_5, exp_post_time, &profile->post_time_ms);
+    sem_ret += m33_data_get_u(TABLE_ID_5, exp_samp_rate, &profile->sampling_rate_khz);
+    sem_ret += m33_data_get_u(TABLE_ID_5, cam_ls_intensity, &profile->laser_intensity);
+    osSemaphoreGiven(&m33_data_sem);   
+    return (uint32_t)sem_ret; 
+}
+
+uint32_t m33_get_is_start_exp(uint32_t *is_start)
+{
+    int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
+
+    if (sem_ret != pdPASS)
+    {
+        return (uint32_t)sem_ret;
+    }
+    sem_ret += m33_data_get_u(TABLE_ID_5, exp_mon_start, is_start);
+    osSemaphoreGiven(&m33_data_sem);   
+    return (uint32_t)sem_ret; 
+}
+uint32_t m33_get_get_mon_delay(uint32_t *mon_delay)
+{
+    int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
+
+    if (sem_ret != pdPASS)
+    {
+        return (uint32_t)sem_ret;
+    }
+    sem_ret += m33_data_get_u(TABLE_ID_5, exp_mon_delay, mon_delay);
+    osSemaphoreGiven(&m33_data_sem);   
+    return (uint32_t)sem_ret; 
+}
+uint32_t m33_get_set_mon_delay(uint32_t mon_delay)
+{
+    int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
+
+    if (sem_ret != pdPASS)
+    {
+        return (uint32_t)sem_ret;
+    }
+    sem_ret += m33_data_set_u(TABLE_ID_5, exp_mon_delay, mon_delay);
+    osSemaphoreGiven(&m33_data_sem);   
+    return (uint32_t)sem_ret; 
+}
+uint32_t m33_get_get_mon_interval(uint32_t *mon_interval)
+{
+    int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
+
+    if (sem_ret != pdPASS)
+    {
+        return (uint32_t)sem_ret;
+    }
+    sem_ret += m33_data_get_u(TABLE_ID_5, exp_mon_interval, mon_interval);
+    osSemaphoreGiven(&m33_data_sem);   
+    return (uint32_t)sem_ret; 
+}
+uint32_t m33_get_set_mon_interval(uint32_t mon_interval)
+{
+    int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
+
+    if (sem_ret != pdPASS)
+    {
+        return (uint32_t)sem_ret;
+    }
+    sem_ret += m33_data_set_u(TABLE_ID_5, exp_mon_interval, mon_interval);
     osSemaphoreGiven(&m33_data_sem);   
     return (uint32_t)sem_ret; 
 }

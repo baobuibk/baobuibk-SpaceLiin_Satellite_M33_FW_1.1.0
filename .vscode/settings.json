@@ -10,5 +10,10 @@
   "cmake.useCMakePresets": "always",
   "cmake.buildTask": true,
   "cmake.skipConfigureIfCachePresent": true,
-  "cmake.sourceDirectory": "${workspaceFolder}/SRC/armgcc"
+  "cmake.sourceDirectory": "${workspaceFolder}/SRC/armgcc",
+  "iis.configDir": "",
+  "files.associations": {
+    "bsp.h": "c",
+    "bsp_expander.h": "c"
+  }
 }

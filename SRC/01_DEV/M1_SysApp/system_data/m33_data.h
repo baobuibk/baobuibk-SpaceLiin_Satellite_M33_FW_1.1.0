@@ -12,9 +12,8 @@
  * A 32 bit variable that can be interpreted as int, uint or float
  */
 typedef union value32_t{
-    int32_t i;
-    uint32_t u;
-    float f;
+    int16_t i;
+    uint16_t u;
 } value32_t;
 typedef enum {
     TABLE_ID_1 = 0,
@@ -47,6 +46,17 @@ typedef struct prof_type0_ena_t
 	uint32_t	master_ena;
 	uint32_t	prof_ena[6];
 } prof_type0_ena_t;
+
+
+typedef struct exp_profile_t
+{
+    uint32_t pre_time_ms;
+    uint32_t sampling_time_ms;
+    uint32_t post_time_ms;
+
+    uint32_t sampling_rate_khz;
+    uint32_t laser_intensity;
+} exp_profile_t;
 
 typedef enum {
     time_sync,
@@ -216,6 +226,7 @@ typedef enum {
     TABLE6_TOTAL_COUNT   // tổng số phần tử, tiện cho việc lặp hoặc debug
 } table6_id_t;
 
+uint32_t m33_data_init(void);
 
 uint32_t m33_data_set_u(uint32_t table_id,uint32_t index, uint32_t value);
 uint32_t m33_data_set_i(uint32_t table_id,uint32_t index, int32_t value);
@@ -229,4 +240,12 @@ uint32_t m33_data_update_NTC(int32_t* p_data);
 uint32_t     m33_data_ntc_temp_get(int32_t* p_data);
 uint32_t data_prof_type0_get(prof_type0_t *profile, uint32_t index);
 uint32_t data_prof_type0_ena_get(prof_type0_ena_t *enaProfile);
+uint32_t m33_data_exp_profile_get(exp_profile_t *profile);
+uint32_t m33_get_is_start_exp(uint32_t *is_start);
+uint32_t m33_get_get_mon_delay(uint32_t *mon_delay);
+uint32_t m33_get_set_mon_delay(uint32_t mon_delay);
+uint32_t m33_get_get_mon_interval(uint32_t *mon_interval);
+uint32_t m33_get_set_mon_interval(uint32_t mon_interval);
+
+
 #endif /* MIDDLEWARE_FLIGHTSYSTEM_SYSTEM_M33_DATA_H_ */

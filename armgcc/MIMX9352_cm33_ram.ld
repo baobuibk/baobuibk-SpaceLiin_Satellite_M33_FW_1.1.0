@@ -35,12 +35,25 @@ M_VECTOR_RAM_SIZE = DEFINED(__ram_vector_table__) ? 0x0478 : 0x0;
 /* Specify the memory areas */
 MEMORY
 {
-  m_interrupts          (RX)  : ORIGIN = 0x0FFE0000, LENGTH = 0x00000478
-  m_text                (RX)  : ORIGIN = 0x0FFE0478, LENGTH = 0x0001FB88
-  m_m33_suspend_ram     (RW)  : ORIGIN = 0x20000000, LENGTH = 0x00002000
-  m_a55_suspend_ram     (RW)  : ORIGIN = 0x20002000, LENGTH = 0x00001000
-  m_data                (RW)  : ORIGIN = 0x20003000, LENGTH = 0x0001C000
-  m_rsc_tbl             (RW)  : ORIGIN = 0x2001F000, LENGTH = 0x00001000
+
+/* TCM SYS NON-SECURE: Vector table ở đầu */
+  m_interrupts (RX) : ORIGIN = 0x20000000, LENGTH = 0x00000478
+  
+  /* Code tiếp theo, kết thúc ~0x2001F000 */
+  m_text       (RX) : ORIGIN = 0x20000478, LENGTH = 0x0001EB88
+  
+  /* Resource table ngay sau text (R, nên đặt ở vùng code) */
+  m_rsc_tbl    (RW) : ORIGIN = 0x2001F000, LENGTH = 0x00001000 
+  
+  /* Data sau rsc_tbl, tránh overlap, length 0x1C000 fits trong TCM còn lại */
+  m_data       (RW) : ORIGIN = 0x20020000, LENGTH = 0x0001C000
+  
+  /* Suspend regions: Comment out nếu không dùng (hello world không cần), hoặc move sang cuối TCM */
+  /* m_m33_suspend_ram (RW) : ORIGIN = 0x20038000, LENGTH = 0x00002000 */
+  /* m_a55_suspend_ram (RW) : ORIGIN = 0x2003A000, LENGTH = 0x00001000 */
+  
+  /* RPMSG shared memory: Giữ nếu dùng RPMSG, nhưng check da=0xA4220000 có trong ATT không (có thể dùng 0x80000000 thay) */
+  RPMSG_SMEM            (RWX) : ORIGIN = 0xA4220000, LENGTH = 0x08000000
 }
 
 /* Define output sections */
@@ -61,7 +74,8 @@ SECTIONS
     . = ALIGN(8);
     KEEP(*(.resource_table)) /* Resource table */
     . = ALIGN(8);
-  } > m_text
+  } >  m_rsc_tbl
+  /* } > m_text */
 
   /* The program code and other data goes into internal RAM */
   .text :

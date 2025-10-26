@@ -40,7 +40,7 @@ Std_ReturnType BootManager_SystemInit(void){
     Utils_SoftTime_Init();
     CRC16_XMODEM_Init();
     M33_RPMSG_Init();
-    bsp_core_init();
+
     return E_OK;
 }
 
