@@ -1,9 +1,0 @@
-D:/PROJECT/XpressoSDK/SDK_2_14_0_MIMX9352xxxxK/CMSIS/Core/Include/core_cm33.h:2378:22:__NVIC_EnableIRQ	16	static
-D:/PROJECT/XpressoSDK/SDK_2_14_0_MIMX9352xxxxK/CMSIS/Core/Include/core_cm33.h:2469:22:__NVIC_ClearPendingIRQ	16	static
-D:/PROJECT/XpressoSDK/SDK_2_14_0_MIMX9352xxxxK/CMSIS/Core/Include/core_cm33.h:2575:22:__NVIC_SetPriority	16	static
-D:/PROJECT/XpressoSDK/SDK_2_14_0_MIMX9352xxxxK/devices/MIMX9352/drivers/fsl_common_arm.h:514:24:EnableIRQ	24	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_spi_sensor/bsp_spi_sensor.c:65:6:bsp_spi_sensor_init	48	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_spi_sensor/bsp_spi_sensor.c:108:5:SPI6_SendByte_Regs_IT	24	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_spi_sensor/bsp_spi_sensor.c:144:6:LPSPI6_DriverIRQHandler	24	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_spi_sensor/bsp_spi_sensor.c:172:6:TPM2_IRQHandler	4	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_spi_sensor/bsp_spi_sensor.c:207:13:SPI6_TxIrq_Init_Regs_SingleByte	16	static

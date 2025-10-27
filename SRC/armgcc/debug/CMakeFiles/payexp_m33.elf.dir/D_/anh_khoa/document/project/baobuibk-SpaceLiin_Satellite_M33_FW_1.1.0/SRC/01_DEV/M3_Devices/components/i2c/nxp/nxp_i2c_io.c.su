@@ -1,0 +1,9 @@
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/devices/MIMX9352/drivers/fsl_clock.h:1296:20:CLOCK_SetRootClock	16	static
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/devices/MIMX9352/drivers/fsl_clock.h:1316:20:CLOCK_ControlGate	16	static
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/devices/MIMX9352/drivers/fsl_clock.h:1329:20:CLOCK_EnableClock	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/i2c/nxp/nxp_i2c_io.c:110:13:bsp_core_init_io_expander_i2c	40	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/i2c/nxp/nxp_i2c_io.c:148:13:bsp_core_init_sensor_i2c	40	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/i2c/nxp/nxp_i2c_io.c:183:13:bsp_core_init_pump_i2c	40	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/i2c/nxp/nxp_i2c_io.c:218:17:i2c_recovery	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/i2c/nxp/nxp_i2c_io.c:253:10:i2c_io_send	40	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/i2c/nxp/nxp_i2c_io.c:382:10:i2c_io_recv	48	static

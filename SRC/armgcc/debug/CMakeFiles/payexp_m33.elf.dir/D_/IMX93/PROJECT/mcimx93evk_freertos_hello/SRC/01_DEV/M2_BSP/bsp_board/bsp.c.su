@@ -1,4 +1,0 @@
-D:/PROJECT/XpressoSDK/SDK_2_14_0_MIMX9352xxxxK/devices/MIMX9352/drivers/fsl_iomuxc.h:700:20:IOMUXC_SetPinMux	24	static
-D:/PROJECT/XpressoSDK/SDK_2_14_0_MIMX9352xxxxK/devices/MIMX9352/drivers/fsl_iomuxc.h:728:20:IOMUXC_SetPinConfig	24	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_board/bsp.c:23:6:BSP_Init	8	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_board/bsp.c:32:13:EXP_InitPins	16	static

@@ -1,0 +1,7 @@
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Kernel/rtos.c:13:6:EXP_RTOS_Start	8	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Kernel/rtos.c:21:6:vApplicationStackOverflowHook	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Kernel/rtos.c:26:6:vApplicationMallocFailedHook	4	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Kernel/rtos.c:32:6:vApplicationIdleHook	4	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Kernel/rtos.c:38:6:vApplicationTickHook	4	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Kernel/rtos.c:46:6:vApplicationGetIdleTaskMemory	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Kernel/rtos.c:58:6:vApplicationGetTimerTaskMemory	24	static

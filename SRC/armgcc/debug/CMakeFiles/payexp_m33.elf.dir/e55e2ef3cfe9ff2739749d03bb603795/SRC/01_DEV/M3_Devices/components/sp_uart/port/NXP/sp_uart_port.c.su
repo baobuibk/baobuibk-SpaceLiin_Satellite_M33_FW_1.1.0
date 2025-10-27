@@ -1,0 +1,11 @@
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/CMSIS/Core/Include/core_cm33.h:2378:22:__NVIC_EnableIRQ	16	static
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/CMSIS/Core/Include/core_cm33.h:2416:22:__NVIC_DisableIRQ	16	static
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/devices/MIMX9352/drivers/fsl_lpuart.h:762:20:LPUART_WriteByte	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/sp_uart/port/NXP/sp_uart_port.c:86:6:SP_UART_Init	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/sp_uart/port/NXP/sp_uart_port.c:108:6:SP_UART_Send_Char	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/sp_uart/port/NXP/sp_uart_port.c:120:6:SP_UART_Send_String	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/sp_uart/port/NXP/sp_uart_port.c:132:6:SP_UART_Send_Buffer	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/sp_uart/port/NXP/sp_uart_port.c:175:6:SP_UART_Printf	156	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/sp_uart/port/NXP/sp_uart_port.c:214:9:SP_UART_Get_Char	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/sp_uart/port/NXP/sp_uart_port.c:242:6:SP_UART_Prime_Transmit	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/sp_uart/port/NXP/sp_uart_port.c:287:10:SP_UART_Enqueue	32	static

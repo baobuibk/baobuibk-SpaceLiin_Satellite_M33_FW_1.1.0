@@ -1,4 +1,0 @@
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_power/bsp_power.c:16:6:bsp_power_IO_ctrl	16	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_power/bsp_power.c:21:6:bsp_power_12V_ctrl	16	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_power/bsp_power.c:26:10:bsp_power_12V_stat	4	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_power/bsp_power.c:30:10:bsp_power_12V_current	4	static

@@ -1,0 +1,10 @@
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/CMSIS/Core/Include/core_cm33.h:2378:22:__NVIC_EnableIRQ	16	static
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/devices/MIMX9352/drivers/fsl_common_arm.h:514:24:EnableIRQ	24	static
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/devices/MIMX9352/drivers/fsl_lpuart.h:776:23:LPUART_ReadByte	32	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_debug_console/bsp_debug_console.c:96:6:bsp_debug_console_init	32	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_debug_console/bsp_debug_console.c:119:6:LPUART2_IRQHandler	8	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_debug_console/bsp_debug_console.c:165:6:bsp_debug_console_printf	48	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_debug_console/bsp_debug_console.c:567:6:bsp_debug_console_send_char	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_debug_console/bsp_debug_console.c:579:6:bsp_debug_console_send_string	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_debug_console/bsp_debug_console.c:589:9:bsp_debug_console_get_char	8	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_debug_console/bsp_debug_console.c:599:6:bsp_debug_console_RX_buffer_empty	8	static

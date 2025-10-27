@@ -1,0 +1,15 @@
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M1_SysApp/Services/cmdline.c:34:13:writeCharShell	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M1_SysApp/Services/cmdline.c:39:12:is_addr_valid	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M1_SysApp/Services/cmdline.c:47:13:CMD_a55_ping	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M1_SysApp/Services/cmdline.c:60:13:CMD_a55_exec	272	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M1_SysApp/Services/cmdline.c:82:13:CMD_a55_file	136	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M1_SysApp/Services/cmdline.c:106:13:CMD_ram_write	168	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M1_SysApp/Services/cmdline.c:133:13:CMD_ram_read	208	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M1_SysApp/Services/cmdline.c:197:13:CMD_ram_fill	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M1_SysApp/Services/cmdline.c:204:13:CMD_ram_dump	200	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M1_SysApp/Services/cmdline.c:269:13:CMD_a55_sleep	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M1_SysApp/Services/cmdline.c:275:13:CMD_a55_wake	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M1_SysApp/Services/cmdline.c:281:13:CMD_cls	32	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M1_SysApp/Services/cmdline.c:288:13:CMD_date	120	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M1_SysApp/Services/cmdline.c:308:13:CMD_hello	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M1_SysApp/Services/cmdline.c:313:6:setup_dynamic_shell	8	static

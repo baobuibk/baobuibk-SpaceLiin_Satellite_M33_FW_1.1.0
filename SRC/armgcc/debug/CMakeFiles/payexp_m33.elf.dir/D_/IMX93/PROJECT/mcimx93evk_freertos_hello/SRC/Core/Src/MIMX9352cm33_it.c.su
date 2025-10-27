@@ -1,8 +1,0 @@
-D:/PROJECT/XpressoSDK/SDK_2_14_0_MIMX9352xxxxK/devices/MIMX9352/drivers/fsl_lptmr.h:270:20:LPTMR_ClearStatusFlags	16	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/Core/Src/MIMX9352cm33_it.c:11:6:NMI_Handler	4	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/Core/Src/MIMX9352cm33_it.c:21:6:HardFault_Handler	8	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/Core/Src/MIMX9352cm33_it.c:32:6:MemManage_Handler	8	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/Core/Src/MIMX9352cm33_it.c:43:6:BusFault_Handler	4	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/Core/Src/MIMX9352cm33_it.c:53:6:UsageFault_Handler	4	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/Core/Src/MIMX9352cm33_it.c:63:6:DebugMon_Handler	4	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/Core/Src/MIMX9352cm33_it.c:73:6:LPTMR1_IRQHandler	8	static

@@ -5,7 +5,7 @@
  *      Author: Admin
  */
 
-
+#include "bsp_core.h"
 #include "m33_data.h"
 #include "m33_command.h"
 #include "cmdline.h"
@@ -15,6 +15,10 @@
 #include <stdint.h>
 #include "fsl_debug_console.h"
 #include "bsp_expander.h"
+#include "bsp_heater.h"
+#include "bsp_solenoid.h"
+#include "bsp_pump.h"
+#include "do.h"
 
 
 int str2int(char *str, int32_t *ret) {
@@ -125,151 +129,664 @@ void time_sync_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 }
 
 void pwr_ifb_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])    
- { (void)stdio;(void)argc;(void)argv;  PRINTF("pwr_ifb_en\r\n"); }
+ { (void)stdio;(void)argc;(void)argv;  }//PRINTF("pwr_ifb_en\r\n"); }
 
-void pwr_io_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])      { (void)stdio;(void)argc;(void)argv; PRINTF("\r\npwr_io_en\r\n"); }
-void pwr_pzp_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])    
- {
-    (void)stdio;(void)argc;(void)argv; PRINTF("pwr_pzp_en\n"); 
-    int32_t status;
-    uint32_t ret = str2int(argv[1], &status);
-	if (ret) return;
-     bsp_expander_ctrl(POW_ONOFF_TEC,status);
-    }
-void pwr_htr_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])   
-  { (void)stdio;(void)argc;(void)argv; PRINTF("pwr_htr_en\n"); 
-    int32_t status;
-    uint32_t ret = str2int(argv[1], &status);
-	if (ret) return;
-     bsp_expander_ctrl(POW_ONOFF_HEATER,status);
+void pwr_io_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
+{
+    (void)stdio;(void)argc;(void)argv; //PRINTF("\r\npwr_io_en\r\n");
 }
-void pwr_sln_tec_en_cmd(uint32_t stdio, uint32_t argc, char *argv[]) { (void)stdio;(void)argc;(void)argv; PRINTF("pwr_sln_tec_en\n"); }
-void pwr_lda_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])     { (void)stdio;(void)argc;(void)argv; PRINTF("pwr_lda_en\n"); }
-void pwr_pda_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])     { (void)stdio;(void)argc;(void)argv; PRINTF("pwr_pda_en\n"); }
-void pwr_usb_0_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])   { (void)stdio;(void)argc;(void)argv; PRINTF("pwr_usb_0_en\n"); }
-void pwr_usb_1_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])   { (void)stdio;(void)argc;(void)argv; PRINTF("pwr_usb_1_en\n"); }
-void i2c_s_1_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])     { (void)stdio;(void)argc;(void)argv; PRINTF("i2c_s_1_en\n"); }
-void i2c_s_2_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])     { (void)stdio;(void)argc;(void)argv; PRINTF("i2c_s_2_en\n"); }
-void i2c_pwm_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])     { (void)stdio;(void)argc;(void)argv; PRINTF("i2c_pwm_en\n"); }
-void i2c_hd4_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])     { (void)stdio;(void)argc;(void)argv; PRINTF("i2c_hd4_en\n"); }
-void i2c_ld_1_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])    { (void)stdio;(void)argc;(void)argv; PRINTF("i2c_ld_1_en\n"); }
-void i2c_ld_2_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])    { (void)stdio;(void)argc;(void)argv; PRINTF("i2c_ld_2_en\n"); }
-void tec_0_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])       { (void)stdio;(void)argc;(void)argv; PRINTF("tec_0_en\n"); }
-void tec_1_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])       { (void)stdio;(void)argc;(void)argv; PRINTF("tec_1_en\n"); }
-void tec_2_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])       { (void)stdio;(void)argc;(void)argv; PRINTF("tec_2_en\n"); }
-void tec_3_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])       { (void)stdio;(void)argc;(void)argv; PRINTF("tec_3_en\n"); }
-void usb_led_1_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])  { (void)stdio;(void)argc;(void)argv; PRINTF("usb_led_1_set\n"); }
-void usb_led_2_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])  { (void)stdio;(void)argc;(void)argv; PRINTF("usb_led_2_set\n"); }
-void htr_0_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      { (void)stdio;(void)argc;(void)argv; PRINTF("htr_0_set\n"); }
-void htr_1_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      { (void)stdio;(void)argc;(void)argv; PRINTF("htr_1_set\n"); }
-void htr_2_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      { (void)stdio;(void)argc;(void)argv; PRINTF("htr_2_set\n"); }
-void htr_3_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      { (void)stdio;(void)argc;(void)argv; PRINTF("htr_3_set\n"); }
-void htr_4_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      { (void)stdio;(void)argc;(void)argv; PRINTF("htr_4_set\n"); }
-void htr_5_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      { (void)stdio;(void)argc;(void)argv; PRINTF("htr_5_set\n"); }
-void htr_6_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      { (void)stdio;(void)argc;(void)argv; PRINTF("htr_6_set\n"); }
-void htr_7_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      { (void)stdio;(void)argc;(void)argv; PRINTF("htr_7_set\n"); }
-void custom_cmd_cmd(uint32_t stdio, uint32_t argc, char *argv[])     { (void)stdio;(void)argc;(void)argv; PRINTF("custom_cmd\n"); }
+
+void pwr_pzp_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])    
+{
+    (void)stdio;(void)argc;(void)argv; //PRINTF("pwr_pzp_en\n");
+    
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+    
+    bsp_expander_ctrl(POW_ONOFF_TEC,status);
+}
+
+void pwr_htr_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])   
+{
+    (void)stdio;(void)argc;(void)argv; //PRINTF("pwr_htr_en\n");
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+    
+    bsp_expander_ctrl(POW_ONOFF_HEATER,status);
+}
+
+void pwr_sln_tec_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
+{
+    (void)stdio;(void)argc;(void)argv; //PRINTF("pwr_sln_tec_en\n");
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    bsp_expander_ctrl(POW_ONOFF_TEC,status);
+}
+
+void pwr_lda_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
+{
+    (void)stdio;(void)argc;(void)argv; //PRINTF("pwr_lda_en\n");
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    bsp_expander_ctrl(POW_ONOFF_LASER,status);
+}
+
+void pwr_pda_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
+{
+    (void)stdio;(void)argc;(void)argv; //PRINTF("pwr_pda_en\n");
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    bsp_expander_ctrl(POW_ONOFF_PHOTO,status);
+}
+
+void pwr_usb_0_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
+{
+    (void)stdio;(void)argc;(void)argv; //PRINTF("pwr_usb_0_en\n");
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    if (status)
+    {
+        do_set(&usb_en0_gpio);
+    }
+    else
+    {
+        do_reset(&usb_en0_gpio);
+    }
+}
+
+void pwr_usb_1_en_cmd(uint32_t stdio, uint32_t argc, char *argv[]) 
+{
+    (void)stdio;(void)argc;(void)argv; //PRINTF("pwr_usb_1_en\n");
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    if (status)
+    {
+        do_set(&usb_en1_gpio);
+    }
+    else
+    {
+        do_reset(&usb_en1_gpio);
+    }
+}
+
+void i2c_s_1_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
+{
+    (void)stdio;(void)argc;(void)argv; //PRINTF("i2c_s_1_en\n");
+    
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    if (status)
+    {
+        do_set(&sensor_en0_gpio);
+    }
+    else
+    {
+        do_reset(&sensor_en0_gpio);
+    }
+}
+
+void i2c_s_2_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
+{
+    (void)stdio;(void)argc;(void)argv; //PRINTF("i2c_s_2_en\n");
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    if (status)
+    {
+        do_set(&sensor_en1_gpio);
+    }
+    else
+    {
+        do_reset(&sensor_en1_gpio);
+    }
+}
+
+void i2c_pwm_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
+{ 
+    (void)stdio;(void)argc;(void)argv; //PRINTF("i2c_pwm_en\n");
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    uint32_t en = (status == 0) ? 1 : 0;
+    bsp_expander_ctrl(PWM_I2C_nOE, en);
+}
+
+void i2c_hd4_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
+{
+    (void)stdio;(void)argc;(void)argv; //PRINTF("i2c_hd4_en\n");
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    bsp_expander_ctrl(HD4_I2C_EN, status);
+}
+
+void i2c_ld_1_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
+{
+    (void)stdio;(void)argc;(void)argv; //PRINTF("i2c_ld_1_en\n");
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    if (status)
+    {
+        do_set(&pump_en_gpio);
+    }
+    else
+    {
+        do_reset(&pump_en_gpio);
+    }
+}
+void i2c_ld_2_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
+{
+    (void)stdio;(void)argc;(void)argv; //PRINTF("i2c_ld_2_en\n");
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    if (status)
+    {
+        do_set(&pump_en2_gpio);
+    }
+    else
+    {
+        do_reset(&pump_en2_gpio);
+    }
+}
+
+void tec_0_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])       
+{
+    (void)stdio;(void)argc;(void)argv; //PRINTF("tec_0_en\n");
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    bsp_expander_ctrl(TEC_EN_1, status);
+}
+
+void tec_1_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])       
+{ 
+    (void)stdio;(void)argc;(void)argv; //PRINTF("tec_1_en\n"); 
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    bsp_expander_ctrl(TEC_EN_2, status);
+}
+
+void tec_2_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])       
+{ 
+    (void)stdio;(void)argc;(void)argv; //PRINTF("tec_2_en\n"); 
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    bsp_expander_ctrl(TEC_EN_3, status);
+}
+
+void tec_3_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])       
+{ 
+    (void)stdio;(void)argc;(void)argv; //PRINTF("tec_3_en\n"); 
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    bsp_expander_ctrl(TEC_EN_4, status);
+}
+
+void usb_led_1_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])  
+{ 
+    (void)stdio;(void)argc;(void)argv; //PRINTF("usb_led_1_set\n");
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    bsp_heater_turnon(USB_LED_1, status);
+}
+
+void usb_led_2_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])  
+{
+    (void)stdio;(void)argc;(void)argv; //PRINTF("usb_led_2_set\n");
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    bsp_heater_turnon(USB_LED_2, status);
+}
+
+void htr_0_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
+{
+    (void)stdio;(void)argc;(void)argv; //PRINTF("htr_0_set\n");
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    bsp_heater_turnon(HEATER_PWM_1, status);
+}
+
+void htr_1_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
+{
+    (void)stdio;(void)argc;(void)argv; //PRINTF("htr_1_set\n");
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    bsp_heater_turnon(HEATER_PWM_2, status);
+}
+
+void htr_2_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
+{ 
+    (void)stdio;(void)argc;(void)argv; //PRINTF("htr_2_set\n"); 
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    bsp_heater_turnon(HEATER_PWM_3, status);
+}
+
+void htr_3_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
+{ 
+    (void)stdio;(void)argc;(void)argv; //PRINTF("htr_3_set\n"); 
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    bsp_heater_turnon(HEATER_PWM_4, status);
+}
+
+void htr_4_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
+{ 
+    (void)stdio;(void)argc;(void)argv; //PRINTF("htr_4_set\n"); 
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    bsp_heater_turnon(HEATER_PWM_5, status);
+}
+
+void htr_5_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
+{ 
+    (void)stdio;(void)argc;(void)argv; //PRINTF("htr_5_set\n"); 
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    bsp_heater_turnon(HEATER_PWM_6, status);
+}
+
+void htr_6_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
+{ 
+    (void)stdio;(void)argc;(void)argv; //PRINTF("htr_6_set\n"); 
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    bsp_heater_turnon(HEATER_PWM_7, status);
+}
+
+void htr_7_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
+{ 
+    (void)stdio;(void)argc;(void)argv; //PRINTF("htr_7_set\n"); 
+
+    int32_t status;
+    uint32_t ret = str2int(argv[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    bsp_heater_turnon(HEATER_PWM_8, status);
+}
+
+void custom_cmd_cmd(uint32_t stdio, uint32_t argc, char *argv[])     { (void)stdio;(void)argc;(void)argv; }//PRINTF("custom_cmd\n"); }
 
 /* ==================== TABLE 2: implementations ==================== */
-void pump_1_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;PRINTF("pump_1_ctl\n");}
-void pump_1_volt_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;PRINTF("pump_1_volt\n");}
-void pump_1_freq_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;PRINTF("pump_1_freq\n");}
-void pump_2_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;PRINTF("pump_2_ctl\n");}
-void pump_2_volt_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;PRINTF("pump_2_volt\n");}
-void pump_2_freq_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;PRINTF("pump_2_freq\n");}
-void sln_0_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;PRINTF("sln_0_ctl\n");}
-void sln_1_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;PRINTF("sln_1_ctl\n");}
-void sln_2_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;PRINTF("sln_2_ctl\n");}
-void sln_3_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;PRINTF("sln_3_ctl\n");}
-void sln_4_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;PRINTF("sln_4_ctl\n");}
-void sln_5_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;PRINTF("sln_5_ctl\n");}
-void sln_6_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;PRINTF("sln_6_ctl\n");}
-void sln_7_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;PRINTF("sln_7_ctl\n");}
-void sln_8_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;PRINTF("sln_8_ctl\n");}
-void sln_9_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;PRINTF("sln_9_ctl\n");}
-void sln_10_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;PRINTF("sln_10_ctl\n");}
-void sln_11_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;PRINTF("sln_11_ctl\n");}
-void sln_valve_1_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;PRINTF("sln_valve_1_ctl\n");}
-void sln_valve_2_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;PRINTF("sln_valve_2_ctl\n");}
+void pump_1_ctl_cmd(uint32_t s, uint32_t a, char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("pump_1_ctl\n");
+
+    int32_t status;
+    uint32_t ret = str2int(v[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    I2C_HD_Pump_set_enable(status);
+}
+
+void pump_1_volt_cmd(uint32_t s, uint32_t a, char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("pump_1_volt\n");
+
+    int32_t status;
+    uint32_t ret = str2int(v[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    I2C_HD_Pump_set_Voltage(status);
+}
+
+void pump_1_freq_cmd(uint32_t s, uint32_t a, char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("pump_1_freq\n");
+
+    int32_t status;
+    uint32_t ret = str2int(v[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    I2C_HD_Pump_Set_Freq(status);
+}
+
+void pump_2_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("pump_2_ctl\n");}
+void pump_2_volt_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("pump_2_volt\n");}
+void pump_2_freq_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("pump_2_freq\n");}
+
+void sln_0_ctl_cmd(uint32_t s, uint32_t a, char *v[])
+{
+    (void)s;(void)a;(void)v;//PRINTF("sln_0_ctl\n");
+
+    int32_t status;
+    uint32_t ret = str2int(v[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    uint32_t en = (status == 0) ? 1 : 0;
+    bsp_expander_ctrl(SOLENOID_CTR_1, en);
+}
+
+void sln_1_ctl_cmd(uint32_t s, uint32_t a, char *v[])
+{
+    (void)s;(void)a;(void)v;//PRINTF("sln_1_ctl\n");
+
+    int32_t status;
+    uint32_t ret = str2int(v[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    uint32_t en = (status == 0) ? 1 : 0;
+    bsp_expander_ctrl(SOLENOID_CTR_2, en);
+}
+
+void sln_2_ctl_cmd(uint32_t s, uint32_t a, char *v[])
+{
+    (void)s;(void)a;(void)v;//PRINTF("sln_2_ctl\n");
+
+    int32_t status;
+    uint32_t ret = str2int(v[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    uint32_t en = (status == 0) ? 1 : 0;
+    bsp_expander_ctrl(SOLENOID_CTR_3, en);
+}
+
+void sln_3_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sln_3_ctl\n");}
+void sln_4_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sln_4_ctl\n");}
+void sln_5_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sln_5_ctl\n");}
+void sln_6_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sln_6_ctl\n");}
+void sln_7_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sln_7_ctl\n");}
+void sln_8_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sln_8_ctl\n");}
+void sln_9_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sln_9_ctl\n");}
+void sln_10_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sln_10_ctl\n");}
+void sln_11_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sln_11_ctl\n");}
+
+void sln_valve_1_ctl_cmd(uint32_t s, uint32_t a, char *v[])
+{
+    (void)s;(void)a;(void)v;//PRINTF("sln_valve_1_ctl\n");
+
+    int32_t status;
+    uint32_t ret = str2int(v[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    Valve_switch(status);
+}
+void sln_valve_2_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sln_valve_2_ctl\n");}
 
 /* ==================== TABLE 3: implementations ==================== */
-void temp_master_en_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_master_en\n");}
-void temp_p_1_en_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_1_en\n");}
-void temp_p_2_en_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_2_en\n");}
-void temp_p_3_en_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_3_en\n");}
-void temp_p_4_en_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_4_en\n");}
-void temp_p_5_en_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_5_en\n");}
-void temp_p_6_en_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_6_en\n");}
-void temp_p_1_setpoint_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_1_setpoint\n");}
-void temp_p_1_ntcp_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_1_ntcp\n");}
-void temp_p_1_ntcs_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_1_ntcs\n");}
-void temp_p_1_htr_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_1_htr\n");}
-void temp_p_1_tec_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_1_tec\n");}
-void temp_p_2_setpoint_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_2_setpoint\n");}
-void temp_p_2_ntcp_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_2_ntcp\n");}
-void temp_p_2_ntcs_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_2_ntcs\n");}
-void temp_p_2_htr_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_2_htr\n");}
-void temp_p_2_tec_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_2_tec\n");}
-void temp_p_3_setpoint_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_3_setpoint\n");}
-void temp_p_3_ntcp_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_3_ntcp\n");}
-void temp_p_3_ntcs_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_3_ntcs\n");}
-void temp_p_3_htr_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_3_htr\n");}
-void temp_p_3_tec_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_3_tec\n");}
-void temp_p_4_setpoint_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_4_setpoint\n");}
-void temp_p_4_ntcp_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_4_ntcp\n");}
-void temp_p_4_ntcs_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_4_ntcs\n");}
-void temp_p_4_htr_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_4_htr\n");}
-void temp_p_4_tec_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_4_tec\n");}
-void temp_p_5_setpoint_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_5_setpoint\n");}
-void temp_p_5_ntcp_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_5_ntcp\n");}
-void temp_p_5_ntcs_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_5_ntcs\n");}
-void temp_p_5_htr_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_5_htr\n");}
-void temp_p_5_tec_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_5_tec\n");}
-void temp_p_6_setpoint_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_6_setpoint\n");}
-void temp_p_6_ntcp_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_6_ntcp\n");}
-void temp_p_6_ntcs_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_6_ntcs\n");}
-void temp_p_6_htr_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_6_htr\n");}
-void temp_p_6_tec_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_p_6_tec\n");}
+void temp_master_en_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_master_en\n");}
+void temp_p_1_en_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_1_en\n");}
+void temp_p_2_en_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_2_en\n");}
+void temp_p_3_en_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_3_en\n");}
+void temp_p_4_en_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_4_en\n");}
+void temp_p_5_en_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_5_en\n");}
+void temp_p_6_en_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_6_en\n");}
+void temp_p_1_setpoint_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_1_setpoint\n");}
+void temp_p_1_ntcp_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_1_ntcp\n");}
+void temp_p_1_ntcs_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_1_ntcs\n");}
+void temp_p_1_htr_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_1_htr\n");}
+void temp_p_1_tec_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_1_tec\n");}
+void temp_p_2_setpoint_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_2_setpoint\n");}
+void temp_p_2_ntcp_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_2_ntcp\n");}
+void temp_p_2_ntcs_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_2_ntcs\n");}
+void temp_p_2_htr_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_2_htr\n");}
+void temp_p_2_tec_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_2_tec\n");}
+void temp_p_3_setpoint_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_3_setpoint\n");}
+void temp_p_3_ntcp_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_3_ntcp\n");}
+void temp_p_3_ntcs_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_3_ntcs\n");}
+void temp_p_3_htr_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_3_htr\n");}
+void temp_p_3_tec_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_3_tec\n");}
+void temp_p_4_setpoint_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_4_setpoint\n");}
+void temp_p_4_ntcp_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_4_ntcp\n");}
+void temp_p_4_ntcs_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_4_ntcs\n");}
+void temp_p_4_htr_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_4_htr\n");}
+void temp_p_4_tec_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_4_tec\n");}
+void temp_p_5_setpoint_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_5_setpoint\n");}
+void temp_p_5_ntcp_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_5_ntcp\n");}
+void temp_p_5_ntcs_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_5_ntcs\n");}
+void temp_p_5_htr_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_5_htr\n");}
+void temp_p_5_tec_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_5_tec\n");}
+void temp_p_6_setpoint_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_6_setpoint\n");}
+void temp_p_6_ntcp_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_6_ntcp\n");}
+void temp_p_6_ntcs_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_6_ntcs\n");}
+void temp_p_6_htr_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_6_htr\n");}
+void temp_p_6_tec_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_6_tec\n");}
 
 /* ==================== TABLE 5: implementations ==================== */
-void test_ls_current_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("test_ls_current\n");}
-void test_fluidic_seq_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("test_fluidic_seq\n");}
-void exp_fluidic_seq_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("exp_fluidic_seq\n");}
-void exp_mon_start_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("exp_mon_start\n");}
-void exp_mon_delay_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("exp_mon_delay\n");}
-void exp_mon_interval_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("exp_mon_interval\n");}
-void dls_ls_intensity_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("dls_ls_intensity\n");}
-void cam_ls_intensity_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("cam_ls_intensity\n");}
-void exp_samp_rate_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("exp_samp_rate\n");}
-void exp_pre_time_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("exp_pre_time\n");}
-void exp_samp_time_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("exp_samp_time\n");}
-void exp_post_time_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("exp_post_time\n");}
-void custom_ctl_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("custom_ctl\n");}
+void test_ls_current_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("test_ls_current\n");}
+void test_fluidic_seq_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("test_fluidic_seq\n");}
+void exp_fluidic_seq_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("exp_fluidic_seq\n");}
+void exp_mon_start_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("exp_mon_start\n");}
+void exp_mon_delay_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("exp_mon_delay\n");}
+void exp_mon_interval_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("exp_mon_interval\n");}
+void dls_ls_intensity_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("dls_ls_intensity\n");}
+void cam_ls_intensity_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("cam_ls_intensity\n");}
+void exp_samp_rate_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("exp_samp_rate\n");}
+void exp_pre_time_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("exp_pre_time\n");}
+void exp_samp_time_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("exp_samp_time\n");}
+void exp_post_time_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("exp_post_time\n");}
+void custom_ctl_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("custom_ctl\n");}
 
 /* ==================== TABLE 6: implementations ==================== */
-void sys_status_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("sys_status\n");}
-void boot_cnt_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("boot_cnt\n");}
-void temp_exp_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_exp\n");}
-void temp_ntc_0_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_ntc_0\n");}
-void temp_ntc_1_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_ntc_1\n");}
-void temp_ntc_2_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_ntc_2\n");}
-void temp_ntc_3_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_ntc_3\n");}
-void temp_ntc_4_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_ntc_4\n");}
-void temp_ntc_5_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_ntc_5\n");}
-void temp_ntc_6_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_ntc_6\n");}
-void temp_ntc_7_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_ntc_7\n");}
-void temp_ntc_8_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_ntc_8\n");}
-void temp_ntc_9_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_ntc_9\n");}
-void temp_ntc_10_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_ntc_10\n");}
-void temp_ntc_11_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("temp_ntc_11\n");}
-void sen1_data_0_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("sen1_data_0\n");}
-void sen1_data_1_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("sen1_data_1\n");}
-void sen2_data_0_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("sen2_data_0\n");}
-void sen2_data_1_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("sen2_data_1\n");}
-void current_12_tot_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("current_12_tot\n");}
-void current_12_lda_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("current_12_lda\n");}
-void current_12_pda_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("current_12_pda\n");}
-void current_5_io_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("current_5_io\n");}
-void current_5_tec_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("current_5_tec\n");}
-void current_5_cam_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("current_5_cam\n");}
-void current_5_hd_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("current_5_hd\n");}
+void sys_status_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sys_status\n");}
+void boot_cnt_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("boot_cnt\n");}
+void temp_exp_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_exp\n");}
+void temp_ntc_0_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_ntc_0\n");}
+void temp_ntc_1_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_ntc_1\n");}
+void temp_ntc_2_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_ntc_2\n");}
+void temp_ntc_3_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_ntc_3\n");}
+void temp_ntc_4_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_ntc_4\n");}
+void temp_ntc_5_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_ntc_5\n");}
+void temp_ntc_6_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_ntc_6\n");}
+void temp_ntc_7_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_ntc_7\n");}
+void temp_ntc_8_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_ntc_8\n");}
+void temp_ntc_9_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_ntc_9\n");}
+void temp_ntc_10_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_ntc_10\n");}
+void temp_ntc_11_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_ntc_11\n");}
+void sen1_data_0_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sen1_data_0\n");}
+void sen1_data_1_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sen1_data_1\n");}
+void sen2_data_0_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sen2_data_0\n");}
+void sen2_data_1_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sen2_data_1\n");}
+void current_12_tot_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("current_12_tot\n");}
+void current_12_lda_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("current_12_lda\n");}
+void current_12_pda_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("current_12_pda\n");}
+void current_5_io_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("current_5_io\n");}
+void current_5_tec_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("current_5_tec\n");}
+void current_5_cam_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("current_5_cam\n");}
+void current_5_hd_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("current_5_hd\n");}
