@@ -22,6 +22,8 @@
 #include "m33_data.h"
 #include "m33_command.h"
 #include "rtos.h"
+#include "task_experiment.h"
+#include "printf.h"
 
 #define CREATE_TASK(task_func, task_name, stack, param, priority, handle) \
     if (xTaskCreate(task_func, task_name, stack, param, priority, handle) != pdPASS) { \
@@ -29,7 +31,7 @@
     }
 
 #define MIN_STACK_SIZE	configMINIMAL_STACK_SIZE
-#define ROOT_PRIORITY   1
+#define ROOT_PRIORITY   3
 #define ROOT_STACK_SIZE (configMINIMAL_STACK_SIZE * 5)
 
 static StackType_t root_stack[ROOT_STACK_SIZE];
@@ -60,8 +62,8 @@ void EXP_RootTask(void *pvParameters)
     {
 
     }
-
-    //task_system_control_start();
+PRINTF("===== start controlling =====\r\n");
+    task_system_control();
 
     vTaskDelete(NULL);
     while(1){
@@ -92,17 +94,25 @@ void EXP_RootGrowUp(void)
 /*************************************************
  *               	TASK INIT	                 *
  *************************************************/
-osSemaphore exp_task_sem;
-osSemaphore rptx_sem;
-osSemaphore command_sem;
+osSemaphore exp_task_sem = NULL;
+osSemaphore rptx_sem = NULL;
+osSemaphore command_sem = NULL;
+QueueHandle_t remote_message_queue = NULL;
+
+
+
+
 
 static void EXP_App_Create_Communication_Queues(void)
 {
     // Create communication queues here
     command_sem = xSemaphoreCreateBinary();
-    osSemaphoreCreate(&exp_task_sem);
     exp_task_sem = xSemaphoreCreateBinary();
-    osSemaphoreCreate(&rptx_sem);
+  //  osSemaphoreCreate(&exp_task_sem);
+    exp_task_sem = xSemaphoreCreateBinary();
+    rptx_sem = xSemaphoreCreateMutex();
+  //  osSemaphoreCreate(&rptx_sem);
+  remote_message_queue = xQueueCreate(30, sizeof(remote_message_t));
 
 }
 Std_ReturnType EXP_AppInit(void)
@@ -113,12 +123,13 @@ Std_ReturnType EXP_AppInit(void)
     m33_data_init();
     BSP_Init();
 
+PRINTF("growing task\r\n");
+    CREATE_TASK(Shell_Task, 		"ShellTask", 		MIN_STACK_SIZE * 5, 	NULL, 	2, NULL);
 
-    CREATE_TASK(Shell_Task, 		"ShellTask", 		MIN_STACK_SIZE * 10, 	NULL, 	2, NULL);
+    CREATE_TASK(RPMSG_Task, 		"RPMSGTask", 		MIN_STACK_SIZE * 3, 	NULL, 	1, NULL);
 
-    CREATE_TASK(RPMSG_Task, 		"RPMSGTask", 		MIN_STACK_SIZE * 10, 	NULL, 	1, NULL);
-
-    CREATE_TASK(task_system_control, 		"task_system_control", 		MIN_STACK_SIZE * 10, 	NULL, 	1, NULL);
+  //  CREATE_TASK(task_system_control, 		"task_system_control", 		MIN_STACK_SIZE * 5, 	NULL, 	1, NULL);
+    CREATE_TASK(Task_Experiment, 		"Task_Experiment", 		MIN_STACK_SIZE * 5, 	NULL, 	2, NULL);
 
     ret = E_OK;
     return ret;
@@ -249,20 +260,24 @@ static void RPMSG_Task(void *pvParameters)
             PRINTF("\r\n");
             PRINTF("\r\nrpmsg] send to shell task");
              PRINTF("\r\n[rpmsg] payload_length = %d \r\n",payload_len);
-             uint32_t j=0;
-            for (uint32_t i = 0; i < payload_len; i++)
-            {
-                if ((0x0A ==app_buf[i]) || (0x0D == app_buf[i])) continue;
+            //  uint32_t j=0;
+            // for (uint32_t i = 0; i < payload_len; i++)
+            // {
+            //     if ((0x0A ==app_buf[i]) || (0x0D == app_buf[i])) continue;
 
-                //send to shell task
-                command_bufer[j] = app_buf[i];
-                j++;                              
-            }
-            command_bufer[j] = 0;
-            if (j > 0) xSemaphoreGive(command_sem);
+            //     //send to shell task
+            //     command_bufer[j] = app_buf[i];
+            //     j++;                              
+            // }
+            // command_bufer[j] = 0;
+            // if (j > 0) xSemaphoreGive(command_sem);
            // osSemaphoreGiven(&command_sem);
-            PRINTF("[rpmsg] finish prepare to shell task\r\n");
+           // PRINTF("[rpmsg] finish prepare to shell task\r\n");
            // osSemaphoreGiven(&command_sem);
+           char * papp_buff = app_buf;
+           while ((0x0A == (*papp_buff)) || (0x0D == (*papp_buff))) papp_buff++;
+           if (0 != (*papp_buff)) Command_Process(papp_buff);
+           
         }
         else if (type == CMD_TYPE_FILE_RESP)
         {
@@ -281,11 +296,64 @@ static void RPMSG_Task(void *pvParameters)
     }
 }
 
+/***************************************
+ * Task send telemetry
+ * 
+ ************************************************/
+     //0: updateparam, 1: Send DLS data, 
+    //2: Send Test Laser data, 3: Send Test Pump data
+    //4: Send command AR2020 capture, 5: Send USB camera capture
+enum {
+    UPDATE_PARAM = 0,
+    DLS_DATA,
+    TEST_LASER_DATA,
+    TEST_PUMP_DATA,
+    AR2020_CAPTURE,
+    USB_CAMERA_CAPTURE,
+    SYS_LOG
+
+};
+static void RPMSG_Tx_Task(void *pvParameters)
+{
+   remote_message_t message;
+
+    PRINTF("[RPMSG_Tx_Task] Started\r\n");
+    char msg_buf[100] = {0};
+
+    while (1)
+    {
+         vTaskDelay(300);
+        if( xQueueReceive( remote_message_queue,
+                           &( message ),
+                           ( TickType_t ) 0 ) != pdPASS )
+        {
+            continue;
+        }
+        //process the message
+        uint32_t msg_type = (message.address >> 12);
+        uint16_t epoch = 0;
+        m33_data_get_u(TABLE_ID_1,time_sync, &epoch);
+        switch (msg_type)
+        {
+            case UPDATE_PARAM:
+                snprintf(msg_buf, 100, "update_param 0x%03X=%d\r\n",message.address & (0x0FFF),message.data);
+                rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
+                break;
+            case DLS_DATA:
+                snprintf(msg_buf, 100, "update_param 0x%03X=%d\r\n",message.address & (0x0FFF),message.data);
+                rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
+                break;
+
+
+        }
+
+
+    }
+}
+
 /*************************************************
  *                    Helper                     *
  *************************************************/
-
-
 
  uint32_t rpmsg_send(uint32_t msg_type, const char *msg)
  {

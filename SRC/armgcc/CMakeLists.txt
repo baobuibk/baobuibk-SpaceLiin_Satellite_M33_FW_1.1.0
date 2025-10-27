@@ -62,7 +62,7 @@ add_executable(${MCUX_SDK_PROJECT_NAME}
     # ==== 01_DEV / M1_SysApp ====
     "${SRC_ROOT}/01_DEV/M1_SysApp/Interface/RemoteCall/remote_call.c"
     "${SRC_ROOT}/01_DEV/M1_SysApp/Interface/SimpleShell/simple_shell.c"
-    "${SRC_ROOT}/01_DEV/M1_SysApp/Services/cmdline.c"
+    # "${SRC_ROOT}/01_DEV/M1_SysApp/Services/cmdline.c"
     "${SRC_ROOT}/01_DEV/M1_SysApp/system_data/m33_command.c"
     "${SRC_ROOT}/01_DEV/M1_SysApp/system_data/m33_data.c"
     "${SRC_ROOT}/01_DEV/M1_SysApp/system_data/command_list.c"
@@ -130,8 +130,8 @@ add_executable(${MCUX_SDK_PROJECT_NAME}
 
 
     # ==== 01_DEV / M5_Utils ====
-    "${SRC_ROOT}/01_DEV/M5_Utils/CRC/crc16_xmodem.c"
-    "${SRC_ROOT}/01_DEV/M5_Utils/DateTime/date_time.c"
+    # "${SRC_ROOT}/01_DEV/M5_Utils/CRC/crc16_xmodem.c"
+   # "${SRC_ROOT}/01_DEV/M5_Utils/DateTime/date_time.c"
 
     # (Các module M6_Tools, M7_Tests hiện chỉ có CMakeLists.txt, không có file .c)
 )

@@ -29,6 +29,13 @@ typedef struct {
     uint16_t   size;
 } table_info_t;
 
+typedef struct remote_message_t{
+    //first nibble is command, 0: updateparam, 1: Send DLS data, 
+    //2: Send Test Laser data, 3: Send Test Pump data
+    //4: Send command AR2020 capture, 5: Send USB camera capture
+    uint32_t    address;        
+    int16_t    data;
+}remote_message_t;
 
 typedef struct prof_type0_t
 {

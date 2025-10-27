@@ -32,7 +32,7 @@ int main(void)
     BOARD_BootClockRUN();
     BOARD_InitDebugConsole();
     /* Initialize all configured peripherals */
-    IMX_LPTMP1_Init();
+ //   IMX_LPTMP1_Init();
     IMX_MU_Init();
 
     /* USER CODE BEGIN */

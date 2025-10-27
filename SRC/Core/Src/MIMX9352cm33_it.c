@@ -74,7 +74,7 @@ void LPTMR1_IRQHandler(void)
 {
     LPTMR_ClearStatusFlags(LPTMR1, kLPTMR_TimerCompareFlag);
     /* User code. */
-    Utils_SoftTime_Update();
+    // Utils_SoftTime_Update();
     /*
      * Workaround for TWR-KV58: because write buffer is enabled, adding
      * memory barrier instructions to make sure clearing interrupt flag completed

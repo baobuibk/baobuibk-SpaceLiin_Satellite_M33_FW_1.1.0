@@ -1,3 +1,0 @@
-D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/armgcc/debug/CMakeFiles/payexp_m33.elf.dir
-D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/armgcc/debug/CMakeFiles/edit_cache.dir
-D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/armgcc/debug/CMakeFiles/rebuild_cache.dir

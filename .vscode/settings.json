@@ -24,6 +24,9 @@
     "task.h": "c",
     "m33_command.h": "c",
     "tca6416.h": "c",
-    "bsp_i2c_sensor.h": "c"
+    "bsp_i2c_sensor.h": "c",
+    "task_experiment.h": "c",
+    "queue.h": "c",
+    "system_error": "c"
   }
 }
