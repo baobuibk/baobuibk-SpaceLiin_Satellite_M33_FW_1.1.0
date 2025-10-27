@@ -1,3 +1,0 @@
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_i2c_sensor/bsp_i2c_sensor.c:24:6:bsp_i2c_sensor_init	16	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_i2c_sensor/bsp_i2c_sensor.c:36:6:Flow_sensor_read	16	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_i2c_sensor/bsp_i2c_sensor.c:41:6:BMP390_sensor_read	16	static

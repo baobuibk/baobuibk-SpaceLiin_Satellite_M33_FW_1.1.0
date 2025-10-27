@@ -98,10 +98,7 @@ osSemaphore rptx_sem;
 osSemaphore command_sem;
 QueueHandle_t remote_message_queue;
 
-typedef struct remote_message_t{
-    uint32_t    address;        //first nibble is command, 0: updateparam, 1: 
-    int16_t    data;
-}remote_message_t;
+
 
 
 
@@ -114,6 +111,7 @@ static void EXP_App_Create_Communication_Queues(void)
     exp_task_sem = xSemaphoreCreateBinary();
     rptx_sem = xSemaphoreCreateMutex();
   //  osSemaphoreCreate(&rptx_sem);
+  remote_message_queue = xQueueCreate(30, sizeof(remote_message_t));
 
 }
 Std_ReturnType EXP_AppInit(void)
@@ -339,7 +337,8 @@ static void RPMSG_Tx_Task(void *pvParameters)
 
  uint32_t rpmsg_send(uint32_t msg_type, const char *msg)
  {
-    int sem_ret = osSemaphoreTake(&rptx_sem, RPMSG_WAIT);
+   remote_message_t remote_data;
+    vTaskDelay(500);
 
     if (sem_ret != pdPASS)
     {

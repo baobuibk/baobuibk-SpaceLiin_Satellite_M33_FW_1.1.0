@@ -1,4 +1,0 @@
-D:/PROJECT/XpressoSDK/SDK_2_14_0_MIMX9352xxxxK/devices/MIMX9352/drivers/fsl_clock.h:1218:24:CLOCK_GetRootClockMux	16	static
-D:/PROJECT/XpressoSDK/SDK_2_14_0_MIMX9352xxxxK/devices/MIMX9352/drivers/fsl_clock.h:1230:28:CLOCK_GetRootClockSource	16	static
-D:/PROJECT/XpressoSDK/SDK_2_14_0_MIMX9352xxxxK/devices/MIMX9352/drivers/fsl_clock.h:1257:24:CLOCK_GetRootClockDiv	16	static
-D:/PROJECT/XpressoSDK/SDK_2_14_0_MIMX9352xxxxK/devices/MIMX9352/drivers/fsl_clock.c:19:10:CLOCK_GetIpFreq	32	static

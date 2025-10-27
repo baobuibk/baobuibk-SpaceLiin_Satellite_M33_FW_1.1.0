@@ -1,9 +1,0 @@
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_pump/bsp_pump.c:53:6:bsp_pump_init	16	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_pump/bsp_pump.c:63:6:I2C_HD_Pump_set_enable	16	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_pump/bsp_pump.c:68:6:I2C_HD_Pump_set_Voltage	16	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_pump/bsp_pump.c:73:6:I2C_HD_Pump_Set_Freq	16	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_pump/bsp_pump.c:80:20:_mp_i2c_write_block	48	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_pump/bsp_pump.c:103:13:Highdriver_init	24	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_pump/bsp_pump.c:126:13:Highdriver_enable	24	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_pump/bsp_pump.c:132:13:Highdriver_setvoltage	32	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_pump/bsp_pump.c:153:13:Highdriver_setfrequency	24	static

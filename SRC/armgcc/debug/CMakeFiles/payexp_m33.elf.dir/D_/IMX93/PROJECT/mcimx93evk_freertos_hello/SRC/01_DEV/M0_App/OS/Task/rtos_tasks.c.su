@@ -1,7 +1,0 @@
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:56:6:EXP_RootTask	16	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:73:6:EXP_RootGrowUp	32	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:100:13:EXP_App_Create_Communication_Queues	8	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:111:16:EXP_AppInit	24	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:134:13:Shell_Task	24	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:164:13:RPMSG_Task	40	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:304:11:rpmsg_send	24	static
