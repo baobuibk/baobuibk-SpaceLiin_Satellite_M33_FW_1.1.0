@@ -1,0 +1,16 @@
+* text=auto
+*.c  text eol=lf
+*.h  text eol=lf
+*.cmake text eol=lf
+CMakeLists.txt text eol=lf
+*.sh text eol=lf
+*.bat text eol=crlf
+*.ld text eol=lf
+*.json text eol=lf
+
+# Track but never diff/merge these artifacts (keep OURS on merge)
+SRC/armgcc/debug/*.bin          binary merge=ours
+SRC/armgcc/debug/*.elf          binary merge=ours
+
+SRC/armgcc/release/*.bin          binary merge=ours
+SRC/armgcc/release/*.elf          binary merge=ours

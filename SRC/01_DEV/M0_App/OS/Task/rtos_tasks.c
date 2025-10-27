@@ -23,6 +23,7 @@
 #include "m33_command.h"
 #include "rtos.h"
 #include "task_experiment.h"
+#include "printf.h"
 
 #define CREATE_TASK(task_func, task_name, stack, param, priority, handle) \
     if (xTaskCreate(task_func, task_name, stack, param, priority, handle) != pdPASS) { \
@@ -93,10 +94,10 @@ void EXP_RootGrowUp(void)
 /*************************************************
  *               	TASK INIT	                 *
  *************************************************/
-osSemaphore exp_task_sem;
-osSemaphore rptx_sem;
-osSemaphore command_sem;
-QueueHandle_t remote_message_queue;
+osSemaphore exp_task_sem = NULL;
+osSemaphore rptx_sem = NULL;
+osSemaphore command_sem = NULL;
+QueueHandle_t remote_message_queue = NULL;
 
 
 
@@ -299,32 +300,53 @@ static void RPMSG_Task(void *pvParameters)
  * Task send telemetry
  * 
  ************************************************/
+     //0: updateparam, 1: Send DLS data, 
+    //2: Send Test Laser data, 3: Send Test Pump data
+    //4: Send command AR2020 capture, 5: Send USB camera capture
+enum {
+    UPDATE_PARAM = 0,
+    DLS_DATA,
+    TEST_LASER_DATA,
+    TEST_PUMP_DATA,
+    AR2020_CAPTURE,
+    USB_CAMERA_CAPTURE,
+    SYS_LOG
+
+};
 static void RPMSG_Tx_Task(void *pvParameters)
 {
- //   setup_dynamic_shell();
+   remote_message_t message;
+
+    PRINTF("[RPMSG_Tx_Task] Started\r\n");
+    char msg_buf[100] = {0};
 
     while (1)
     {
-        // char c = GETCHAR();     
-        // Shell_ReceiveChar(c);   
-       // vTaskDelay(pdMS_TO_TICKS(5000));   
-        // Shell_WriteString("Sending ping to A55...\r\n");
-        // if (RemoteCall_SendCommand("a55_ping\n") == E_OK)
-        // {
-        //     Shell_WriteString("Ping sent\r\n");
-        // }
-        //osSemaphoreTake(&command_sem,portMAX_DELAY);
-        xSemaphoreTake(command_sem, portMAX_DELAY);
-        PRINTF("\r\n [Shell_Task] received message \r\n");
-        uint32_t i = 0;
-        // while (command_bufer[i])
-        //     {
+         vTaskDelay(300);
+        if( xQueueReceive( remote_message_queue,
+                           &( message ),
+                           ( TickType_t ) 0 ) != pdPASS )
+        {
+            continue;
+        }
+        //process the message
+        uint32_t msg_type = (message.address >> 12);
+        uint16_t epoch = 0;
+        m33_data_get_u(TABLE_ID_1,time_sync, &epoch);
+        switch (msg_type)
+        {
+            case UPDATE_PARAM:
+                snprintf(msg_buf, 100, "update_param 0x%03X=%d\r\n",message.address & (0x0FFF),message.data);
+                rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
+                break;
+            case DLS_DATA:
+                snprintf(msg_buf, 100, "update_param 0x%03X=%d\r\n",message.address & (0x0FFF),message.data);
+                rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
+                break;
 
-        //         PRINTF(" 0x%02X", (unsigned char)command_bufer[i]);
-        //         i++;
-        //     }
-        PRINTF("\r\n [Shell_Task] %s \r\n",command_bufer);
-        Command_Process(command_bufer);
+
+        }
+
 
     }
 }
@@ -333,12 +355,9 @@ static void RPMSG_Tx_Task(void *pvParameters)
  *                    Helper                     *
  *************************************************/
 
-
-
  uint32_t rpmsg_send(uint32_t msg_type, const char *msg)
  {
-   remote_message_t remote_data;
-    vTaskDelay(500);
+    int sem_ret = osSemaphoreTake(&rptx_sem, RPMSG_WAIT);
 
     if (sem_ret != pdPASS)
     {
