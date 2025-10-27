@@ -1,0 +1,7 @@
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M0_App/OS/Kernel/rtos.c:13:6:EXP_RTOS_Start	8	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M0_App/OS/Kernel/rtos.c:21:6:vApplicationStackOverflowHook	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M0_App/OS/Kernel/rtos.c:26:6:vApplicationMallocFailedHook	4	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M0_App/OS/Kernel/rtos.c:32:6:vApplicationIdleHook	4	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M0_App/OS/Kernel/rtos.c:38:6:vApplicationTickHook	4	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M0_App/OS/Kernel/rtos.c:46:6:vApplicationGetIdleTaskMemory	24	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M0_App/OS/Kernel/rtos.c:58:6:vApplicationGetTimerTaskMemory	24	static

@@ -6,38 +6,19 @@
 #include "stdint.h"
 #include "stdbool.h"
 
+/* I2C device driver */
+#include "slf3s_flow.h"
+#include "bmp390.h"
+
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Defines ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Types ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-extern double Sensor_Temp;
-extern double Sensor_Pressure;
-extern double Sensor_Altitude;
-
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Enum ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-typedef enum _Sensor_Read_typedef_
-{
-	/* :::::::::: BMP390 Read Data Type :::::::: */
-	SENSOR_READ_TEMP,
-	SENSOR_READ_PRESSURE,
-	SENSOR_READ_ALTITUDE,
-	SENSOR_READ_BMP390,
-
-} Sensor_Read_typedef;
-
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Struct ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Class ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prototype ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 void bsp_i2c_sensor_init();
-void bsp_i2c_sensor_read_value(Sensor_Read_typedef read_type);
-
-// /* :::::::::: BMP390 Command :::::::: */
-// uint8_t BMP390_init();
-
-// uint8_t BMP390_read_value(Sensor_Read_typedef read_type);
-
-// /* :::::::::: BMP390 Flag Check Command :::::::: */
-// bool Is_BMP390_Init_Complete();
-
-// bool Is_BMP390_Read_Complete();
+void Flow_sensor_read(slf3s_readings_t* p_value);
+void BMP390_sensor_read(bmp390_data_t* p_data);
 
 #endif //_BSP_I2C_SENSOR_H_

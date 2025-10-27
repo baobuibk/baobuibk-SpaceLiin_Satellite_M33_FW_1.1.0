@@ -230,4 +230,24 @@ static void EXP_InitPins(void)
                         IOMUXC_PAD_DSE(15U) |
                         IOMUXC_PAD_FSEL1(2U) |
                         IOMUXC_PAD_PD_MASK);
+
+    /* I2C Highdriver Pump */
+    IOMUXC_SetPinMux(IOMUXC_PAD_GPIO_IO11__LPI2C8_SCL, 1U);
+    IOMUXC_SetPinMux(IOMUXC_PAD_GPIO_IO10__LPI2C8_SDA, 1U);
+
+    IOMUXC_SetPinConfig(IOMUXC_PAD_GPIO_IO11__LPI2C8_SCL, 
+                        IOMUXC_PAD_DSE(15U) |
+                        IOMUXC_PAD_FSEL1(2U) |
+                        IOMUXC_PAD_OD_MASK);
+    IOMUXC_SetPinConfig(IOMUXC_PAD_GPIO_IO10__LPI2C8_SDA, 
+                        IOMUXC_PAD_DSE(15U) |
+                        IOMUXC_PAD_FSEL1(2U) |
+                        IOMUXC_PAD_OD_MASK);
+
+    IOMUXC_SetPinMux(IOMUXC_PAD_ENET2_RX_CTL__GPIO4_IO22, 0U);
+
+    IOMUXC_SetPinConfig(IOMUXC_PAD_ENET2_RX_CTL__GPIO4_IO22, 
+                        IOMUXC_PAD_DSE(15U) |
+                        IOMUXC_PAD_FSEL1(2U) |
+                        IOMUXC_PAD_PD_MASK);
 }

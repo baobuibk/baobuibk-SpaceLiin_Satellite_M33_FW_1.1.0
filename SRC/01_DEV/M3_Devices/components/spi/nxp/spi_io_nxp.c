@@ -61,6 +61,7 @@ uint32_t spi_io_set_mode(SPI_Io_t *me, uint8_t spi_mode)
 
     if (!base)
     {
+        osSemaphoreGiven(&me->lock);
         return ERROR_INVALID_PARAM;
     }
 
@@ -69,6 +70,7 @@ uint32_t spi_io_set_mode(SPI_Io_t *me, uint8_t spi_mode)
     // Ensure module not busy (equiv. to STM32 BSY=0)
     if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, 1000u))
     {
+        osSemaphoreGiven(&me->lock);
         return ERROR_TIMEOUT;
     }
 
@@ -121,6 +123,7 @@ uint32_t spi_io_read_sync(SPI_Io_t *me, uint8_t *pui8RxBuff, uint32_t ui32Length
     // Ensure module not busy (equiv. to STM32 BSY=0)
     if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, 1000u))
     {
+        osSemaphoreGiven(&me->lock);
         return ERROR_TIMEOUT;
     }
 
@@ -129,6 +132,7 @@ uint32_t spi_io_read_sync(SPI_Io_t *me, uint8_t *pui8RxBuff, uint32_t ui32Length
         // Wait for TX to ready
         if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_TDF_MASK, LPSPI_BYTE_TIMEOUT_US))
         {
+            osSemaphoreGiven(&me->lock);
             return ERROR_TIMEOUT;
         }
         
@@ -138,6 +142,7 @@ uint32_t spi_io_read_sync(SPI_Io_t *me, uint8_t *pui8RxBuff, uint32_t ui32Length
         // Wait for RX to ready
         if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_RDF_MASK, LPSPI_BYTE_TIMEOUT_US))
         {
+            osSemaphoreGiven(&me->lock);
             return ERROR_TIMEOUT;
         }
 
@@ -185,6 +190,7 @@ uint32_t spi_io_write_sync(SPI_Io_t *me, uint8_t *pui8TxBuff, uint32_t ui32Lengt
     // Ensure module not busy (equiv. to STM32 BSY=0)
     if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, 1000u))
     {
+        osSemaphoreGiven(&me->lock);
         return ERROR_TIMEOUT;
     }
 
@@ -193,6 +199,7 @@ uint32_t spi_io_write_sync(SPI_Io_t *me, uint8_t *pui8TxBuff, uint32_t ui32Lengt
         // Wait for TX to ready
         if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_TDF_MASK, LPSPI_BYTE_TIMEOUT_US))
         {
+            osSemaphoreGiven(&me->lock);
             return ERROR_TIMEOUT;
         }
 
@@ -202,6 +209,7 @@ uint32_t spi_io_write_sync(SPI_Io_t *me, uint8_t *pui8TxBuff, uint32_t ui32Lengt
         // Wait for RX to ready
         if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_RDF_MASK, LPSPI_BYTE_TIMEOUT_US))
         {
+            osSemaphoreGiven(&me->lock);
             return ERROR_TIMEOUT;
         }
 
@@ -242,6 +250,7 @@ uint32_t spi_io_transfer_sync(SPI_Io_t *me, uint8_t *pui8TxBuff, uint8_t *pui8Rx
     // Ensure module not busy (equiv. to STM32 BSY=0)
     if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, 1000u))
     {
+        osSemaphoreGiven(&me->lock);
         return ERROR_TIMEOUT;
     }
 
@@ -250,6 +259,7 @@ uint32_t spi_io_transfer_sync(SPI_Io_t *me, uint8_t *pui8TxBuff, uint8_t *pui8Rx
         // Wait for TX to ready
         if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_TDF_MASK, LPSPI_BYTE_TIMEOUT_US))
         {
+            osSemaphoreGiven(&me->lock);
             return ERROR_TIMEOUT;
         }
 
@@ -259,6 +269,7 @@ uint32_t spi_io_transfer_sync(SPI_Io_t *me, uint8_t *pui8TxBuff, uint8_t *pui8Rx
         // Wait for RX to ready
         if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_RDF_MASK, LPSPI_BYTE_TIMEOUT_US))
         {
+            osSemaphoreGiven(&me->lock);
             return ERROR_TIMEOUT;
         }
 

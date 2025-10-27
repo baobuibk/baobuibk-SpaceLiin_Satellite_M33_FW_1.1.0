@@ -3,6 +3,8 @@
 
 #include "i2c_io.h"
 
+#include "bsp_board.h"
+
 #include "fsl_lpi2c.h"
 #include "MIMX9352_cm33.h"
 
@@ -105,6 +107,147 @@ static LPI2C_Type* const i2c_periph[I2C_MAX_BUS_NUMBER + 1] =
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Private Types ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Prototype ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+static void bsp_core_init_io_expander_i2c(void)
+{
+    lpi2c_master_config_t i2c_masterConfig;
+
+    /* clang-format off */
+    const clock_root_config_t lpi2cClkCfg =
+    {
+        .clockOff = false,
+	    .mux = 0, // 24MHz oscillator source
+	    .div = 1
+    };
+    /* clang-format on */
+
+    CLOCK_SetRootClock(IO_EXPAN_CLOCK_ROOT, &lpi2cClkCfg);
+    CLOCK_EnableClock(IO_EXPAN_CLOCK_GATE);
+
+    /*
+     * i2c_masterConfig.debugEnable = false;
+     * i2c_masterConfig.ignoreAck = false;
+     * i2c_masterConfig.pinConfig = kLPI2C_2PinOpenDrain;
+     * i2c_masterConfig.baudRate_Hz = 100000U;
+     * i2c_masterConfig.busIdleTimeout_ns = 0;
+     * i2c_masterConfig.pinLowTimeout_ns = 0;
+     * i2c_masterConfig.sdaGlitchFilterWidth_ns = 0;
+     * i2c_masterConfig.sclGlitchFilterWidth_ns = 0;
+     */
+    LPI2C_MasterGetDefaultConfig(&i2c_masterConfig);
+
+    /* Change the default baudrate configuration */
+    i2c_masterConfig.baudRate_Hz = IO_EXPAN_BAUDRATE_HZ;
+
+    /* Initialize the LPI2C master peripheral */
+    LPI2C_MasterInit(IO_EXPAN_BASE, &i2c_masterConfig, IO_EXPAN_CLK_FREQ);
+
+    // i2c_io_init(&io_expander_i2c);
+    // i2c_io_init(&heater_i2c);
+}
+
+static void bsp_core_init_sensor_i2c(void)
+{
+    lpi2c_master_config_t i2c_masterConfig;
+
+    /* clang-format off */
+    const clock_root_config_t lpi2cClkCfg =
+    {
+        .clockOff = false,
+	    .mux = 0, // 24MHz oscillator source
+	    .div = 1
+    };
+    /* clang-format on */
+
+    CLOCK_SetRootClock(I2C_SENSOR_CLOCK_ROOT, &lpi2cClkCfg);
+    CLOCK_EnableClock(I2C_SENSOR_CLOCK_GATE);
+
+    /*
+     * i2c_masterConfig.debugEnable = false;
+     * i2c_masterConfig.ignoreAck = false;
+     * i2c_masterConfig.pinConfig = kLPI2C_2PinOpenDrain;
+     * i2c_masterConfig.baudRate_Hz = 100000U;
+     * i2c_masterConfig.busIdleTimeout_ns = 0;
+     * i2c_masterConfig.pinLowTimeout_ns = 0;
+     * i2c_masterConfig.sdaGlitchFilterWidth_ns = 0;
+     * i2c_masterConfig.sclGlitchFilterWidth_ns = 0;
+     */
+    LPI2C_MasterGetDefaultConfig(&i2c_masterConfig);
+
+    /* Change the default baudrate configuration */
+    i2c_masterConfig.baudRate_Hz = I2C_SENSOR_BAUDRATE_HZ;
+
+    /* Initialize the LPI2C master peripheral */
+    LPI2C_MasterInit(I2C_SENSOR_BASE, &i2c_masterConfig, I2C_SENSOR_CLK_FREQ);
+}
+
+static void bsp_core_init_pump_i2c(void)
+{
+    lpi2c_master_config_t i2c_masterConfig;
+
+    /* clang-format off */
+    const clock_root_config_t lpi2cClkCfg =
+    {
+        .clockOff = false,
+	    .mux = 0, // 24MHz oscillator source
+	    .div = 1
+    };
+    /* clang-format on */
+
+    CLOCK_SetRootClock(I2C_PUMP_CLOCK_ROOT, &lpi2cClkCfg);
+    CLOCK_EnableClock(I2C_PUMP_CLOCK_GATE);
+
+    /*
+     * i2c_masterConfig.debugEnable = false;
+     * i2c_masterConfig.ignoreAck = false;
+     * i2c_masterConfig.pinConfig = kLPI2C_2PinOpenDrain;
+     * i2c_masterConfig.baudRate_Hz = 100000U;
+     * i2c_masterConfig.busIdleTimeout_ns = 0;
+     * i2c_masterConfig.pinLowTimeout_ns = 0;
+     * i2c_masterConfig.sdaGlitchFilterWidth_ns = 0;
+     * i2c_masterConfig.sclGlitchFilterWidth_ns = 0;
+     */
+    LPI2C_MasterGetDefaultConfig(&i2c_masterConfig);
+
+    /* Change the default baudrate configuration */
+    i2c_masterConfig.baudRate_Hz = I2C_PUMP_BAUDRATE_HZ;
+
+    /* Initialize the LPI2C master peripheral */
+    LPI2C_MasterInit(I2C_PUMP_BASE, &i2c_masterConfig, I2C_PUMP_CLK_FREQ);
+}
+
+static uint32_t i2c_recovery(struct i2c_io_t *me)
+{
+    if (!me)
+    {
+        return 0;
+    }
+
+    const uint32_t port = me->ui32I2cPort;
+
+    if (port == 0 || port > I2C_MAX_BUS_NUMBER)
+    {
+        return 0;
+    }
+
+    switch (port)
+    {
+    case 7:
+        bsp_core_init_io_expander_i2c();
+        break;
+    case 4:
+        bsp_core_init_sensor_i2c();
+        break;
+    case 8:
+        bsp_core_init_pump_i2c();
+        break;
+    
+    default:
+        break;
+    }    
+
+    return 0;
+}
+
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Public Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Public Function ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 uint32_t i2c_io_send(struct i2c_io_t *me, uint8_t ui8SlaveAddr, const char *buf, int count)
@@ -125,12 +268,16 @@ uint32_t i2c_io_send(struct i2c_io_t *me, uint8_t ui8SlaveAddr, const char *buf,
 
     if (port == 0 || port > I2C_MAX_BUS_NUMBER)
     {
+        i2c_recovery(me);
+        osSemaphoreGiven(&me->lock);
         return 0;
     }
 
     LPI2C_Type* base = i2c_periph[port];
     if (!base)
     {
+        i2c_recovery(me);
+        osSemaphoreGiven(&me->lock);
         return 0;
     }
 
@@ -139,6 +286,8 @@ uint32_t i2c_io_send(struct i2c_io_t *me, uint8_t ui8SlaveAddr, const char *buf,
     /* Ensure module enabled (BSP should do this; keep it lean) */
     if ((base->MCR & LPI2C_MCR_MEN_MASK) == 0u)
     {
+        i2c_recovery(me);
+        osSemaphoreGiven(&me->lock);
         return 0;
     }
 
@@ -154,6 +303,8 @@ uint32_t i2c_io_send(struct i2c_io_t *me, uint8_t ui8SlaveAddr, const char *buf,
     /* 1) START + address (write) */
     if (delay_wait_flag_set_timeout(&base->MSR, LPI2C_MSR_TDF_MASK, 1000u))
     {
+        i2c_recovery(me);
+        osSemaphoreGiven(&me->lock);
         return 0;
     }
 
@@ -162,6 +313,18 @@ uint32_t i2c_io_send(struct i2c_io_t *me, uint8_t ui8SlaveAddr, const char *buf,
     /* Optionally bail early if NACK detected on address */
     if (delay_wait_flag_set_timeout(&base->MSR, LPI2C_MSR_NDF_MASK, 50u) == 0)
     {
+        if (delay_wait_flag_set_timeout(&base->MSR, LPI2C_MSR_TDF_MASK, 1000u))
+        {
+            base->MTDR = LPI2C_MTDR_CMD(CMD_STOP);
+        }
+
+        /* Clear sticky status (W1C) and flush FIFOs */
+        base->MSR  = LPI2C_MSR_NDF_MASK | LPI2C_MSR_SDF_MASK | LPI2C_MSR_FEF_MASK | LPI2C_MSR_ALF_MASK;
+        base->MFCR = LPI2C_MFCR_RTF_MASK | LPI2C_MFCR_RRF_MASK;
+
+        i2c_recovery(me);
+
+        osSemaphoreGiven(&me->lock);
         /* got NACK early */
         return 0;
     }
@@ -173,14 +336,27 @@ uint32_t i2c_io_send(struct i2c_io_t *me, uint8_t ui8SlaveAddr, const char *buf,
     {
         if (delay_wait_flag_set_timeout(&base->MSR, LPI2C_MSR_TDF_MASK, 1000u))
         {
+            i2c_recovery(me);
+            osSemaphoreGiven(&me->lock);
             return 0;
         }
 
         base->MTDR = LPI2C_MTDR_CMD(CMD_TX_DATA) | LPI2C_MTDR_DATA((uint8_t)buf[i]);
 
         /* NACK check after each byte (optional but safer) */
-        if (base->MSR & LPI2C_MSR_NDF_MASK)
+        if (delay_wait_flag_set_timeout(&base->MSR, LPI2C_MSR_NDF_MASK, 50u) == 0)
         {
+            if (delay_wait_flag_set_timeout(&base->MSR, LPI2C_MSR_TDF_MASK, 1000u))
+            {
+                base->MTDR = LPI2C_MTDR_CMD(CMD_STOP);
+            }
+            
+            /* Clear sticky status (W1C) and flush FIFOs */
+            base->MSR  = LPI2C_MSR_NDF_MASK | LPI2C_MSR_SDF_MASK | LPI2C_MSR_FEF_MASK | LPI2C_MSR_ALF_MASK;
+            base->MFCR = LPI2C_MFCR_RTF_MASK | LPI2C_MFCR_RRF_MASK;
+
+            i2c_recovery(me);
+            osSemaphoreGiven(&me->lock);
             return 0;
         }
     }
@@ -188,6 +364,8 @@ uint32_t i2c_io_send(struct i2c_io_t *me, uint8_t ui8SlaveAddr, const char *buf,
     /* 3) STOP */
     if (delay_wait_flag_set_timeout(&base->MSR, LPI2C_MSR_TDF_MASK, 1000u))
     {
+        i2c_recovery(me);
+        osSemaphoreGiven(&me->lock);
         return 0;
     }
 
@@ -218,12 +396,16 @@ uint32_t i2c_io_recv(struct i2c_io_t *me, uint8_t ui8SlaveAddr, char *buf, int c
     const uint32_t port = me->ui32I2cPort;
     if (port == 0 || port > I2C_MAX_BUS_NUMBER)
     {
+        i2c_recovery(me);
+        osSemaphoreGiven(&me->lock);
         return 0;
     }
 
     LPI2C_Type* base = i2c_periph[port];
     if (!base)
     {
+        i2c_recovery(me);
+        osSemaphoreGiven(&me->lock);
         return 0;
     }
 
@@ -231,29 +413,52 @@ uint32_t i2c_io_recv(struct i2c_io_t *me, uint8_t ui8SlaveAddr, char *buf, int c
 
     if ((base->MCR & LPI2C_MCR_MEN_MASK) == 0u)
     {
+        i2c_recovery(me);
+        osSemaphoreGiven(&me->lock);
         return 0;
     }
 
-    /* Clean FIFOs */
+    /* Clean FIFOs and sticky status (optional but recommended) */
     base->MFCR |= (LPI2C_MFCR_RTF_MASK | LPI2C_MFCR_RRF_MASK);
+
+    // right after FIFO reset
+    base->MSR = (LPI2C_MSR_NDF_MASK | LPI2C_MSR_SDF_MASK); // W1C if supported by your header 
+
+    /* Clean FIFOs */
+    // base->MFCR |= (LPI2C_MFCR_RTF_MASK | LPI2C_MFCR_RRF_MASK);
 
     /* 1) START + address (read) */
     if (delay_wait_flag_set_timeout(&base->MSR, LPI2C_MSR_TDF_MASK, 1000u))
     {
+        i2c_recovery(me);
+        osSemaphoreGiven(&me->lock);
         return 0;
     }
     
     base->MTDR = LPI2C_MTDR_CMD(CMD_START) | LPI2C_MTDR_DATA(((uint32_t)ui8SlaveAddr << 1) | 1u);
 
     /* NACK on address? */
-    if (base->MSR & LPI2C_MSR_NDF_MASK)
+    if (delay_wait_flag_set_timeout(&base->MSR, LPI2C_MSR_NDF_MASK, 50u) == 0)
     {
+        if (delay_wait_flag_set_timeout(&base->MSR, LPI2C_MSR_TDF_MASK, 1000u))
+        {
+            base->MTDR = LPI2C_MTDR_CMD(CMD_STOP);
+        }
+        
+        /* Clear sticky status (W1C) and flush FIFOs */
+        base->MSR  = LPI2C_MSR_NDF_MASK | LPI2C_MSR_SDF_MASK | LPI2C_MSR_FEF_MASK | LPI2C_MSR_ALF_MASK;
+        base->MFCR = LPI2C_MFCR_RTF_MASK | LPI2C_MFCR_RRF_MASK;
+
+        i2c_recovery(me);
+        osSemaphoreGiven(&me->lock);
         return 0;
     }
 
     /* 2) Tell controller to receive <count> bytes */
     if (delay_wait_flag_set_timeout(&base->MSR, LPI2C_MSR_TDF_MASK, 1000u))
     {
+        i2c_recovery(me);
+        osSemaphoreGiven(&me->lock);
         return 0;
     }
 
@@ -264,6 +469,8 @@ uint32_t i2c_io_recv(struct i2c_io_t *me, uint8_t ui8SlaveAddr, char *buf, int c
     {
         if (delay_wait_flag_set_timeout(&base->MSR, LPI2C_MSR_TDF_MASK, 1000u))
         {
+            i2c_recovery(me);
+            osSemaphoreGiven(&me->lock);
             return 0;
         }
 
@@ -282,6 +489,8 @@ uint32_t i2c_io_recv(struct i2c_io_t *me, uint8_t ui8SlaveAddr, char *buf, int c
     /* 3) Queue STOP now (controller will issue it after RX completes) */
     if (delay_wait_flag_set_timeout(&base->MSR, LPI2C_MSR_TDF_MASK, 1000u))
     {
+        i2c_recovery(me);
+        osSemaphoreGiven(&me->lock);
         return 0;
     }
 
@@ -292,6 +501,8 @@ uint32_t i2c_io_recv(struct i2c_io_t *me, uint8_t ui8SlaveAddr, char *buf, int c
     {
         if (delay_wait_flag_set_timeout(&base->MSR, LPI2C_MSR_RDF_MASK, 1000u))
         {
+            i2c_recovery(me);
+            osSemaphoreGiven(&me->lock);
             return 0;
         }
 

@@ -1,0 +1,6 @@
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/delay/nxp/nxp_delay.c:23:6:delay_init	4	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/delay/nxp/nxp_delay.c:42:10:delay_cycles_now	4	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/delay/nxp/nxp_delay.c:48:6:delay_time_before	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/delay/nxp/nxp_delay.c:53:6:delay_us	56	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/delay/nxp/nxp_delay.c:64:6:delay_wait_flag_set_timeout	64	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/delay/nxp/nxp_delay.c:89:6:delay_wait_flag_clr_timeout	64	static

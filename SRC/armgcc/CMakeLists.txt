@@ -90,6 +90,8 @@ add_executable(${MCUX_SDK_PROJECT_NAME}
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_photo/bsp_photo.c"
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_power/bsp_power.c"
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_spi_sensor/bsp_spi_sensor.c"
+    "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_pump/bsp_pump.c"
+    "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_solenoid/bsp_solenoid.c"
 
     # ==== 01_DEV / M3_Devices ====
     "${SRC_ROOT}/01_DEV/M3_Devices/components/delay/nxp/nxp_delay.c"
@@ -112,6 +114,8 @@ add_executable(${MCUX_SDK_PROJECT_NAME}
     "${SRC_ROOT}/01_DEV/M3_Devices/devices/pca9685/pca9685.c"
     "${SRC_ROOT}/01_DEV/M3_Devices/devices/RV3129/rv3129.c"
     "${SRC_ROOT}/01_DEV/M3_Devices/devices/tca6416/tca6416.c"
+    "${SRC_ROOT}/01_DEV/M3_Devices/devices/BMP390/bmp390.c"
+    "${SRC_ROOT}/01_DEV/M3_Devices/devices/slf3s_flow/sl3s_flow.c"
 
     # ==== 01_DEV / M4_Middlewares ====
     "${SRC_ROOT}/01_DEV/M4_Middlewares/os/freertos/osDelay.c"
@@ -178,6 +182,8 @@ target_include_directories(${MCUX_SDK_PROJECT_NAME} PRIVATE
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_photo"
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_power"
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_spi_sensor"
+    "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_pump"
+    "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_solenoid"
 
     # M3_Devices
     "${SRC_ROOT}/01_DEV/M3_Devices/components/delay"
@@ -206,6 +212,8 @@ target_include_directories(${MCUX_SDK_PROJECT_NAME} PRIVATE
     "${SRC_ROOT}/01_DEV/M3_Devices/devices/pca9685"
     "${SRC_ROOT}/01_DEV/M3_Devices/devices/RV3129"
     "${SRC_ROOT}/01_DEV/M3_Devices/devices/tca6416"
+    "${SRC_ROOT}/01_DEV/M3_Devices/devices/BMP390"
+    "${SRC_ROOT}/01_DEV/M3_Devices/devices/slf3s_flow"
 
     # M4_Middlewares
     "${SRC_ROOT}/01_DEV/M4_Middlewares/os/freertos"

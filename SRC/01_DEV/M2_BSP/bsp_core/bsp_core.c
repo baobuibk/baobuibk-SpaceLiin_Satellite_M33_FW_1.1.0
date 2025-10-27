@@ -20,6 +20,7 @@
 #include "bsp_onboard_adc.h"
 #include "bsp_laser.h"
 #include "bsp_photo.h"
+#include "bsp_pump.h"
 
 /*******************************************************************************
  * Definitions
@@ -36,6 +37,9 @@ static void bsp_core_init_tec_cs_gpio(void);
 
 static void bsp_core_init_sensor_i2c(void);
 static void bsp_core_init_sensor_en_gpio(void);
+
+static void bsp_core_init_pump_i2c(void);
+static void bsp_core_init_pump_en_gpio(void);
 
 static void bsp_core_init_onboard_adc_spi(void);
 static void bsp_core_init_onboard_adc_cs_gpio(void);
@@ -73,6 +77,9 @@ void bsp_core_init(void)
     bsp_core_init_sensor_i2c();
     bsp_core_init_sensor_en_gpio();
 
+    bsp_core_init_pump_i2c();
+    bsp_core_init_pump_en_gpio();
+
     bsp_core_init_onboard_adc_spi();
     bsp_core_init_onboard_adc_cs_gpio();
 
@@ -95,16 +102,18 @@ void bsp_core_init(void)
 
     i2c_io_init(&io_expander_i2c);
     i2c_io_init(&sensor_i2c);
+    i2c_io_init(&pump_i2c);
 
         /* Init board peripheral. */
  //       bsp_debug_console_init();
         // bsp_libcsp_can_init();
         bsp_expander_init();
-        // bsp_i2c_sensor_init();
+        bsp_i2c_sensor_init();
         bsp_heater_init();
         bsp_onboard_adc_init();
         bsp_laser_init();
         bsp_photo_init();
+        bsp_pump_init();
 
      // Pull up RAM SPI nCS
         bsp_expander_ctrl(RAM_SPI_nCS, 1);
@@ -353,6 +362,79 @@ static void bsp_core_init_sensor_en_gpio(void)
 
     /* Init output LED GPIO. */
     RGPIO_PinInit(I2C_SENSOR_GPIO_EN1_PORT, I2C_SENSOR_GPIO_EN1_PIN, &sensor_cs_config);
+}
+
+i2c_io_t pump_i2c =
+{
+		.ui32I2cPort = 8
+};
+static void bsp_core_init_pump_i2c(void)
+{
+    lpi2c_master_config_t i2c_masterConfig;
+
+    /* clang-format off */
+    const clock_root_config_t lpi2cClkCfg =
+    {
+        .clockOff = false,
+	    .mux = 0, // 24MHz oscillator source
+	    .div = 1
+    };
+    /* clang-format on */
+
+    CLOCK_SetRootClock(I2C_PUMP_CLOCK_ROOT, &lpi2cClkCfg);
+    CLOCK_EnableClock(I2C_PUMP_CLOCK_GATE);
+
+    /*
+     * i2c_masterConfig.debugEnable = false;
+     * i2c_masterConfig.ignoreAck = false;
+     * i2c_masterConfig.pinConfig = kLPI2C_2PinOpenDrain;
+     * i2c_masterConfig.baudRate_Hz = 100000U;
+     * i2c_masterConfig.busIdleTimeout_ns = 0;
+     * i2c_masterConfig.pinLowTimeout_ns = 0;
+     * i2c_masterConfig.sdaGlitchFilterWidth_ns = 0;
+     * i2c_masterConfig.sclGlitchFilterWidth_ns = 0;
+     */
+    LPI2C_MasterGetDefaultConfig(&i2c_masterConfig);
+
+    /* Change the default baudrate configuration */
+    i2c_masterConfig.baudRate_Hz = I2C_PUMP_BAUDRATE_HZ;
+
+    /* Initialize the LPI2C master peripheral */
+    LPI2C_MasterInit(I2C_PUMP_BASE, &i2c_masterConfig, I2C_PUMP_CLK_FREQ);
+}
+
+do_t pump_en_gpio =
+{
+    .port = 4,
+    .pin  = I2C_PUMP_GPIO_EN_PIN,
+    .bStatus = false,
+};
+static void bsp_core_init_pump_en_gpio(void)
+{
+    /* Define the init structure for the output LED pin*/
+    rgpio_pin_config_t pump_en_config =
+    {
+        kRGPIO_DigitalOutput,
+        0,
+    };
+
+    /* Board pin, clock, debug console init */
+    /* clang-format off */
+
+    const clock_root_config_t rgpioClkCfg =
+    {
+        .clockOff = false,
+        .mux = 0, // 24Mhz Mcore root buswake clock
+        .div = 1
+    };
+
+    CLOCK_SetRootClock(I2C_PUMP_GPIO_EN_CLOCK_ROOT, &rgpioClkCfg);
+    CLOCK_EnableClock(I2C_PUMP_GPIO_EN_CLOCK_GATE);
+
+    /* Set PCNS register value to 0x0 to prepare the RGPIO initialization */
+    I2C_PUMP_GPIO_EN_PORT->PCNS = 0x0;
+
+    RGPIO_PinInit(I2C_PUMP_GPIO_EN_PORT, I2C_PUMP_GPIO_EN_PIN, &pump_en_config);
 }
 
 SPI_Io_t onboard_adc_spi =

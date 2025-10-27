@@ -1,0 +1,3 @@
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M4_Middlewares/os/freertos/osSemphr.c:20:5:osSemaphoreCreate	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M4_Middlewares/os/freertos/osSemphr.c:29:5:osSemaphoreTake	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M4_Middlewares/os/freertos/osSemphr.c:39:5:osSemaphoreGiven	16	static

@@ -1,0 +1,10 @@
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M4_Middlewares/ring_char_buffer/ring_char_buffer.c:22:10:ring_char_buffer_init	24	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M4_Middlewares/ring_char_buffer/ring_char_buffer.c:38:10:ring_char_buffer_push	24	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M4_Middlewares/ring_char_buffer/ring_char_buffer.c:65:10:ring_char_buffer_pop	24	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M4_Middlewares/ring_char_buffer/ring_char_buffer.c:91:10:ring_char_buffer_overwrite	24	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M4_Middlewares/ring_char_buffer/ring_char_buffer.c:111:10:ring_char_buffer_peak	24	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M4_Middlewares/ring_char_buffer/ring_char_buffer.c:131:6:ring_char_buffer_is_empty	24	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M4_Middlewares/ring_char_buffer/ring_char_buffer.c:145:6:ring_char_buffer_is_full	32	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M4_Middlewares/ring_char_buffer/ring_char_buffer.c:159:10:ring_char_buffer_get_buffer_count	32	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M4_Middlewares/ring_char_buffer/ring_char_buffer.c:173:10:ring_char_buffer_get_free_space	24	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M4_Middlewares/ring_char_buffer/ring_char_buffer.c:188:13:ring_char_buffer_advance_index	16	static

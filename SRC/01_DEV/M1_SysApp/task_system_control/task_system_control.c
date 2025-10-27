@@ -11,7 +11,7 @@
 
 
 extern osSemaphore exp_task_sem;
-#define REPORT_INTERVAL 5  // report every 60 seconds
+#define REPORT_INTERVAL 10  // report every 60 seconds
 
 void task_system_control(void *pvParameters)
 {

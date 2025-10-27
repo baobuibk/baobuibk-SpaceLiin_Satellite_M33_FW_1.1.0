@@ -68,9 +68,7 @@ int str2int(char *str, int32_t *ret) {
     return 0;
 }
 extern cmdFunction_entry_t cmd_table_1[];
-extern cmdFunction_entry_t cmd_table_2[];
-extern cmdFunction_entry_t cmd_table_3[];
-extern cmdFunction_entry_t cmd_table_5[];
+
 
 void Command_Process(char *input) {
     char buffer_copy[SHELL_BUFFER_SIZE];
@@ -92,7 +90,7 @@ void Command_Process(char *input) {
             p_cmd = &cmd_table_1[i];
             if (!strcmp(args[0], p_cmd->name))
             {
-                 PRINTF("\r\nsFOUND at %d", i);
+                 PRINTF("\r\nsFOUND at %d\r\n", i);
                  p_cmd->func(0,argc, args);
                 return;
             }
@@ -127,9 +125,9 @@ void time_sync_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 }
 
 void pwr_ifb_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])    
- { (void)stdio;(void)argc;(void)argv;  PRINTF("pwr_ifb_en\n"); }
+ { (void)stdio;(void)argc;(void)argv;  PRINTF("pwr_ifb_en\r\n"); }
 
-void pwr_io_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])      { (void)stdio;(void)argc;(void)argv; PRINTF("pwr_io_en\n"); }
+void pwr_io_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])      { (void)stdio;(void)argc;(void)argv; PRINTF("\r\npwr_io_en\r\n"); }
 void pwr_pzp_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])    
  {
     (void)stdio;(void)argc;(void)argv; PRINTF("pwr_pzp_en\n"); 

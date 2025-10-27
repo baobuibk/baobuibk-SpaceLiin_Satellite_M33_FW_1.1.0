@@ -145,12 +145,12 @@ static void Shell_Task(void *pvParameters)
         xSemaphoreTake(command_sem, portMAX_DELAY);
         PRINTF("\r\n [Shell_Task] received message \r\n");
         uint32_t i = 0;
-        while (command_bufer[i])
-            {
+        // while (command_bufer[i])
+        //     {
 
-                PRINTF(" 0x%02X", (unsigned char)command_bufer[i]);
-                i++;
-            }
+        //         PRINTF(" 0x%02X", (unsigned char)command_bufer[i]);
+        //         i++;
+        //     }
         PRINTF("\r\n [Shell_Task] %s \r\n",command_bufer);
         Command_Process(command_bufer);
 
@@ -241,25 +241,27 @@ static void RPMSG_Task(void *pvParameters)
         {
             PRINTF("\r\n[rpmsg] Command: \"%s\" [len: %u]\r\n", app_buf, (unsigned)payload_len);
 
-            PRINTF("[rpmsg] Raw data:");
-            for (uint32_t i = 0; i < payload_len; i++)
-            {
-                PRINTF(" 0x%02X", (unsigned char)app_buf[i]);
-            }
+            // PRINTF("[rpmsg] Raw data:");
+            // for (uint32_t i = 0; i < payload_len; i++)
+            // {
+            //     PRINTF(" 0x%02X", (unsigned char)app_buf[i]);
+            // }
             PRINTF("\r\n");
-            PRINTF("[rpmsg] send to shell task");
-             PRINTF("[rpmsg] payload_length = %d \n",payload_len);
+            PRINTF("\r\nrpmsg] send to shell task");
+             PRINTF("\r\n[rpmsg] payload_length = %d \r\n",payload_len);
+             uint32_t j=0;
             for (uint32_t i = 0; i < payload_len; i++)
             {
+                if ((0x0A ==app_buf[i]) || (0x0D == app_buf[i])) continue;
 
                 //send to shell task
-                command_bufer[i] = app_buf[i];
-                command_bufer[payload_len] = 0;
-                
+                command_bufer[j] = app_buf[i];
+                j++;                              
             }
-            xSemaphoreGive(command_sem);
+            command_bufer[j] = 0;
+            if (j > 0) xSemaphoreGive(command_sem);
            // osSemaphoreGiven(&command_sem);
-            PRINTF("[rpmsg] finish prepare to shell task");
+            PRINTF("[rpmsg] finish prepare to shell task\r\n");
            // osSemaphoreGiven(&command_sem);
         }
         else if (type == CMD_TYPE_FILE_RESP)
