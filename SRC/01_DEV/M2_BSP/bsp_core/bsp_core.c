@@ -14,6 +14,12 @@
 /* USER includes. */
 #include "bsp_core.h"
 #include "bsp_board.h"
+#include "bsp_expander.h"
+#include "bsp_heater.h"
+#include "bsp_i2c_sensor.h"
+#include "bsp_onboard_adc.h"
+#include "bsp_laser.h"
+#include "bsp_photo.h"
 
 /*******************************************************************************
  * Definitions
@@ -27,6 +33,9 @@ static void bsp_core_init_can(void);
 
 static void bsp_core_init_io_expander_i2c(void);
 static void bsp_core_init_tec_cs_gpio(void);
+
+static void bsp_core_init_sensor_i2c(void);
+static void bsp_core_init_sensor_en_gpio(void);
 
 static void bsp_core_init_onboard_adc_spi(void);
 static void bsp_core_init_onboard_adc_cs_gpio(void);
@@ -48,8 +57,6 @@ static int bsp_core_init_laser_adc(void);
 /*******************************************************************************
  * Variables
  ******************************************************************************/
- static   lpi2c_master_config_t i2c_masterConfig;
- static   lpi2c_master_config_t *masterConfig = &i2c_masterConfig;
 // const volatile uint32_t temp[1*1024] = {0xAA};
 /*******************************************************************************
  * Code
@@ -60,12 +67,11 @@ static int bsp_core_init_laser_adc(void);
  */
 void bsp_core_init(void)
 {
-//   bsp_core_init_uart();
-//    bsp_core_init_can();
-
-
-     bsp_core_init_io_expander_i2c();
+    bsp_core_init_io_expander_i2c();
     bsp_core_init_tec_cs_gpio();
+
+    bsp_core_init_sensor_i2c();
+    bsp_core_init_sensor_en_gpio();
 
     bsp_core_init_onboard_adc_spi();
     bsp_core_init_onboard_adc_cs_gpio();
@@ -78,12 +84,30 @@ void bsp_core_init(void)
 
     bsp_core_init_photo_switch_gpio();
 
-    // bsp_core_init_spi();
-    // bsp_core_init_gpio();
     bsp_core_init_tim();
 
-    // bsp_core_init_laser_adc_tim();
     bsp_core_init_laser_adc();
+
+    // bsp_core_init_uart();
+    // bsp_core_init_can();  
+    spi_io_init(&onboard_adc_spi);
+    spi_io_init(&photo_adc_spi);
+
+    i2c_io_init(&io_expander_i2c);
+    i2c_io_init(&sensor_i2c);
+
+        /* Init board peripheral. */
+ //       bsp_debug_console_init();
+        // bsp_libcsp_can_init();
+        bsp_expander_init();
+        // bsp_i2c_sensor_init();
+        bsp_heater_init();
+        bsp_onboard_adc_init();
+        bsp_laser_init();
+        bsp_photo_init();
+
+     // Pull up RAM SPI nCS
+        bsp_expander_ctrl(RAM_SPI_nCS, 1);
 }
 
 /*!
@@ -175,7 +199,7 @@ i2c_io_t io_expander_i2c =
 };
 static void bsp_core_init_io_expander_i2c(void)
 {
-
+    lpi2c_master_config_t i2c_masterConfig;
 
     /* clang-format off */
     const clock_root_config_t lpi2cClkCfg =
@@ -186,8 +210,8 @@ static void bsp_core_init_io_expander_i2c(void)
     };
     /* clang-format on */
 
-     CLOCK_SetRootClock(IO_EXPAN_CLOCK_ROOT, &lpi2cClkCfg);
-     CLOCK_EnableClock(IO_EXPAN_CLOCK_GATE);
+    CLOCK_SetRootClock(IO_EXPAN_CLOCK_ROOT, &lpi2cClkCfg);
+    CLOCK_EnableClock(IO_EXPAN_CLOCK_GATE);
 
     /*
      * i2c_masterConfig.debugEnable = false;
@@ -199,18 +223,16 @@ static void bsp_core_init_io_expander_i2c(void)
      * i2c_masterConfig.sdaGlitchFilterWidth_ns = 0;
      * i2c_masterConfig.sclGlitchFilterWidth_ns = 0;
      */
+    LPI2C_MasterGetDefaultConfig(&i2c_masterConfig);
 
+    /* Change the default baudrate configuration */
+    i2c_masterConfig.baudRate_Hz = IO_EXPAN_BAUDRATE_HZ;
 
-     LPI2C_MasterGetDefaultConfig(&i2c_masterConfig);
+    /* Initialize the LPI2C master peripheral */
+    LPI2C_MasterInit(IO_EXPAN_BASE, &i2c_masterConfig, IO_EXPAN_CLK_FREQ);
 
-    // /* Change the default baudrate configuration */
-      i2c_masterConfig.baudRate_Hz = IO_EXPAN_BAUDRATE_HZ;
-
-    // // /* Initialize the LPI2C master peripheral */
-      LPI2C_MasterInit(IO_EXPAN_BASE, masterConfig, IO_EXPAN_CLK_FREQ);
-
-    //  i2c_io_init(&io_expander_i2c);
-    //  i2c_io_init(&heater_i2c);
+    // i2c_io_init(&io_expander_i2c);
+    // i2c_io_init(&heater_i2c);
 }
 
 static void bsp_core_init_tec_cs_gpio(void)
@@ -243,6 +265,94 @@ static void bsp_core_init_tec_cs_gpio(void)
     RGPIO_PinInit(GPIO3, 31, &TEC_CS_config);
     RGPIO_PinInit(GPIO3, 28, &TEC_CS_config);
     RGPIO_PinInit(GPIO3, 30, &TEC_CS_config);
+}
+
+i2c_io_t sensor_i2c =
+{
+		.ui32I2cPort = 4
+};
+static void bsp_core_init_sensor_i2c(void)
+{
+    lpi2c_master_config_t i2c_masterConfig;
+
+    /* clang-format off */
+    const clock_root_config_t lpi2cClkCfg =
+    {
+        .clockOff = false,
+	    .mux = 0, // 24MHz oscillator source
+	    .div = 1
+    };
+    /* clang-format on */
+
+    CLOCK_SetRootClock(I2C_SENSOR_CLOCK_ROOT, &lpi2cClkCfg);
+    CLOCK_EnableClock(I2C_SENSOR_CLOCK_GATE);
+
+    /*
+     * i2c_masterConfig.debugEnable = false;
+     * i2c_masterConfig.ignoreAck = false;
+     * i2c_masterConfig.pinConfig = kLPI2C_2PinOpenDrain;
+     * i2c_masterConfig.baudRate_Hz = 100000U;
+     * i2c_masterConfig.busIdleTimeout_ns = 0;
+     * i2c_masterConfig.pinLowTimeout_ns = 0;
+     * i2c_masterConfig.sdaGlitchFilterWidth_ns = 0;
+     * i2c_masterConfig.sclGlitchFilterWidth_ns = 0;
+     */
+    LPI2C_MasterGetDefaultConfig(&i2c_masterConfig);
+
+    /* Change the default baudrate configuration */
+    i2c_masterConfig.baudRate_Hz = I2C_SENSOR_BAUDRATE_HZ;
+
+    /* Initialize the LPI2C master peripheral */
+    LPI2C_MasterInit(I2C_SENSOR_BASE, &i2c_masterConfig, I2C_SENSOR_CLK_FREQ);
+}
+
+do_t sensor_en0_gpio =
+{
+    .port = 4,
+    .pin  = I2C_SENSOR_GPIO_EN0_PIN,
+    .bStatus = false,
+};
+do_t sensor_en1_gpio =
+{
+    .port = 3,
+    .pin  = I2C_SENSOR_GPIO_EN1_PIN,
+    .bStatus = false,
+};
+static void bsp_core_init_sensor_en_gpio(void)
+{
+    /* Define the init structure for the output LED pin*/
+    rgpio_pin_config_t sensor_cs_config =
+    {
+        kRGPIO_DigitalOutput,
+        0,
+    };
+
+    /* Board pin, clock, debug console init */
+    /* clang-format off */
+
+    const clock_root_config_t rgpioClkCfg =
+    {
+        .clockOff = false,
+        .mux = 0, // 24Mhz Mcore root buswake clock
+        .div = 1
+    };
+
+    CLOCK_SetRootClock(I2C_SENSOR_GPIO_EN0_CLOCK_ROOT, &rgpioClkCfg);
+    CLOCK_EnableClock(I2C_SENSOR_GPIO_EN0_CLOCK_GATE);
+
+    /* Set PCNS register value to 0x0 to prepare the RGPIO initialization */
+    I2C_SENSOR_GPIO_EN0_PORT->PCNS = 0x0;
+
+    RGPIO_PinInit(I2C_SENSOR_GPIO_EN0_PORT, I2C_SENSOR_GPIO_EN0_PIN, &sensor_cs_config);
+
+    CLOCK_SetRootClock(I2C_SENSOR_GPIO_EN1_CLOCK_ROOT, &rgpioClkCfg);
+    CLOCK_EnableClock(I2C_SENSOR_GPIO_EN1_CLOCK_GATE);
+
+    /* Set PCNS register value to 0x0 to prepare the RGPIO initialization */
+    I2C_SENSOR_GPIO_EN1_PORT->PCNS = 0x0;
+
+    /* Init output LED GPIO. */
+    RGPIO_PinInit(I2C_SENSOR_GPIO_EN1_PORT, I2C_SENSOR_GPIO_EN1_PIN, &sensor_cs_config);
 }
 
 SPI_Io_t onboard_adc_spi =

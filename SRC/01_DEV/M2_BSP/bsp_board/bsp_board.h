@@ -172,4 +172,28 @@
 /* Calculate the clock division based on the PWM frequency to be obtained */
 #define LASER_ADC_TIM_PRESCALER         TPM_CalculateCounterClkDiv(LASER_ADC_TIM_BASE, 1000000U / LASER_ADC_TIM_PERIOD_US, LASER_ADC_TIM_CLK_FREQ);
 
+/*********************I/O EXPANDER I2C**********************/
+#define I2C_SENSOR_CLOCK_ROOT            kCLOCK_Root_Lpi2c4
+#define I2C_SENSOR_CLOCK_GATE            kCLOCK_Lpi2c4
+#define I2C_SENSOR_CLK_FREQ              CLOCK_GetIpFreq(I2C_SENSOR_CLOCK_ROOT)
+
+#define I2C_SENSOR_BASE                  LPI2C4
+#define I2C_SENSOR_IRQn                  LPI2C4_IRQn
+
+#define I2C_SENSOR_BAUDRATE_HZ           (100000U)
+
+#define I2C_SENSOR_GPIO_EN0_CLOCK_ROOT   kCLOCK_Root_BusWakeup
+#define I2C_SENSOR_GPIO_EN0_CLOCK_GATE   kCLOCK_Gpio4
+#define I2C_SENSOR_GPIO_EN0_CLK_FREQ     CLOCK_GetIpFreq(I2C_SENSOR_GPIO_EN_CLOCK_ROOT)
+
+#define I2C_SENSOR_GPIO_EN0_PORT         GPIO4
+#define I2C_SENSOR_GPIO_EN0_PIN          14U
+
+#define I2C_SENSOR_GPIO_EN1_CLOCK_ROOT   kCLOCK_Root_BusWakeup
+#define I2C_SENSOR_GPIO_EN1_CLOCK_GATE   kCLOCK_Gpio3
+#define I2C_SENSOR_GPIO_EN1_CLK_FREQ     CLOCK_GetIpFreq(I2C_SENSOR_GPIO_EN_CLOCK_ROOT)
+
+#define I2C_SENSOR_GPIO_EN1_PORT         GPIO3
+#define I2C_SENSOR_GPIO_EN1_PIN          25U
+
 #endif /* _BSP_BOARD_H_ */

@@ -1,5 +1,0 @@
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:51:6:EXP_RootTask	16	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:84:6:EXP_RootGrowUp	32	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:108:16:EXP_AppInit	24	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:128:13:Shell_Task	16	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:145:13:RPMSG_Task	48	static

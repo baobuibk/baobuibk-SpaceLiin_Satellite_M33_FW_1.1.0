@@ -7,6 +7,18 @@
 
 #ifndef M33_COMMAND_H_
 #define M33_COMMAND_H_
+#include "stdint.h"
+typedef void (*cmdFunction)(uint32_t stdio,uint32_t argc, char *argv[]);
+
+
+
+typedef struct {
+    const char *name;
+    cmdFunction func;
+} cmdFunction_entry_t;
+
+void Command_Process(char *input);
+
 
 /* ==================== Prototypes: TABLE 1 ==================== */
 void time_sync_cmd(uint32_t stdio, uint32_t argc, char *argv[]);

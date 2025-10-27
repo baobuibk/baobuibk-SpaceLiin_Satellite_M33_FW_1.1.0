@@ -1,8 +1,0 @@
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/devices/pca9685/pca9685.h:53:19:pca9685_set_duty_percent	16	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_heater/bsp_heater.c:23:6:bsp_heater_enable	8	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_heater/bsp_heater.c:27:6:bsp_heater_disable	8	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_heater/bsp_heater.c:32:6:bsp_heater_init	16	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_heater/bsp_heater.c:42:6:bsp_heater_turnoff	16	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_heater/bsp_heater.c:46:6:bsp_heater_turnon	16	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_heater/bsp_heater.c:52:6:bsp_heater_list_turnoff	24	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_heater/bsp_heater.c:64:6:bsp_heater_list_turnon	24	static

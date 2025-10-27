@@ -14,6 +14,10 @@
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 extern i2c_io_t io_expander_i2c;
 
+extern i2c_io_t sensor_i2c;
+extern do_t     sensor_en0_gpio;
+extern do_t     sensor_en1_gpio;
+
 extern SPI_Io_t onboard_adc_spi;
 extern do_t     onboard_adc0_cs;
 extern do_t     onboard_adc1_cs;

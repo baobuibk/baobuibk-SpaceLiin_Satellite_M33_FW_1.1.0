@@ -65,9 +65,11 @@ add_executable(${MCUX_SDK_PROJECT_NAME}
     "${SRC_ROOT}/01_DEV/M1_SysApp/Services/cmdline.c"
     "${SRC_ROOT}/01_DEV/M1_SysApp/system_data/m33_command.c"
     "${SRC_ROOT}/01_DEV/M1_SysApp/system_data/m33_data.c"
+    "${SRC_ROOT}/01_DEV/M1_SysApp/system_data/command_list.c"
     "${SRC_ROOT}/01_DEV/M1_SysApp/task_update_onboard_adc/task_update_onboard_adc.c"
     "${SRC_ROOT}/01_DEV/M1_SysApp/task_temperature/app_temperature.c"
     "${SRC_ROOT}/01_DEV/M1_SysApp/task_experiment/task_experiment.c"
+    "${SRC_ROOT}/01_DEV/M1_SysApp/task_system_control/task_system_control.c"
 
     # ==== 01_DEV / M2_BSP ====
     "${SRC_ROOT}/01_DEV/M2_BSP/remoteproc/m33_remoteproc.c"
@@ -83,7 +85,7 @@ add_executable(${MCUX_SDK_PROJECT_NAME}
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_heater/bsp_heater.c"
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_i2c_sensor/bsp_i2c_sensor.c"
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_laser/bsp_laser.c"
-    # #"${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_libcsp_can/bsp_libcsp_can.c"
+    #"${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_libcsp_can/bsp_libcsp_can.c"
      "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_onboard_adc/bsp_onboard_adc.c"
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_photo/bsp_photo.c"
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_power/bsp_power.c"
@@ -155,6 +157,7 @@ target_include_directories(${MCUX_SDK_PROJECT_NAME} PRIVATE
     "${SRC_ROOT}/01_DEV/M1_SysApp/task_update_onboard_adc"
     "${SRC_ROOT}/01_DEV/M1_SysApp/task_temperature"
     "${SRC_ROOT}/01_DEV/M1_SysApp/task_experiment"
+    "${SRC_ROOT}/01_DEV/M1_SysApp/task_system_control"
 
     # M2_BSP
     "${SRC_ROOT}/01_DEV/M2_BSP"

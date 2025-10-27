@@ -95,7 +95,7 @@ typedef enum {
 } table1_id_t;
 
 typedef enum {
-    pump_1_ctl,
+    pump_1_ctl ,
     pump_1_volt,
     pump_1_freq,
     pump_2_ctl,
@@ -122,7 +122,7 @@ typedef enum {
 } table2_id_t;
 
 typedef enum {
-    temp_master_en,
+    temp_master_en ,
 
     temp_p_1_en,
     temp_p_2_en,

@@ -15,6 +15,14 @@
   "files.associations": {
     "bsp.h": "c",
     "bsp_expander.h": "c",
-    "m33_data.h": "c"
+    "m33_data.h": "c",
+    "bsp_board.h": "c",
+    "m33_rpmsg.h": "c",
+    "task_system_control.h": "c",
+    "remote_call.h": "c",
+    "semphr.h": "c",
+    "task.h": "c",
+    "m33_command.h": "c",
+    "tca6416.h": "c"
   }
 }

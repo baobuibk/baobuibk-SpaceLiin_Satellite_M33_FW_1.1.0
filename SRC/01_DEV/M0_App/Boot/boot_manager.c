@@ -14,7 +14,6 @@
 #include "CRC/crc16_xmodem.h"
 #include "remoteproc/m33_remoteproc.h"
 #include "rpmsg/m33_rpmsg.h"
-#include "bsp_core.h"
 /*============================================================*/
 /*                      Defines                               */
 /*============================================================*/

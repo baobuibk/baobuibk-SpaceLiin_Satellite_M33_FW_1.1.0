@@ -1,2 +1,0 @@
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/i2c/nxp/nxp_i2c_io.c:110:10:i2c_io_send	40	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M3_Devices/components/i2c/nxp/nxp_i2c_io.c:204:10:i2c_io_recv	48	static
