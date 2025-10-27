@@ -1,12 +1,13 @@
 #include <stdarg.h>
 #include <stdint.h>
 #include <string.h>
-
+#include "bsp_board.h"
 #include "log.h"
 #include "lwl.h"
 #include "error_codes.h"
-
-
+#include "m33_data.h"
+#include "FreeRTOS.h"
+#include "queue.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -19,8 +20,8 @@
     #define 	LWL_BUF_SIZE 		(CONFIG_LWL_BUF_SIZE)
  	 #define 	LWL_BUF_THRESHOLD 	(CONFIG_LWL_BUF_THRESHOLD)
 #else
-    #define LWL_BUF_SIZE 			1024
-	#define LWL_BUF_THRESHOLD 		(LWL_BUF_SIZE - 256)
+    #define LWL_BUF_SIZE 			256
+	#define LWL_BUF_THRESHOLD 		(LWL_BUF_SIZE - 56)
 #endif
 
 
@@ -94,7 +95,7 @@ static lwl_t lwl = {
 // Log message table (ID is the index)
 static const struct lwl_msg lwl_msg_table[] = {
     {NULL, 0},                                       // ID 0: EXP_INVALID
-    {"Time: Day %1d, %1d:%1d:%1d", 4},               // ID 1: EXP_TIMESTAMP
+    {"Time: epoch %4d", 4},               // ID 1: EXP_TIMESTAMP
     {"Temperature: NTC[%1d]: %2d", 3},               // ID 2: EXP_TEMP_SINGLE_NTC
     {"Temperature: Board temperature: %2d", 2},               // ID 2: EXP_TEMP_SINGLE_NTC
 
@@ -115,8 +116,19 @@ static const struct lwl_msg lwl_msg_table[] = {
 static const uint8_t lwl_msg_table_size = sizeof(lwl_msg_table) / sizeof(lwl_msg_table[0]);
 
 
+
 void lwl_init(lwl_t *lwl) {
     // Xóa toàn bộ cấu trúc về 0 bằng memset
+    lwl_t lwl_init = {
+    .lwl_working_buf_index = 0,
+    .lwl_full_buf_index = 1,
+    .lwl_buf_over_threshold = false,
+    .lwl_data_buf = {
+        { .put_idx = 0, .p_buf = (uint8_t *)lwl_data_buf_0 },
+        { .put_idx = 0, .p_buf = (uint8_t *)lwl_data_buf_1 }
+        }
+    };
+    *lwl = lwl_init;
     memset(lwl->lwl_data_buf[0].p_buf, 0, LWL_BUF_SIZE);
     memset(lwl->lwl_data_buf[1].p_buf, 0, LWL_BUF_SIZE);
 }
@@ -194,13 +206,13 @@ void LWL(uint8_t id, ...)
 		{
     		lwl.lwl_working_buf_index = 1;
     		lwl.lwl_full_buf_index = 0;
-    		lwl.lwl_data_buf[0].put_idx = 0;
+    		lwl.lwl_data_buf[1].put_idx = 0;
 		}
     	else
     	{
     		lwl.lwl_working_buf_index = 0;
     		lwl.lwl_full_buf_index = 1;
-    		lwl.lwl_data_buf[1].put_idx = 0;
+    		lwl.lwl_data_buf[0].put_idx = 0;
     	}
 
     	lwl_buffer_full_notify();
@@ -210,10 +222,10 @@ void LWL(uint8_t id, ...)
 
 
 
-void __attribute__((weak)) lwl_buffer_full_notify()
-{
+// void __attribute__((weak)) lwl_buffer_full_notify()
+// {
 
-}
+// }
 
 void __attribute__((weak)) lwl_clear_notification()
 {
@@ -242,3 +254,43 @@ uint32_t __attribute__((weak))  lwl_log_send(void)
 	return ERROR_OK;
 }
 
+
+QueueHandle_t remote_message_queue; //handle to send message
+void lwl_buffer_full_notify()
+{
+    remote_message_t message = {
+        .address = SYS_LOG
+    };
+    // copy current lwl buffer to RAM
+
+    //trigger write to A55
+    xQueueSendToFront(remote_message_queue, &message, 1000);
+}
+
+bool lwl_is_full()
+{
+    return lwl.lwl_buf_over_threshold;
+}
+uint32_t lwl_transfer(void)
+{
+    if (!lwl.lwl_buf_over_threshold) return 0;
+    
+    uint8_t *addr = RAM_TEST_BASE ;
+    uint32_t index = lwl.lwl_full_buf_index;
+    
+    if (index > 1) 
+    {
+        lwl_init(&lwl);
+        return 0; //errror here, should reset the log
+    }
+    uint32_t length = lwl.lwl_data_buf[index].put_idx;
+    memcpy(addr, lwl.lwl_data_buf[index].p_buf, length);
+    lwl.lwl_buf_over_threshold = 0; //clear full status
+     lwl.lwl_data_buf[index].put_idx = 0;
+     return length;
+}
+
+/*
+LWL(TIMESTAMP, LWL_1(days), LWL_1(hours), LWL_1(minutes), LWL_1(seconds));
+
+*/

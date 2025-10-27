@@ -60,6 +60,7 @@
 typedef enum {
     LWL_EXP_INVALID = 0,                  // ID 0: Reserved
     LWL_EXP_TIMESTAMP,                    // ID 1: System timestamp log
+    LWL_EXP_BOARD_TEMP,
     LWL_EXP_TEMP_SINGLE_NTC,              // ID 2: Log single NTC value
     LWL_EXP_PROF_STARTED	,            // ID 4:profile started
     LWL_EXP_PROF_ERROR	,              	// ID 5: Profile error
@@ -92,5 +93,7 @@ void lwl_clear_notification(void);
 
 uint16_t * lwl_get_full_buffer_addr(void);
 uint32_t lwl_log_send_to_spi(void);
+uint32_t lwl_transfer(void);
+bool lwl_is_full(void);
 
 #endif // _LWL_H_

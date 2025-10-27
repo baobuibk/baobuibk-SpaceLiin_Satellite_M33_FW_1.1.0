@@ -13,6 +13,7 @@ static osSemaphore m33_data_sem = NULL;
 #define M33_DATA_SEMAPHOR_TIMEOUT 2000
 
 uint64_t    epoch_time = 0;
+
  value16_t table1_data[TABLE1_TOTAL_COUNT];
  value16_t table2_data[TABLE2_TOTAL_COUNT];
  value16_t table3_data[TABLE3_TOTAL_COUNT];

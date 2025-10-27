@@ -16,7 +16,7 @@
 #include "MIMX9352_cm33.h"
 
 #include "delay.h"
-
+#include "lwl.h"
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Defines ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 #define TEC_CHANNEL_NUM 4U
 #define NTC_CHANNEL_NUM	12U
@@ -196,7 +196,8 @@ void bsp_convert_NTC()
 	for (uint8_t index = 0; index < NTC_CHANNEL_NUM; index++)
 	{
 		NTC_temp_C[NTC_channel_map[index]] = ntc_convert_from_volt(adc0_volt_mv[PIN_NTC_CHANNEL_12 + index], 5000.0);
-	}
+        LWL(LWL_EXP_TEMP_SINGLE_NTC,LWL_1(NTC_channel_map[index]),LWL_2(NTC_temp_C[NTC_channel_map[index]] ));
+    }
 
 //	system_data_update_NTC(NTC_temp_C);
 }

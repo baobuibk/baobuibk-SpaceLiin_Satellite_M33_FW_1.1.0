@@ -28,6 +28,9 @@
     "task_experiment.h": "c",
     "queue.h": "c",
     "system_error": "c",
-    "rtos_tasks.h": "c"
+    "rtos_tasks.h": "c",
+    "lwl.h": "c",
+    "freertos.h": "c",
+    "task_update_onboard_adc.h": "c"
   }
 }
