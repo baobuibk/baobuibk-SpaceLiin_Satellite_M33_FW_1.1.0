@@ -710,48 +710,368 @@ void sln_valve_1_ctl_cmd(uint32_t s, uint32_t a, char *v[])
 void sln_valve_2_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sln_valve_2_ctl\n");}
 
 /* ==================== TABLE 3: implementations ==================== */
-void temp_master_en_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_master_en\n");}
-void temp_p_1_en_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_1_en\n");}
-void temp_p_2_en_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_2_en\n");}
-void temp_p_3_en_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_3_en\n");}
-void temp_p_4_en_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_4_en\n");}
-void temp_p_5_en_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_5_en\n");}
-void temp_p_6_en_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_6_en\n");}
-void temp_p_1_setpoint_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_1_setpoint\n");}
-void temp_p_1_ntcp_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_1_ntcp\n");}
-void temp_p_1_ntcs_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_1_ntcs\n");}
-void temp_p_1_htr_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_1_htr\n");}
-void temp_p_1_tec_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_1_tec\n");}
-void temp_p_2_setpoint_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_2_setpoint\n");}
-void temp_p_2_ntcp_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_2_ntcp\n");}
-void temp_p_2_ntcs_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_2_ntcs\n");}
-void temp_p_2_htr_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_2_htr\n");}
-void temp_p_2_tec_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_2_tec\n");}
-void temp_p_3_setpoint_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_3_setpoint\n");}
-void temp_p_3_ntcp_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_3_ntcp\n");}
-void temp_p_3_ntcs_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_3_ntcs\n");}
-void temp_p_3_htr_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_3_htr\n");}
-void temp_p_3_tec_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_3_tec\n");}
-void temp_p_4_setpoint_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_4_setpoint\n");}
-void temp_p_4_ntcp_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_4_ntcp\n");}
-void temp_p_4_ntcs_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_4_ntcs\n");}
-void temp_p_4_htr_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_4_htr\n");}
-void temp_p_4_tec_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_4_tec\n");}
-void temp_p_5_setpoint_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_5_setpoint\n");}
-void temp_p_5_ntcp_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_5_ntcp\n");}
-void temp_p_5_ntcs_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_5_ntcs\n");}
-void temp_p_5_htr_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_5_htr\n");}
-void temp_p_5_tec_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_5_tec\n");}
-void temp_p_6_setpoint_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_6_setpoint\n");}
-void temp_p_6_ntcp_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_6_ntcp\n");}
-void temp_p_6_ntcs_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_6_ntcs\n");}
-void temp_p_6_htr_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_6_htr\n");}
-void temp_p_6_tec_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("temp_p_6_tec\n");}
+void temp_master_en_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_master_en\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_master_en,(uint32_t)status);
+	return;
+}//PRINTF("temp_master_en\n");}
+void temp_p_1_en_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_1_en\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_1_en,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_1_en\n");}
+void temp_p_2_en_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_2_en\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_2_en,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_2_en\n");}
+void temp_p_3_en_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_3_en\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_3_en,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_3_en\n");}
+void temp_p_4_en_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_4_en\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_4_en,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_4_en\n");}
+void temp_p_5_en_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_5_en\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_5_en,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_5_en\n");}
+void temp_p_6_en_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_6_en\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_6_en,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_6_en\n");}
+void temp_p_1_setpoint_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_1_setpoint\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_1_setpoint,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_1_setpoint\n");}
+void temp_p_1_ntcp_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_1_ntcp\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_1_ntcp,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_1_ntcp\n");}
+void temp_p_1_ntcs_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_1_ntcs\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_1_ntcs,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_1_ntcs\n");}
+void temp_p_1_htr_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_1_htr\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_1_htr,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_1_htr\n");}
+void temp_p_1_tec_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_1_tec\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_1_tec,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_1_tec\n");}
+void temp_p_2_setpoint_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_2_setpoint\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_2_setpoint,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_2_setpoint\n");}
+void temp_p_2_ntcp_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_2_ntcp\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_2_ntcp,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_2_ntcp\n");}
+void temp_p_2_ntcs_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_2_ntcs\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_2_ntcs,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_2_ntcs\n");}
+void temp_p_2_htr_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_2_htr\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_2_htr,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_2_htr\n");}
+void temp_p_2_tec_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_2_tec\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_2_tec,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_2_tec\n");}
+void temp_p_3_setpoint_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_3_setpoint\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_3_setpoint,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_3_setpoint\n");}
+void temp_p_3_ntcp_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_3_ntcp\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_3_ntcp,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_3_ntcp\n");}
+void temp_p_3_ntcs_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_3_ntcs\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_3_ntcs,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_3_ntcs\n");}
+void temp_p_3_htr_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_3_htr\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_3_htr,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_3_htr\n");}
+void temp_p_3_tec_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_3_tec\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_3_tec,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_3_tec\n");}
+void temp_p_4_setpoint_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_4_setpoint\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_4_setpoint,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_4_setpoint\n");}
+void temp_p_4_ntcp_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_4_ntcp\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_4_ntcp,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_4_ntcp\n");}
+void temp_p_4_ntcs_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_4_ntcs\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_4_ntcs,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_4_ntcs\n");}
+void temp_p_4_htr_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_4_htr\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_4_htr,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_4_htr\n");}
+void temp_p_4_tec_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_4_tec\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_4_tec,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_4_tec\n");}
+void temp_p_5_setpoint_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_5_setpoint\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_5_setpoint,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_5_setpoint\n");}
+void temp_p_5_ntcp_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_5_ntcp\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_5_ntcp,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_5_ntcp\n");}
+void temp_p_5_ntcs_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_5_ntcs\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_5_ntcs,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_5_ntcs\n");}
+void temp_p_5_htr_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_5_htr\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_5_htr,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_5_htr\n");}
+void temp_p_5_tec_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_5_tec\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_5_tec,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_5_tec\n");}
+void temp_p_6_setpoint_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_6_setpoint\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_6_setpoint,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_6_setpoint\n");}
+void temp_p_6_ntcp_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_6_ntcp\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_6_ntcp,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_6_ntcp\n");}
+void temp_p_6_ntcs_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_6_ntcs\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_6_ntcs,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_6_ntcs\n");}
+void temp_p_6_htr_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_6_htr\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_6_htr,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_6_htr\n");}
+void temp_p_6_tec_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("temp_p_6_tec\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_3,temp_p_6_tec,(uint32_t)status);
+	return;
+}//PRINTF("temp_p_6_tec\n");}
 
 /* ==================== TABLE 5: implementations ==================== */
-void test_ls_current_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("test_ls_current\n");}
-void test_fluidic_seq_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("test_fluidic_seq\n");}
-void exp_fluidic_seq_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("exp_fluidic_seq\n");}
+void test_ls_current_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("test_ls_current\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_5,test_ls_current,(uint32_t)status);
+	return;
+}
+void test_fluidic_seq_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("test_fluidic_seq\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_5,test_fluidic_seq,(uint32_t)status);
+	return;
+}
+void exp_fluidic_seq_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("exp_fluidic_seq\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_5,exp_fluidic_seq,(uint32_t)status);
+	return;
+}
 void exp_mon_start_cmd(uint32_t s,uint32_t a,char *v[])
 {
     (void)s;(void)a;(void)v;PRINTF("exp_mon_start\n");
