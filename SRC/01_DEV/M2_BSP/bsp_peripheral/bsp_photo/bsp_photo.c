@@ -251,7 +251,8 @@ void LPSPI5_IRQHandler(void)
         uint16_t rx = (uint16_t)(base->RDR & 0xFFFFu); // 16-bit frame
         // Push rx into buffer
 
-		photo_data[current_channel][photo_spi_count] = rx;
+		//photo_data[current_channel][photo_spi_count] = rx;
+
 		photo_spi_count += 1;
 
 		if (photo_spi_count < photo_spi_set_count)

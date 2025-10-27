@@ -5,7 +5,7 @@
       "type": "cmake",
       "label": "CMake: build",
       "command": "build",
-      "preset": "debug",
+      "preset": "release",
       "targets": [
         "all"
       ],
@@ -22,7 +22,7 @@
       "type": "cmake",
       "label": "CMake: clean",
       "command": "clean",
-      "preset": "debug",
+      "preset": "release",
       "problemMatcher": [
         "$gcc"
       ],
@@ -32,7 +32,7 @@
       "type": "cmake",
       "label": "CMake: configure",
       "command": "configure",
-      "preset": "debug",
+      "preset": "release",
       "problemMatcher": [
         "$gcc"
       ],

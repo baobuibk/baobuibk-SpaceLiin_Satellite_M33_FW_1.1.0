@@ -36,8 +36,8 @@
 
 Std_ReturnType BootManager_SystemInit(void){
     M33_RPROC_Init();
-    Utils_SoftTime_Init();
-    CRC16_XMODEM_Init();
+    // Utils_SoftTime_Init();
+    // CRC16_XMODEM_Init();
     M33_RPMSG_Init();
 
     return E_OK;

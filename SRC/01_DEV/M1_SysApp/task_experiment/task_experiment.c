@@ -10,6 +10,7 @@
 #include "bsp_laser.h"
 #include "bsp_photo.h"
 #include "simple_shell.h"
+#include "fsl_debug_console.h"
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Defines ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 #define EXP_SEM_TIMEOUT 2000
@@ -21,23 +22,9 @@
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Class ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Private Types ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-static exp_profile_t s_exp_profile =
-{
-    .pre_time_ms = 50,
-    .sampling_time_ms = 1900,
-    .post_time_ms = 50,
 
-    .sampling_rate_khz = 100,
-    .laser_intensity = 50,
-};
 
-static uint32_t    DAC_code_from_percent = 0;
-static TickType_t exp_last_delay, pre_delay, sample_delay, post_delay, wait_delay;
 
-static uint8_t    wait_spi_timeout = 0;
-
-static uint16_t is_start_exp = 0;
-static uint16_t mon_delay = 3600;
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Prototype ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Public Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -51,15 +38,31 @@ extern osSemaphore exp_task_sem;
 /* :::::::::: Experiment Task ::::::::::::: */
 void Task_Experiment(void *pvParameters)
 {
+static uint32_t    DAC_code_from_percent = 0;
+static TickType_t exp_last_delay, pre_delay, sample_delay, post_delay, wait_delay;
+
+static uint8_t    wait_spi_timeout = 0;
+
+static uint16_t is_start_exp = 0;
+static uint16_t mon_delay = 3600;
+static exp_profile_t s_exp_profile =
+{
+    .pre_time_ms = 500,
+    .sampling_time_ms = 9000,
+    .post_time_ms = 500,
+
+    .sampling_rate_khz = 100,
+    .laser_intensity = 50,
+};
     exp_last_delay = xTaskGetTickCount();
-    Shell_WriteString("Experiment Control...\r\n");
+    PRINTF("Experiment Control...\r\n");
 
     for(;;)
     {
     // SET_UP_STATE:
- //       vTaskDelayUntil(&exp_last_delay, 1000);
+    //    vTaskDelay(1000);
         osSemaphoreTake(&exp_task_sem, portMAX_DELAY); //wait for notification from root task to start experiment
-        Shell_WriteString("Experiment Starting ...\r\n");
+        PRINTF("Experiment Starting ...\r\n");
 
         // TODO: system_data_get_exp_profile(&s_exp_profile);
 
@@ -87,29 +90,31 @@ void Task_Experiment(void *pvParameters)
         for (current_channel = 0; current_channel < 24; current_channel++)
         {
     // PRE_TIME_STATE:
+            PRINTF("\r\n channel %d started",current_channel + 1);
             bsp_laser_int_sw_on(current_channel + 1);
             bsp_photo_int_sw_on(current_channel + 1);
 
             bsp_photo_spi_irq_init();
             bsp_photo_start_timer();
 
-            vTaskDelayUntil(&exp_last_delay, pre_delay);
-
+            vTaskDelay(pre_delay);
+            PRINTF("\r\n channel %d start sampling, wait for %d",current_channel + 1, sample_delay);
     // SAMPLING_STATE:
             bsp_laser_int_set_dac(DAC_code_from_percent);
 
-            vTaskDelayUntil(&exp_last_delay, sample_delay);
+            vTaskDelay(sample_delay);
 
     // POST_TIME_STATE:
+            PRINTF("\r\n channel %d stopped sampling",current_channel + 1);
             bsp_laser_int_set_dac(0);
 
-            vTaskDelayUntil(&exp_last_delay, post_delay);
+            vTaskDelay(post_delay);
 
             wait_spi_timeout = WAIT_SPI_TIMEOUT;
 
             while (is_spi_counter_finish == 0)
             {
-                vTaskDelayUntil(&exp_last_delay, wait_delay);
+                vTaskDelay(wait_delay);
 
                 wait_spi_timeout--;
 
@@ -130,6 +135,7 @@ void Task_Experiment(void *pvParameters)
             bsp_photo_spi_irq_deinit();
             bsp_laser_int_sw_off(current_channel + 1);
             bsp_photo_int_sw_off(current_channel + 1);
+            PRINTF("\r\n channel %d trigger writing to file",current_channel + 1);
         }
 
     // OFFLOAD_STATE:

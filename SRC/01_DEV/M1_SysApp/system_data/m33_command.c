@@ -69,7 +69,7 @@ int str2int(char *str, int32_t *ret) {
 }
 extern cmdFunction_entry_t cmd_table_1[];
 
-
+extern const int bee_table1_count;
 void Command_Process(char *input) {
     char buffer_copy[SHELL_BUFFER_SIZE];
     cmdFunction_entry_t * p_cmd;
@@ -84,7 +84,7 @@ void Command_Process(char *input) {
         args[++argc] = strtok(NULL, " ");
     }
     if (argc > 0) {
-        for (uint32_t i = 0; i < TABLE1_TOTAL_COUNT; i++)
+        for (uint32_t i = 0; i < bee_table1_count; i++)
         {
             PRINTF("\r\nsearch for %s", args[0]);
             p_cmd = &cmd_table_1[i];
@@ -235,15 +235,65 @@ void temp_p_6_tec_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;P
 void test_ls_current_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("test_ls_current\n");}
 void test_fluidic_seq_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("test_fluidic_seq\n");}
 void exp_fluidic_seq_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("exp_fluidic_seq\n");}
-void exp_mon_start_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("exp_mon_start\n");}
-void exp_mon_delay_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("exp_mon_delay\n");}
-void exp_mon_interval_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("exp_mon_interval\n");}
-void dls_ls_intensity_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("dls_ls_intensity\n");}
+void exp_mon_start_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("exp_mon_start\n");
+    int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_5,exp_mon_start,(uint32_t)status);
+	return;
+}
+void exp_mon_delay_cmd(uint32_t s,uint32_t a,char *v[]){
+    (void)s;(void)a;(void)v;PRINTF("exp_mon_delay\n");
+       int32_t status ;
+	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_5,exp_mon_delay,(uint32_t)status);
+	return;
+}
+void exp_mon_interval_cmd(uint32_t s,uint32_t a,char *v[]){
+    (void)s;(void)a;(void)v;PRINTF("exp_mon_interval\n");
+    int32_t status ;
+    	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_5,exp_mon_interval,(uint32_t)status);
+}
+void dls_ls_intensity_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;
+    PRINTF("dls_ls_intensity\n");
+    int32_t status ;
+        	uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_5,dls_ls_intensity,(uint32_t)status);
+}
 void cam_ls_intensity_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("cam_ls_intensity\n");}
-void exp_samp_rate_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("exp_samp_rate\n");}
-void exp_pre_time_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("exp_pre_time\n");}
-void exp_samp_time_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("exp_samp_time\n");}
-void exp_post_time_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("exp_post_time\n");}
+void exp_samp_rate_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("exp_samp_rate\n");
+    int32_t status ;
+    uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_5,exp_samp_rate,(uint32_t)status);
+}
+void exp_pre_time_cmd(uint32_t s,uint32_t a,char *v[]){
+    (void)s;(void)a;(void)v;PRINTF("exp_pre_time\n");
+    int32_t status ;    
+    uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_5,exp_pre_time,(uint32_t)status);
+}
+void exp_samp_time_cmd(uint32_t s,uint32_t a,char *v[]){
+    (void)s;(void)a;(void)v;PRINTF("exp_samp_time\n");
+    int32_t status ;
+    uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_5,exp_samp_time,(uint32_t)status);
+}
+void exp_post_time_cmd(uint32_t s,uint32_t a,char *v[]){
+    (void)s;(void)a;(void)v;PRINTF("exp_post_time\n");
+    int32_t status ;
+    uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_5,exp_post_time,(uint32_t)status);
+}
 void custom_ctl_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("custom_ctl\n");}
 
 /* ==================== TABLE 6: implementations ==================== */

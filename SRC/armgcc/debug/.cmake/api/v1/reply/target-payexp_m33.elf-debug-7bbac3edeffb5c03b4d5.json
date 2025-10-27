@@ -1275,9 +1275,9 @@
 				64,
 				65,
 				66,
-				67,
 				68,
 				69,
+				70,
 				71,
 				72,
 				73,
@@ -1298,20 +1298,17 @@
 				88,
 				89,
 				90,
-				91,
 				92,
 				93,
+				94,
 				95,
 				96,
 				97,
 				98,
 				99,
-				100,
 				101,
 				102,
-				104,
-				105,
-				106
+				103
 			]
 		},
 		{
@@ -1691,8 +1688,8 @@
 			"language" : "ASM",
 			"sourceIndexes" : 
 			[
-				70,
-				103
+				67,
+				100
 			]
 		}
 	],
@@ -1807,9 +1804,9 @@
 				64,
 				65,
 				66,
-				67,
 				68,
 				69,
+				70,
 				71,
 				72,
 				73,
@@ -1830,35 +1827,32 @@
 				88,
 				89,
 				90,
-				91,
 				92,
 				93,
+				94,
 				95,
 				96,
 				97,
 				98,
 				99,
-				100,
 				101,
 				102,
-				104,
-				105,
-				106
+				103
 			]
 		},
 		{
 			"name" : "",
 			"sourceIndexes" : 
 			[
-				70,
-				103
+				67,
+				100
 			]
 		},
 		{
 			"name" : "Header Files",
 			"sourceIndexes" : 
 			[
-				94
+				91
 			]
 		}
 	],
@@ -1922,12 +1916,6 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M1_SysApp/Interface/SimpleShell/simple_shell.c",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"compileGroupIndex" : 0,
-			"path" : "D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M1_SysApp/Services/cmdline.c",
 			"sourceGroupIndex" : 0
 		},
 		{
@@ -2240,18 +2228,6 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M4_Middlewares/ring_buffer/ring_buffer.c",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"compileGroupIndex" : 0,
-			"path" : "D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M5_Utils/CRC/crc16_xmodem.c",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"compileGroupIndex" : 0,
-			"path" : "D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M5_Utils/DateTime/date_time.c",
 			"sourceGroupIndex" : 0
 		},
 		{

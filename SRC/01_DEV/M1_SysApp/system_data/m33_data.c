@@ -26,6 +26,136 @@ table_info_t tables[TABLE_ID_TOTAL_COUNT] = {
     [TABLE_ID_6] = { table6_data, TABLE6_TOTAL_COUNT },
 };
 
+/* ==================== TABLE 1 INITIAL DATA ==================== */
+const int16_t table1_data_init[TABLE1_TOTAL_COUNT] = {
+    0x00,  // time_sync
+    0x00,  // pwr_ifb_en
+    0x00,  // pwr_io_en
+    0x00,  // pwr_pzp_en
+    0x00,  // pwr_htr_en
+    0x00,  // pwr_sln_tec_en
+    0x00,  // pwr_lda_en
+    0x00,  // pwr_pda_en
+    0x00,  // pwr_usb_0_en
+    0x00,  // pwr_usb_1_en
+    0x00,  // i2c_s_1_en
+    0x00,  // i2c_s_2_en
+    0x00,  // i2c_pwm_en
+    0x00,  // i2c_hd4_en
+    0x00,  // i2c_ld_1_en
+    0x00,  // i2c_ld_2_en
+    0x00,  // tec_0_en
+    0x00,  // tec_1_en
+    0x00,  // tec_2_en
+    0x00,  // tec_3_en
+    0x00,  // usb_led_1_set
+    0x00,  // usb_led_2_set
+    0x00,  // htr_0_set
+    0x00,  // htr_1_set
+    0x00,  // htr_2_set
+    0x00,  // htr_3_set
+    0x00,  // htr_4_set
+    0x00,  // htr_5_set
+    0x00,  // htr_6_set
+    0x00,  // htr_7_set
+    0x00   // custom_cmd
+};
+
+/* ==================== TABLE 2 INITIAL DATA ==================== */
+const int16_t table2_data_init[TABLE2_TOTAL_COUNT] = {
+    0x00,  // pump_1_ctl
+    0x00,  // pump_1_volt
+    0x00,  // pump_1_freq
+    0x00,  // pump_2_ctl
+    0x00,  // pump_2_volt
+    0x00,  // pump_2_freq
+
+    0x00,  // sln_0_ctl
+    0x00,  // sln_1_ctl
+    0x00,  // sln_2_ctl
+    0x00,  // sln_3_ctl
+    0x00,  // sln_4_ctl
+    0x00,  // sln_5_ctl
+    0x00,  // sln_6_ctl
+    0x00,  // sln_7_ctl
+    0x00,  // sln_8_ctl
+    0x00,  // sln_9_ctl
+    0x00,  // sln_10_ctl
+    0x00,  // sln_11_ctl
+
+    0x00,  // sln_valve_1_ctl
+    0x00   // sln_valve_2_ctl
+};
+
+/* ==================== TABLE 3 INITIAL DATA ==================== */
+const int16_t table3_data_init[] = {
+    0x00,  // temp_master_en
+
+    0x00,  // temp_p_1_en
+    0x00,  // temp_p_2_en
+    0x00,  // temp_p_3_en
+    0x00,  // temp_p_4_en
+    0x00,  // temp_p_5_en
+    0x00,  // temp_p_6_en
+
+    0x00,  // temp_p_1_setpoint
+    0x00,  // temp_p_1_ntcp
+    0x00,  // temp_p_1_ntcs
+    0x00,  // temp_p_1_htr
+    0x00,  // temp_p_1_tec
+
+    0x00,  // temp_p_2_setpoint
+    0x00,  // temp_p_2_ntcp
+    0x00,  // temp_p_2_ntcs
+    0x00,  // temp_p_2_htr
+    0x00,  // temp_p_2_tec
+
+    0x00,  // temp_p_3_setpoint
+    0x00,  // temp_p_3_ntcp
+    0x00,  // temp_p_3_ntcs
+    0x00,  // temp_p_3_htr
+    0x00,  // temp_p_3_tec
+
+    0x00,  // temp_p_4_setpoint
+    0x00,  // temp_p_4_ntcp
+    0x00,  // temp_p_4_ntcs
+    0x00,  // temp_p_4_htr
+    0x00,  // temp_p_4_tec
+
+    0x00,  // temp_p_5_setpoint
+    0x00,  // temp_p_5_ntcp
+    0x00,  // temp_p_5_ntcs
+    0x00,  // temp_p_5_htr
+    0x00,  // temp_p_5_tec
+
+    0x00,  // temp_p_6_setpoint
+    0x00,  // temp_p_6_ntcp
+    0x00,  // temp_p_6_ntcs
+    0x00,  // temp_p_6_htr
+    0x00   // temp_p_6_tec
+};
+
+/* ==================== TABLE 5 INITIAL DATA ==================== */
+const int16_t table5_data_init[] = {
+    0x00,  // test_ls_current
+    0x00,  // test_fluidic_seq
+
+    0x00,  // exp_fluidic_seq
+    0x00,  // exp_mon_start
+    0x00,  // exp_mon_delay
+    3600,  // exp_mon_interval
+
+    50,  // dls_ls_intensity
+    0x00,  // cam_ls_intensity
+
+    100,  // exp_samp_rate
+    50,  // exp_pre_time
+    9000,  // exp_samp_time
+    50,  // exp_post_time
+
+    0x00   // custom_ctl
+};
+
 
 uint32_t m33_data_init()
 {
@@ -42,7 +172,23 @@ uint32_t m33_data_init()
     {
         return (uint32_t)sem_ret;
     }
-    
+    uint16_t i;
+    for (i=0; i < TABLE1_TOTAL_COUNT; i++) 
+        {
+            table1_data[i].i = table1_data_init[i];
+        }
+    for (i=0; i < TABLE2_TOTAL_COUNT; i++) 
+        {
+            table2_data[i].i = table2_data_init[i];
+        }
+    for (i=0; i < TABLE3_TOTAL_COUNT; i++) 
+        {
+            table3_data[i].i = table3_data_init[i];
+        }  
+    for (i=0; i < TABLE5_TOTAL_COUNT; i++) 
+        {
+            table5_data[i].i = table5_data_init[i];
+        }    
     return (uint32_t)sem_ret;
 }
 

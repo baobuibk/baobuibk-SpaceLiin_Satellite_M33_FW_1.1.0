@@ -14,4 +14,4 @@ D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_
 D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_photo/bsp_photo.c:173:10:bsp_photo_spi_irq_deinit	16	static
 D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_photo/bsp_photo.c:221:6:TPM2_IRQHandler	4	static
 D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_photo/bsp_photo.c:244:6:LPSPI5_IRQHandler	24	static
-D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_photo/bsp_photo.c:277:15:map_PD_position	16	static
+D:/IMX93/PROJECT/mcimx93evk_freertos_hello/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_photo/bsp_photo.c:278:15:map_PD_position	16	static

@@ -118,5 +118,7 @@ cmdFunction_entry_t cmd_table_1[] = {
     { "exp_pre_time",      (cmdFunction)exp_pre_time_cmd },
     { "exp_samp_time",     (cmdFunction)exp_samp_time_cmd },
     { "exp_post_time",     (cmdFunction)exp_post_time_cmd },
-    { "custom_ctl",        (cmdFunction)custom_ctl_cmd }
+    { "custom_ctl",        (cmdFunction)custom_ctl_cmd },
+
 };
+const int bee_table1_count = sizeof(cmd_table_1) / sizeof(cmd_table_1[0]);
