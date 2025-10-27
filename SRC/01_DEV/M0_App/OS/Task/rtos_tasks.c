@@ -50,6 +50,7 @@ void EXP_RootTask(void *pvParameters);
 
 static void Shell_Task(void *pvParameters);
 static void RPMSG_Task(void *pvParameters);
+static void RPMSG_Tx_Task(void *pvParameters);
 
 /*************************************************
  *               	Root Task	                 *
@@ -108,10 +109,8 @@ static void EXP_App_Create_Communication_Queues(void)
     // Create communication queues here
     command_sem = xSemaphoreCreateBinary();
     exp_task_sem = xSemaphoreCreateBinary();
-  //  osSemaphoreCreate(&exp_task_sem);
     exp_task_sem = xSemaphoreCreateBinary();
     rptx_sem = xSemaphoreCreateMutex();
-  //  osSemaphoreCreate(&rptx_sem);
   remote_message_queue = xQueueCreate(30, sizeof(remote_message_t));
 
 }
@@ -124,11 +123,8 @@ Std_ReturnType EXP_AppInit(void)
     BSP_Init();
 
 PRINTF("growing task\r\n");
-    CREATE_TASK(Shell_Task, 		"ShellTask", 		MIN_STACK_SIZE * 5, 	NULL, 	2, NULL);
-
+    CREATE_TASK(RPMSG_Tx_Task, 		"RPMSG_Tx_Task", 		MIN_STACK_SIZE * 5, 	NULL, 	2, NULL);
     CREATE_TASK(RPMSG_Task, 		"RPMSGTask", 		MIN_STACK_SIZE * 3, 	NULL, 	1, NULL);
-
-  //  CREATE_TASK(task_system_control, 		"task_system_control", 		MIN_STACK_SIZE * 5, 	NULL, 	1, NULL);
     CREATE_TASK(Task_Experiment, 		"Task_Experiment", 		MIN_STACK_SIZE * 5, 	NULL, 	2, NULL);
 
     ret = E_OK;
@@ -308,14 +304,15 @@ enum {
     DLS_DATA,
     TEST_LASER_DATA,
     TEST_PUMP_DATA,
-    AR2020_CAPTURE,
-    USB_CAMERA_CAPTURE,
-    SYS_LOG
+    CAM_CAPTURE,
+    SYS_LOG_TEST,
+    SYS_LOG_DAILY
 
 };
 static void RPMSG_Tx_Task(void *pvParameters)
 {
    remote_message_t message;
+   uint32_t epoch = 0;
 
     PRINTF("[RPMSG_Tx_Task] Started\r\n");
     char msg_buf[100] = {0};
@@ -331,21 +328,40 @@ static void RPMSG_Tx_Task(void *pvParameters)
         }
         //process the message
         uint32_t msg_type = (message.address >> 12);
-        uint16_t epoch = 0;
-        m33_data_get_u(TABLE_ID_1,time_sync, &epoch);
+        
+        m33_data_get_epoch_lock(&epoch);
         switch (msg_type)
         {
             case UPDATE_PARAM:
-                snprintf(msg_buf, 100, "update_param 0x%03X=%d\r\n",message.address & (0x0FFF),message.data);
+                snprintf(msg_buf, 100, "update_param 0x%03X=%d\r\n",(message.address & 0x0FFF),message.data);
                 rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
                 break;
             case DLS_DATA:
-                snprintf(msg_buf, 100, "update_param 0x%03X=%d\r\n",message.address & (0x0FFF),message.data);
+                snprintf(msg_buf, 100, "daily_PLDD_%d.dat\r\n", epoch);
                 rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
                 break;
-
-
+            case TEST_LASER_DATA:
+                snprintf(msg_buf, 100, "oneshot_TLD_%d.dat\r\n", epoch);
+                rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
+                break;
+            case TEST_PUMP_DATA:
+                snprintf(msg_buf, 100, "oneshot_TLSR_%d.dat\r\n", epoch);
+                rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
+                break;
+            case CAM_CAPTURE:
+                snprintf(msg_buf, 100, "capture %d\r\n",epoch);
+                rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
+                break;
+            case SYS_LOG_TEST:
+                snprintf(msg_buf, 100, "oneshot_SYSLOG%d\r\n",epoch);
+                rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
+                break;
+            case SYS_LOG_DAILY:
+                snprintf(msg_buf, 100, "daily_SYSLOG%d\r\n",epoch);
+                rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
+                break;
         }
+        PRINTF("\r\n[RPMSG_Tx_Task] sent %s\r\n",msg_buf);
 
 
     }

@@ -11,6 +11,7 @@
 
 
 extern osSemaphore exp_task_sem;
+extern QueueHandle_t remote_message_queue;
 #define REPORT_INTERVAL 10  // report every 60 seconds
 
 void task_system_control()
@@ -21,11 +22,17 @@ void task_system_control()
     uint8_t  local_counter = 0;
     int16_t board_temperature = 0;
     char msg_buf[256];
+    remote_message_t message;
     PRINTF("===== [System COntrol Started] =====\r\n");
+
+    TickType_t xLastWakeTime;
+
+    // Initialise the xLastWakeTime variable with the current time.
+    xLastWakeTime = xTaskGetTickCount();
     
     while (1)
     {
-        vTaskDelay(pdMS_TO_TICKS(5000));    //update system and collect data every 1 second
+        vTaskDelayUntil( &xLastWakeTime, 1000 );   //update system and collect data every 1 second
         local_counter++;
         //check if experiment is enabled
         m33_data_get_u_lock(TABLE_ID_5, exp_mon_start, &is_start_exp);
@@ -52,22 +59,18 @@ void task_system_control()
             int16_t NTC_temps[12];
             m33_data_ntc_temp_get(NTC_temps);
             m33_data_get_i_lock(TABLE_ID_6, temp_board, &board_temperature);
+            message.address = temp_exp + 0x0600;
+            message.data = board_temperature;
+            xQueueSend(remote_message_queue, &message, (TickType_t)0);
 
-        snprintf(msg_buf, 256, "update_param 0x%03X=%d\r\n", temp_exp + 0x0600 , (unsigned int) board_temperature);
-        rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
-        for (int i = 0; i < 12; i++)
-        {
-            NTC_temps[i] = 10*i;
-        }
-        for (int i = 0; i < 12; i++)   
-        {
-        snprintf(msg_buf, 256, "update_param 0x%03X=%d\r\n", temp_ntc_0 + 0x0600 + i, (unsigned int) NTC_temps[i]);
-        rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
-        PRINTF("%s", msg_buf);
-        vTaskDelay(500);
-        }
+            for (int i = 0; i < 12; i++)   
+            {
+                message.address = temp_ntc_0 + 0x0600 + i;
+                message.data = NTC_temps[i];
+                xQueueSend(remote_message_queue, &message, (TickType_t)0);         
+            }
 
-        PRINTF("%s", msg_buf);
+            PRINTF("\r\n[task_system_control] sent to remote messae tx task\r\n", msg_buf);
         }
     }
 }
