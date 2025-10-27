@@ -27,6 +27,7 @@
     "bsp_i2c_sensor.h": "c",
     "task_experiment.h": "c",
     "queue.h": "c",
-    "system_error": "c"
+    "system_error": "c",
+    "rtos_tasks.h": "c"
   }
 }

@@ -259,5 +259,8 @@ uint32_t m33_get_set_mon_delay(uint16_t mon_delay);
 uint32_t m33_get_get_mon_interval(uint16_t *mon_interval);
 uint32_t m33_get_set_mon_interval(uint16_t mon_interval);
 
+uint32_t m33_data_get_epoch_lock(uint32_t * value);
+uint32_t m33_data_set_epoch_lock(uint32_t  value);
+
 
 #endif /* MIDDLEWARE_FLIGHTSYSTEM_SYSTEM_M33_DATA_H_ */
