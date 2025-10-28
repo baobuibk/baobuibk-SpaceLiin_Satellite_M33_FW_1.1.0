@@ -1,0 +1,14 @@
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/devices/slf3s_flow/sl3s_flow.c:34:16:compute_crc8	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/devices/slf3s_flow/sl3s_flow.c:43:6:slf3s_validate_crc	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/devices/slf3s_flow/sl3s_flow.c:49:16:slf3s_read_data	32	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/devices/slf3s_flow/sl3s_flow.c:68:16:slf3s_send_command	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/devices/slf3s_flow/sl3s_flow.c:76:16:slf3s_send_general_cmd	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/devices/slf3s_flow/sl3s_flow.c:83:9:slf3s_init	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/devices/slf3s_flow/sl3s_flow.c:89:9:slf3s_stop	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/devices/slf3s_flow/sl3s_flow.c:94:9:slf3s_soft_reset	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/devices/slf3s_flow/sl3s_flow.c:99:7:slf3s_read_flow	32	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/devices/slf3s_flow/sl3s_flow.c:108:7:slf3s_read_temperature	32	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/devices/slf3s_flow/sl3s_flow.c:117:10:slf3s_read_flags	32	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/devices/slf3s_flow/sl3s_flow.c:126:9:slf3s_read_all	40	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/devices/slf3s_flow/sl3s_flow.c:147:10:slf3s_get_product_id	56	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/devices/slf3s_flow/sl3s_flow.c:169:10:slf3s_get_serial_number	16	static

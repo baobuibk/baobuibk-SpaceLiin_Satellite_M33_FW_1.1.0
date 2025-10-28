@@ -322,13 +322,21 @@ uint16_t bsp_laser_ext_current_adc_polling(void)
 		}
 	}
 
+	uint16_t raw_adc = bsp_laser_ext_current_read_adc_data();
+
+	// float temp = ((float)raw_adc * 1800.0) / (4095.0);	//mV x 1 times
+	// temp /= (5.97 * 30.0);
+
+	float temp = (float)raw_adc * 9.817095244;
+	return (uint16_t)(temp);
+
 	// uint16_t raw_adc = bsp_laser_ext_current_read_adc_data();
 
 	// float temp = ((float)raw_adc * 1800.0) / (4095.0);	//mV x 1 times
 	// temp /= (5.97 * 30.0);
 	// return (uint16_t)(temp);
 
-	return bsp_laser_ext_current_read_adc_data();
+	// return bsp_laser_ext_current_read_adc_data();
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Function ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */

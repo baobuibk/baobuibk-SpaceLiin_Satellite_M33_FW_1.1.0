@@ -9,6 +9,7 @@
 #include "OS/Task/rtos_tasks.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "m33_data.h"
 /*--------------------Start RTOS--------------*/
 void EXP_RTOS_Start(void)
 {
@@ -37,6 +38,10 @@ void vApplicationIdleHook(void)
 /* Tick Hook */
 void vApplicationTickHook(void)
 {
+    uint32_t epoch;
+        m33_data_get_epoch_lock(&epoch);
+        epoch ++;
+        m33_data_set_epoch_lock(epoch);
 
 }
 

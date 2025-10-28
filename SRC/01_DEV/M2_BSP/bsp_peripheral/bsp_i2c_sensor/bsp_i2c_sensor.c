@@ -26,8 +26,7 @@ void bsp_i2c_sensor_init()
 	do_set(&sensor_en0_gpio);
 	do_set(&sensor_en1_gpio);
 
-	TickType_t last_delay = xTaskGetTickCount();
-	vTaskDelayUntil(&last_delay, pdMS_TO_TICKS(200));
+	vTaskDelay(pdMS_TO_TICKS(200));
 
 	BMP390_init(&sensor_i2c);
 	slf3s_init(&sensor_i2c, true);

@@ -61,7 +61,7 @@ add_executable(${MCUX_SDK_PROJECT_NAME}
 
     # ==== 01_DEV / M1_SysApp ====
     "${SRC_ROOT}/01_DEV/M1_SysApp/Interface/RemoteCall/remote_call.c"
-    "${SRC_ROOT}/01_DEV/M1_SysApp/Interface/SimpleShell/simple_shell.c"
+    # "${SRC_ROOT}/01_DEV/M1_SysApp/Interface/SimpleShell/simple_shell.c"
     # "${SRC_ROOT}/01_DEV/M1_SysApp/Services/cmdline.c"
     "${SRC_ROOT}/01_DEV/M1_SysApp/system_data/m33_command.c"
     "${SRC_ROOT}/01_DEV/M1_SysApp/system_data/m33_data.c"
@@ -80,7 +80,7 @@ add_executable(${MCUX_SDK_PROJECT_NAME}
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_core/bsp_core.c"
 
     # ---- BSP Peripheral ----
-    "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_debug_console/bsp_debug_console.c"
+    # "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_debug_console/bsp_debug_console.c"
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_expander/bsp_expander.c"
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_heater/bsp_heater.c"
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_i2c_sensor/bsp_i2c_sensor.c"

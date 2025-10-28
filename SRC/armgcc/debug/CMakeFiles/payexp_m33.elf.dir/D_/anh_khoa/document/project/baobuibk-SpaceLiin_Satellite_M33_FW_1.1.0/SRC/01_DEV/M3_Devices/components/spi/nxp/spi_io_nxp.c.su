@@ -1,0 +1,12 @@
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:46:10:spi_io_set_mode	40	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:105:10:spi_io_read_sync	40	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:172:10:spi_io_write_sync	40	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:232:10:spi_io_transfer_sync	40	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:298:10:spi_io_read_async	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:304:10:spi_io_write_async	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:310:10:spi_io_transfer_async	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:316:10:spi_io_write_and_read_async	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:325:10:spi_io_read_dma	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:331:10:spi_io_write_dma	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:337:10:spi_io_transfer_dma	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M3_Devices/components/spi/nxp/spi_io_nxp.c:343:10:spi_io_write_and_read_dma	24	static

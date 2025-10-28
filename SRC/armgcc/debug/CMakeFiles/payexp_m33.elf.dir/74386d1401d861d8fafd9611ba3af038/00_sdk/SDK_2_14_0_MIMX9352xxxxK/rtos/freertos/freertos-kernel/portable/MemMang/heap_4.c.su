@@ -1,0 +1,9 @@
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/rtos/freertos/freertos-kernel/portable/MemMang/heap_4.c:137:8:pvPortMalloc	40	static
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/rtos/freertos/freertos-kernel/portable/MemMang/heap_4.c:286:6:vPortFree	24	static
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/rtos/freertos/freertos-kernel/portable/MemMang/heap_4.c:339:8:xPortGetFreeHeapSize	4	static
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/rtos/freertos/freertos-kernel/portable/MemMang/heap_4.c:345:8:xPortGetMinimumEverFreeHeapSize	4	static
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/rtos/freertos/freertos-kernel/portable/MemMang/heap_4.c:351:6:vPortInitialiseBlocks	4	static
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/rtos/freertos/freertos-kernel/portable/MemMang/heap_4.c:357:8:pvPortCalloc	24	static
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/rtos/freertos/freertos-kernel/portable/MemMang/heap_4.c:376:13:prvHeapInit	24	static
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/rtos/freertos/freertos-kernel/portable/MemMang/heap_4.c:421:13:prvInsertBlockIntoFreeList	24	static
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/rtos/freertos/freertos-kernel/portable/MemMang/heap_4.c:484:6:vPortGetHeapStats	32	static

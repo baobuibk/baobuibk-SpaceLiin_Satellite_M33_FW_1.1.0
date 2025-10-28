@@ -1,0 +1,6 @@
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M4_Middlewares/os/freertos/osDelay.c:19:6:osDelay	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M4_Middlewares/os/freertos/osDelay.c:24:10:osDefineTime	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M4_Middlewares/os/freertos/osDelay.c:28:10:osTaskGetTickCount	8	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M4_Middlewares/os/freertos/osDelay.c:32:6:osTaskDelayUntil	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M4_Middlewares/os/freertos/osDelay.c:37:5:osSetTimeUnix	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M4_Middlewares/os/freertos/osDelay.c:42:9:osGetTimeUnix	8	static

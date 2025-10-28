@@ -48,6 +48,10 @@ void bsp_heater_turnon(uint32_t channel, uint32_t duty)
 	pca9685_set_duty_percent(&pwmDev, channel, duty);
 }
 
+void bsp_heater_set_freq_hz(uint16_t freq_hz)
+{
+	pca9685_set_freq_hz(&pwmDev, freq_hz);
+}
 
 void bsp_heater_list_turnoff(uint32_t heaters)	//error, turn off all heaters in the list, (0x03 mean heater 0,1)
 {

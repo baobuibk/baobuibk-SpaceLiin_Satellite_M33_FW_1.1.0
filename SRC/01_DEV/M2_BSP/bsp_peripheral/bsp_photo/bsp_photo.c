@@ -9,6 +9,7 @@
 #include "fsl_lpspi.h"
 
 #include "MIMX9352_cm33.h"
+#include "m33_data.h"
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Defines ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Prototype ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -17,7 +18,7 @@
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Class ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Private Types ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-static uint16_t photo_data[24][1] = {0};
+//static uint16_t photo_data[24][1] = {0};
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Prototype ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 static int8_t map_PD_position(int x);
@@ -252,6 +253,9 @@ void LPSPI5_IRQHandler(void)
         // Push rx into buffer
 
 		//photo_data[current_channel][photo_spi_count] = rx;
+        uint8_t *addr = RAM_TEST_BASE + (2*photo_spi_count) ;
+
+        memcpy(addr  , &rx , 2); //copy to shared RAM
 
 		photo_spi_count += 1;
 
@@ -259,9 +263,7 @@ void LPSPI5_IRQHandler(void)
 		{
 			return;
 		}
-		// else if (photo_spi_count >= photo_spi_set_count)
-		// reset the spi count
-		photo_spi_count = 0;
+
 		is_spi_counter_finish = 1;
 
 		TPM_Type *base = PHOTO_ADC_TIM_BASE;

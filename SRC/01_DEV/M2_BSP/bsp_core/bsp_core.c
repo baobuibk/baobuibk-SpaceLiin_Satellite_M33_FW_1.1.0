@@ -32,6 +32,8 @@
 static void bsp_core_init_uart(void);
 static void bsp_core_init_can(void);
 
+static void bsp_core_init_usb_pwr_en_gpio(void);
+
 static void bsp_core_init_io_expander_i2c(void);
 static void bsp_core_init_tec_cs_gpio(void);
 
@@ -73,6 +75,8 @@ void bsp_core_init(void)
 {
     bsp_core_init_io_expander_i2c();
     bsp_core_init_tec_cs_gpio();
+
+    bsp_core_init_usb_pwr_en_gpio();
 
     bsp_core_init_sensor_i2c();
     bsp_core_init_sensor_en_gpio();
@@ -276,6 +280,48 @@ static void bsp_core_init_tec_cs_gpio(void)
     RGPIO_PinInit(GPIO3, 30, &TEC_CS_config);
 }
 
+do_t usb_en0_gpio =
+{
+    .port = 3,
+    .pin  = USB_PWR_GPIO_EN0_PIN,
+    .bStatus = false,
+};
+do_t usb_en1_gpio =
+{
+    .port = 3,
+    .pin  = USB_PWR_GPIO_EN1_PIN,
+    .bStatus = false,
+};
+static void bsp_core_init_usb_pwr_en_gpio(void)
+{
+    /* Define the init structure for the output LED pin*/
+    rgpio_pin_config_t usb_pwr_config =
+    {
+        kRGPIO_DigitalOutput,
+        0,
+    };
+
+    /* Board pin, clock, debug console init */
+    /* clang-format off */
+
+    const clock_root_config_t rgpioClkCfg =
+    {
+        .clockOff = false,
+        .mux = 0, // 24Mhz Mcore root buswake clock
+        .div = 1
+    };
+
+    CLOCK_SetRootClock(USB_PWR_GPIO_EN0_CLOCK_ROOT, &rgpioClkCfg);
+    CLOCK_EnableClock(USB_PWR_GPIO_EN0_CLOCK_GATE);
+
+    /* Set PCNS register value to 0x0 to prepare the RGPIO initialization */
+    USB_PWR_GPIO_EN0_PORT->PCNS = 0x0;
+
+    /* Init output LED GPIO. */
+    RGPIO_PinInit(USB_PWR_GPIO_EN0_PORT, USB_PWR_GPIO_EN0_PIN, &usb_pwr_config);
+    RGPIO_PinInit(USB_PWR_GPIO_EN0_PORT, USB_PWR_GPIO_EN1_PIN, &usb_pwr_config);
+}
+
 i2c_io_t sensor_i2c =
 {
 		.ui32I2cPort = 4
@@ -409,6 +455,12 @@ do_t pump_en_gpio =
     .pin  = I2C_PUMP_GPIO_EN_PIN,
     .bStatus = false,
 };
+do_t pump_en2_gpio =
+{
+    .port = 4,
+    .pin  = I2C_PUMP_GPIO_EN2_PIN,
+    .bStatus = false,
+};
 static void bsp_core_init_pump_en_gpio(void)
 {
     /* Define the init structure for the output LED pin*/
@@ -434,7 +486,8 @@ static void bsp_core_init_pump_en_gpio(void)
     /* Set PCNS register value to 0x0 to prepare the RGPIO initialization */
     I2C_PUMP_GPIO_EN_PORT->PCNS = 0x0;
 
-    RGPIO_PinInit(I2C_PUMP_GPIO_EN_PORT, I2C_PUMP_GPIO_EN_PIN, &pump_en_config);
+    RGPIO_PinInit(I2C_PUMP_GPIO_EN_PORT, I2C_PUMP_GPIO_EN_PIN,  &pump_en_config);
+    RGPIO_PinInit(I2C_PUMP_GPIO_EN_PORT, I2C_PUMP_GPIO_EN2_PIN, &pump_en_config);
 }
 
 SPI_Io_t onboard_adc_spi =

@@ -1,0 +1,17 @@
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/CMSIS/Core/Include/core_cm33.h:2378:22:__NVIC_EnableIRQ	16	static
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/CMSIS/Core/Include/core_cm33.h:2416:22:__NVIC_DisableIRQ	16	static
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/CMSIS/Core/Include/core_cm33.h:2469:22:__NVIC_ClearPendingIRQ	16	static
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/CMSIS/Core/Include/core_cm33.h:2575:22:__NVIC_SetPriority	16	static
+D:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK/devices/MIMX9352/drivers/fsl_tpm.h:822:20:TPM_SetTimerPeriod	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_photo/bsp_photo.c:40:6:bsp_photo_init	8	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_photo/bsp_photo.c:45:6:bsp_photo_int_sw_on	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_photo/bsp_photo.c:52:6:bsp_photo_int_sw_off	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_photo/bsp_photo.c:59:6:bsp_photo_int_all_sw_off	8	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_photo/bsp_photo.c:65:6:bsp_photo_setup_timmer	72	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_photo/bsp_photo.c:89:6:bsp_photo_start_timer	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_photo/bsp_photo.c:103:6:bsp_photo_stop_timer	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_photo/bsp_photo.c:115:10:bsp_photo_spi_irq_init	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_photo/bsp_photo.c:174:10:bsp_photo_spi_irq_deinit	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_photo/bsp_photo.c:222:6:TPM2_IRQHandler	4	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_photo/bsp_photo.c:245:6:LPSPI5_IRQHandler	32	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_photo/bsp_photo.c:280:15:map_PD_position	16	static

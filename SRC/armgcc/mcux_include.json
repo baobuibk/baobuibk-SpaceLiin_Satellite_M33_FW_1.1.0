@@ -9,10 +9,10 @@
       "displayName": "debug-env",
       "hidden": true,
       "environment": {
-        "ARMGCC_DIR": "C:/Users/Admin/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi",
-        "SdkRootDirPath": "d:/PROJECT/XpressoSDK/SDK_2_14_0_MIMX9352xxxxK",
-        "POSTPROCESS_UTILITY": "C:/Users/Admin/.mcuxpressotools/mcux-fixelf-14.2.2/mcux-fixelf.exe",
-        "MCUX_VENV_PATH": "C:/Users/Admin/.mcuxpressotools/.venv/Scripts",
+        "ARMGCC_DIR": "C:/Users/duong/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi",
+        "SdkRootDirPath": "d:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK",
+        "POSTPROCESS_UTILITY": "",
+        "MCUX_VENV_PATH": "C:/Users/duong/.mcuxpressotools/.venv/Scripts",
         "PATH": "$env{MCUX_VENV_PATH}${pathListSep}$penv{PATH}",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       },
@@ -23,10 +23,10 @@
       "displayName": "release-env",
       "hidden": true,
       "environment": {
-        "ARMGCC_DIR": "C:/Users/Admin/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi",
-        "SdkRootDirPath": "d:/PROJECT/XpressoSDK/SDK_2_14_0_MIMX9352xxxxK",
-        "POSTPROCESS_UTILITY": "C:/Users/Admin/.mcuxpressotools/mcux-fixelf-14.2.2/mcux-fixelf.exe",
-        "MCUX_VENV_PATH": "C:/Users/Admin/.mcuxpressotools/.venv/Scripts",
+        "ARMGCC_DIR": "C:/Users/duong/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi",
+        "SdkRootDirPath": "d:/anh_khoa/document/project/nxp_mcux/workspace/space_liin_tech/satelite_exp_imx93/00_sdk/SDK_2_14_0_MIMX9352xxxxK",
+        "POSTPROCESS_UTILITY": "",
+        "MCUX_VENV_PATH": "C:/Users/duong/.mcuxpressotools/.venv/Scripts",
         "PATH": "$env{MCUX_VENV_PATH}${pathListSep}$penv{PATH}",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       },

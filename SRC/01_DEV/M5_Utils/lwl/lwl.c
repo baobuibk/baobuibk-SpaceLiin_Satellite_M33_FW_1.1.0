@@ -8,7 +8,7 @@
 #include "m33_data.h"
 #include "FreeRTOS.h"
 #include "queue.h"
-
+#include "fsl_debug_console.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Common macros
@@ -20,7 +20,7 @@
     #define 	LWL_BUF_SIZE 		(CONFIG_LWL_BUF_SIZE)
  	 #define 	LWL_BUF_THRESHOLD 	(CONFIG_LWL_BUF_THRESHOLD)
 #else
-    #define LWL_BUF_SIZE 			256
+    #define LWL_BUF_SIZE 			(1024)
 	#define LWL_BUF_THRESHOLD 		(LWL_BUF_SIZE - 56)
 #endif
 
@@ -79,19 +79,54 @@ typedef struct lwl_t{
 	struct lwl_data_buffer lwl_data_buf[2];
 }lwl_t;
 
-__attribute__((aligned(4))) static uint8_t lwl_data_buf_0[LWL_BUF_SIZE] = {0};
-__attribute__((aligned(4))) static uint8_t lwl_data_buf_1[LWL_BUF_SIZE] = {0};
+// __attribute__((aligned(4))) static uint8_t lwl_data_buf_0[LWL_BUF_SIZE] = {0};
+// __attribute__((aligned(4))) static uint8_t lwl_data_buf_1[LWL_BUF_SIZE] = {0};
+
+
+// static lwl_t lwl = {
+//     .lwl_working_buf_index = 0,
+//     .lwl_full_buf_index = 1,
+//     .lwl_buf_over_threshold = false,
+//     .lwl_data_buf = {
+//         { .put_idx = 0, .p_buf = (uint8_t *)lwl_data_buf_0 },
+//         { .put_idx = 0, .p_buf = (uint8_t *)lwl_data_buf_1 }
+//     }
+// };
+
+/* Định nghĩa địa chỉ OCRAM base */
+#define OCRAM_BASE_ADDR  0x20480000U
+
+#define OCRAM_SECOND_BUFFER_BASE (OCRAM_BASE_ADDR + LWL_BUF_SIZE)
+#define OCRAM_SINGLE_BUFFER_BASE (OCRAM_BASE_ADDR + 2*LWL_BUF_SIZE)
+
+uint8_t * lwl_data_buf_0 = (uint8_t *)OCRAM_BASE_ADDR;
+uint8_t * lwl_data_buf_1 = (uint8_t *)OCRAM_SECOND_BUFFER_BASE;
 
 static lwl_t lwl = {
     .lwl_working_buf_index = 0,
     .lwl_full_buf_index = 1,
     .lwl_buf_over_threshold = false,
     .lwl_data_buf = {
-        { .put_idx = 0, .p_buf = (uint8_t *)lwl_data_buf_0 },
-        { .put_idx = 0, .p_buf = (uint8_t *)lwl_data_buf_1 }
+        { .put_idx = 0, .p_buf = (uint8_t *)OCRAM_BASE_ADDR },
+        { .put_idx = 0, .p_buf = (uint8_t *)OCRAM_SECOND_BUFFER_BASE }
     }
 };
 
+// Structure for single buffer lightweight log 
+typedef struct lwl_single_t {
+    bool lwl_buf_over_threshold;
+    struct lwl_data_buffer lwl_data_buf;  // Single buffer
+} lwl_single_t;
+
+uint8_t * lwl_data_buf_2 = (uint8_t *)OCRAM_SINGLE_BUFFER_BASE;
+
+static lwl_single_t lwl_single = {
+    .lwl_buf_over_threshold = false,
+    .lwl_data_buf = {
+        .put_idx = 0,
+        .p_buf = (uint8_t *)OCRAM_SINGLE_BUFFER_BASE
+    }
+};
 // Log message table (ID is the index)
 static const struct lwl_msg lwl_msg_table[] = {
     {NULL, 0},                                       // ID 0: EXP_INVALID
@@ -109,7 +144,9 @@ static const struct lwl_msg lwl_msg_table[] = {
 
     {"Experiment: Switch on solenoid %1d", 1}, // ID 9: EXP_TEMP_TEC_OVERRIDE_PROFILE
     {"Experiment: Switch off solenoid %1d", 1}, // ID 9: EXP_TEMP_TEC_OVERRIDE_PROFILE
-
+    {"Experiment: Turn on Pump ", 0}, // ID 9: EXP_TEMP_TEC_OVERRIDE_PROFILE
+    {"Experiment: Turn off Pump ", 0},
+    {"Experiment: Flow Value %4d ", 4}
 
 };
 
@@ -287,9 +324,70 @@ uint32_t lwl_transfer(void)
     memcpy(addr, lwl.lwl_data_buf[index].p_buf, length);
     lwl.lwl_buf_over_threshold = 0; //clear full status
      lwl.lwl_data_buf[index].put_idx = 0;
+     PRINTF("\r\n[lwl] transfer data with length = %d\r\n",length);
      return length;
 }
 
+
+void lwl_sgl(uint8_t id, ...)
+{
+    va_list ap;
+    uint32_t put_idx;
+
+    if (lwl_single.lwl_buf_over_threshold) return;
+
+    struct lwl_data_buffer *lwl_data_buf = &lwl_single.lwl_data_buf;
+
+    // Validate ID
+    if (id == 0 || id >= lwl_msg_table_size || lwl_msg_table[id].fmt == NULL) {
+        return; // Invalid ID
+    }
+
+    const struct lwl_msg *msg = &lwl_msg_table[id];
+    uint8_t length = 1 + 1 + msg->num_arg_bytes + 1; // length + id + args + CRC
+
+    va_start(ap, id);
+
+    put_idx = lwl_data_buf->put_idx % LWL_BUF_SIZE;
+    lwl_data_buf->put_idx = (put_idx + length + 1) % LWL_BUF_SIZE; // +1 for START_BYTE
+
+    // Write start byte
+    *(lwl_data_buf->p_buf + put_idx) = LWL_START_BYTE;
+    put_idx = (put_idx + 1) % LWL_BUF_SIZE;
+
+    // Write length
+    *(lwl_data_buf->p_buf + put_idx) = length;
+    put_idx = (put_idx + 1) % LWL_BUF_SIZE;
+
+    // Write ID
+    *(lwl_data_buf->p_buf + put_idx) = id;
+    uint8_t crc_data[1 + msg->num_arg_bytes]; // Buffer for CRC calculation
+    crc_data[0] = id;
+    put_idx = (put_idx + 1) % LWL_BUF_SIZE;
+
+    // Write arguments and collect for CRC
+    for (uint8_t i = 0; i < msg->num_arg_bytes; i++) {
+        uint32_t arg = va_arg(ap, unsigned);
+        *(lwl_data_buf->p_buf + put_idx) = (uint8_t)(arg & 0xFF);
+        crc_data[i + 1] = *(lwl_data_buf->p_buf + put_idx);
+        put_idx = (put_idx + 1) % LWL_BUF_SIZE;
+    }
+
+    // Calculate and write CRC
+    uint8_t crc = calculate_crc8(crc_data, 1 + msg->num_arg_bytes);
+    *(lwl_data_buf->p_buf + put_idx) = crc;
+
+    if (lwl_data_buf->put_idx > LWL_BUF_THRESHOLD) {  // buffer nearly full
+        lwl_single.lwl_buf_over_threshold = true;
+        lwl_buffer_full_notify();
+    }
+    va_end(ap);
+}
+void lwl_single_reset(void) {
+    lwl_single.lwl_buf_over_threshold = false;
+    lwl_single.lwl_data_buf.put_idx = 0;
+    memset(lwl_single.lwl_data_buf.p_buf, 0, LWL_BUF_SIZE);
+}
 /*
 LWL(TIMESTAMP, LWL_1(days), LWL_1(hours), LWL_1(minutes), LWL_1(seconds));
 

@@ -35,7 +35,7 @@ void bsp_heater_init();
 void bsp_heater_turnoff(uint32_t channel);
 void bsp_heater_turnon(uint32_t channel, uint32_t duty);
 
-
+void bsp_heater_set_freq_hz(uint16_t freq_hz);
 void bsp_heater_list_turnoff(uint32_t heaters);	//error, turn off all heaters in the list, (0x03 mean heater 0,1)
 void bsp_heater_list_turnon(uint32_t heaters, uint32_t duty);
 
