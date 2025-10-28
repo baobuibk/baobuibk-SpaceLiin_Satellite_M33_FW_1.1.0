@@ -12,6 +12,8 @@
 static osSemaphore m33_data_sem = NULL;
 #define M33_DATA_SEMAPHOR_TIMEOUT 2000
 
+uint64_t    epoch_time = 0;
+
  value16_t table1_data[TABLE1_TOTAL_COUNT];
  value16_t table2_data[TABLE2_TOTAL_COUNT];
  value16_t table3_data[TABLE3_TOTAL_COUNT];
@@ -198,6 +200,32 @@ uint32_t m33_data_set_u(uint16_t table_id,uint16_t index, uint16_t value)
     if (index >= tables[table_id].size) return 1;   // tránh vượt giới hạn bảng
 
     tables[table_id].data[index].u = value;
+    return 0;
+}
+
+uint32_t m33_data_set_epoch_lock(uint32_t value)
+{
+    int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
+
+    if (sem_ret != pdPASS)
+    {
+        return (uint32_t)sem_ret;
+    }
+    epoch_time = value;
+    osSemaphoreGiven(&m33_data_sem);
+    return 0;
+}
+
+uint32_t m33_data_get_epoch_lock(uint32_t * value)
+{
+    int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
+
+    if (sem_ret != pdPASS)
+    {
+        return (uint32_t)sem_ret;
+    }
+   * value = epoch_time;
+    osSemaphoreGiven(&m33_data_sem);
     return 0;
 }
 

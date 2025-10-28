@@ -8,9 +8,23 @@
 #ifndef MIDDLEWARE_FLIGHTSYSTEM_SYSTEM_M33_DATA_H_
 #define MIDDLEWARE_FLIGHTSYSTEM_SYSTEM_M33_DATA_H_
 #include "stdint.h"
-/**
- * A 32 bit variable that can be interpreted as int, uint or float
- */
+
+     //0: updateparam, 1: Send DLS data, 
+    //2: Send Test Laser data, 3: Send Test Pump data
+    //4: Send command AR2020 capture, 5: Send USB camera capture
+enum {
+    UPDATE_PARAM = 0,
+    DLS_DATA = 0x8000,
+    TEST_LASER_DATA=0x9000,
+    TEST_PUMP_DATA = 0xA000,
+    CAM_CAPTURE = 0xB000,
+    SYS_LOG = 0xC000
+};
+
+enum {
+    WARMUP = 0,
+    OPERATION
+};
 typedef union value16_t{
     int16_t i;
     uint16_t u;
@@ -200,7 +214,7 @@ typedef enum {
 } table5_id_t;
 
 typedef enum {
-    sys_status,
+    sys_status,     //WARMUP, OPERATION
     boot_cnt,
 
     temp_exp,
@@ -258,6 +272,9 @@ uint32_t m33_get_get_mon_delay(uint16_t *mon_delay);
 uint32_t m33_get_set_mon_delay(uint16_t mon_delay);
 uint32_t m33_get_get_mon_interval(uint16_t *mon_interval);
 uint32_t m33_get_set_mon_interval(uint16_t mon_interval);
+
+uint32_t m33_data_get_epoch_lock(uint32_t * value);
+uint32_t m33_data_set_epoch_lock(uint32_t  value);
 
 
 #endif /* MIDDLEWARE_FLIGHTSYSTEM_SYSTEM_M33_DATA_H_ */

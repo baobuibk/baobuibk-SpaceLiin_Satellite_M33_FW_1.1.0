@@ -8,9 +8,11 @@
 #include "Interface/RemoteCall/remote_call.h"
 #include "fsl_debug_console.h"
 #include "rtos.h"
-
+#include "lwl.h"
+#include "task_update_onboard_adc.h"
 
 extern osSemaphore exp_task_sem;
+extern QueueHandle_t remote_message_queue;
 #define REPORT_INTERVAL 10  // report every 60 seconds
 
 void task_system_control()
@@ -21,12 +23,29 @@ void task_system_control()
     uint8_t  local_counter = 0;
     int16_t board_temperature = 0;
     char msg_buf[256];
+    remote_message_t message;
     PRINTF("===== [System COntrol Started] =====\r\n");
+
+    TickType_t xLastWakeTime;
+
+    // Initialise the xLastWakeTime variable with the current time.
+    xLastWakeTime = xTaskGetTickCount();
     
     while (1)
     {
-        vTaskDelay(pdMS_TO_TICKS(5000));    //update system and collect data every 1 second
+        vTaskDelayUntil( &xLastWakeTime, 1000 );   //update system and collect data every 1 second
+        ADC_update();
         local_counter++;
+        //check if log is full
+        if (lwl_is_full())
+        {
+            uint32_t length = lwl_transfer();
+            message.address = SYS_LOG;
+            message.data = length;
+            xQueueSendToFront(remote_message_queue, &message, 1000);//send notification for log
+            PRINTF("\r\n[task_system_control] sent syslog notìication\r\n", msg_buf);
+
+        }
         //check if experiment is enabled
         m33_data_get_u_lock(TABLE_ID_5, exp_mon_start, &is_start_exp);
         m33_data_get_u_lock(TABLE_ID_5, exp_mon_delay, &exp_remain_time);
@@ -48,26 +67,28 @@ void task_system_control()
         }
         if (local_counter >= REPORT_INTERVAL)
         {
+            uint32_t epoch ;
+            m33_data_get_epoch_lock(&epoch);
+            //log time
+            LWL(LWL_EXP_TIMESTAMP, LWL_4(epoch));
+
             local_counter = 0;
             int16_t NTC_temps[12];
             m33_data_ntc_temp_get(NTC_temps);
             m33_data_get_i_lock(TABLE_ID_6, temp_board, &board_temperature);
+            message.address = temp_exp + 0x0600;
+            message.data = board_temperature;
 
-        snprintf(msg_buf, 256, "update_param 0x%03X=%d\r\n", temp_exp + 0x0600 , (unsigned int) board_temperature);
-        rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
-        for (int i = 0; i < 12; i++)
-        {
-            NTC_temps[i] = 10*i;
-        }
-        for (int i = 0; i < 12; i++)   
-        {
-        snprintf(msg_buf, 256, "update_param 0x%03X=%d\r\n", temp_ntc_0 + 0x0600 + i, (unsigned int) NTC_temps[i]);
-        rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
-        PRINTF("%s", msg_buf);
-        vTaskDelay(500);
-        }
 
-        PRINTF("%s", msg_buf);
+            xQueueSend(remote_message_queue, &message, (TickType_t)0);
+            for (int i = 0; i < 12; i++)   
+            {
+                message.address = temp_ntc_0 + 0x0600 + i;
+                message.data = NTC_temps[i];
+                xQueueSend(remote_message_queue, &message, (TickType_t)0);         
+            }
+            PRINTF("\r\n[task_system_control] sent to remote messae tx task\r\n", msg_buf);
         }
     }
 }
+
