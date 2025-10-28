@@ -17,5 +17,5 @@ D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DE
 D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_laser/bsp_laser.c:266:10:bsp_laser_ext_current_read_adc_data	16	static
 D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_laser/bsp_laser.c:282:10:bsp_laser_int_current_adc_polling	24	static
 D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_laser/bsp_laser.c:310:10:bsp_laser_ext_current_adc_polling	16	static
-D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_laser/bsp_laser.c:335:15:map_int_LD_position	16	static
-D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_laser/bsp_laser.c:353:15:map_ext_LD_position	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_laser/bsp_laser.c:343:15:map_int_LD_position	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_laser/bsp_laser.c:361:15:map_ext_LD_position	16	static

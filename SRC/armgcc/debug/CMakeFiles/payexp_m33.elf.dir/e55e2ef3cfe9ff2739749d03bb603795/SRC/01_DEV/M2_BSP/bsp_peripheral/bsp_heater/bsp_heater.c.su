@@ -4,5 +4,6 @@ D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DE
 D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_heater/bsp_heater.c:32:6:bsp_heater_init	16	static
 D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_heater/bsp_heater.c:42:6:bsp_heater_turnoff	16	static
 D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_heater/bsp_heater.c:46:6:bsp_heater_turnon	16	static
-D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_heater/bsp_heater.c:52:6:bsp_heater_list_turnoff	24	static
-D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_heater/bsp_heater.c:64:6:bsp_heater_list_turnon	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_heater/bsp_heater.c:51:6:bsp_heater_set_freq_hz	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_heater/bsp_heater.c:56:6:bsp_heater_list_turnoff	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M2_BSP/bsp_peripheral/bsp_heater/bsp_heater.c:68:6:bsp_heater_list_turnon	24	static
