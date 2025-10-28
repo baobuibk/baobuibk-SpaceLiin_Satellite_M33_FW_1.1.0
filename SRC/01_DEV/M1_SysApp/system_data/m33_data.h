@@ -20,7 +20,12 @@ enum {
     CAM_CAPTURE = 0xB000,
     SYS_LOG = 0xC000
 };
-
+enum {
+    SLD_RUN = 0,
+    LASER_TEST = 1,
+    FLUIDIC_TEST = 2,
+    FLUIDIC_SEQ = 3
+};
 enum {
     WARMUP = 0,
     OPERATION
@@ -48,7 +53,7 @@ typedef struct remote_message_t{
     //2: Send Test Laser data, 3: Send Test Pump data
     //4: Send command AR2020 capture, 5: Send USB camera capture
     uint32_t    address;        
-    int16_t    data;
+    int32_t    data;
 }remote_message_t;
 
 typedef struct prof_type0_t

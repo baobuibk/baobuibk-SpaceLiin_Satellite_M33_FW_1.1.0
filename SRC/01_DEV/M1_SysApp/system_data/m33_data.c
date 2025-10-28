@@ -66,8 +66,8 @@ const int16_t table1_data_init[TABLE1_TOTAL_COUNT] = {
 /* ==================== TABLE 2 INITIAL DATA ==================== */
 const int16_t table2_data_init[TABLE2_TOTAL_COUNT] = {
     0x00,  // pump_1_ctl
-    0x00,  // pump_1_volt
-    0x00,  // pump_1_freq
+    100,  // pump_1_volt
+    100,  // pump_1_freq
     0x00,  // pump_2_ctl
     0x00,  // pump_2_volt
     0x00,  // pump_2_freq
@@ -91,7 +91,7 @@ const int16_t table2_data_init[TABLE2_TOTAL_COUNT] = {
 
 /* ==================== TABLE 3 INITIAL DATA ==================== */
 const int16_t table3_data_init[] = {
-    0x00,  // temp_master_en
+    0x01,  // temp_master_en
 
     0x00,  // temp_p_1_en
     0x00,  // temp_p_2_en
@@ -100,39 +100,39 @@ const int16_t table3_data_init[] = {
     0x00,  // temp_p_5_en
     0x00,  // temp_p_6_en
 
-    0x00,  // temp_p_1_setpoint
+    200,  // temp_p_1_setpoint
     0x00,  // temp_p_1_ntcp
-    0x00,  // temp_p_1_ntcs
-    0x00,  // temp_p_1_htr
+    1,  // temp_p_1_ntcs
+    0x01,  // temp_p_1_htr
     0x00,  // temp_p_1_tec
 
-    0x00,  // temp_p_2_setpoint
-    0x00,  // temp_p_2_ntcp
-    0x00,  // temp_p_2_ntcs
-    0x00,  // temp_p_2_htr
+    200,  // temp_p_2_setpoint
+    4,  // temp_p_2_ntcp
+    5,  // temp_p_2_ntcs
+    0x02,  // temp_p_2_htr
     0x00,  // temp_p_2_tec
 
-    0x00,  // temp_p_3_setpoint
-    0x00,  // temp_p_3_ntcp
-    0x00,  // temp_p_3_ntcs
-    0x00,  // temp_p_3_htr
+    250,  // temp_p_3_setpoint
+    6,  // temp_p_3_ntcp
+    7,  // temp_p_3_ntcs
+    (1 << 3),  // temp_p_3_htr
     0x00,  // temp_p_3_tec
 
     0x00,  // temp_p_4_setpoint
-    0x00,  // temp_p_4_ntcp
-    0x00,  // temp_p_4_ntcs
+    0xFFFF,  // temp_p_4_ntcp
+    0xFFFF,  // temp_p_4_ntcs
     0x00,  // temp_p_4_htr
     0x00,  // temp_p_4_tec
 
     0x00,  // temp_p_5_setpoint
-    0x00,  // temp_p_5_ntcp
-    0x00,  // temp_p_5_ntcs
+    0xFFFF,  // temp_p_5_ntcp
+    0xFFFF,  // temp_p_5_ntcs
     0x00,  // temp_p_5_htr
     0x00,  // temp_p_5_tec
 
     0x00,  // temp_p_6_setpoint
-    0x00,  // temp_p_6_ntcp
-    0x00,  // temp_p_6_ntcs
+    0xFFFF,  // temp_p_6_ntcp
+    0xFFFF,  // temp_p_6_ntcs
     0x00,  // temp_p_6_htr
     0x00   // temp_p_6_tec
 };
@@ -145,15 +145,15 @@ const int16_t table5_data_init[] = {
     0x00,  // exp_fluidic_seq
     0x00,  // exp_mon_start
     0x00,  // exp_mon_delay
-    3600,  // exp_mon_interval
+    28800,  // exp_mon_interval
 
-    50,  // dls_ls_intensity
-    0x00,  // cam_ls_intensity
+    25,  // dls_ls_intensity
+    15,  // cam_ls_intensity
 
     100,  // exp_samp_rate
-    50,  // exp_pre_time
-    9000,  // exp_samp_time
-    50,  // exp_post_time
+    1,  // exp_pre_time
+    100,  // exp_samp_time
+    1,  // exp_post_time
 
     0x00   // custom_ctl
 };
@@ -489,7 +489,7 @@ uint32_t m33_data_exp_profile_get(exp_profile_t *profile)
     sem_ret += m33_data_get_u(TABLE_ID_5, exp_samp_time, &profile->sampling_time_ms);
     sem_ret += m33_data_get_u(TABLE_ID_5, exp_post_time, &profile->post_time_ms);
     sem_ret += m33_data_get_u(TABLE_ID_5, exp_samp_rate, &profile->sampling_rate_khz);
-    sem_ret += m33_data_get_u(TABLE_ID_5, cam_ls_intensity, &profile->laser_intensity);
+    sem_ret += m33_data_get_u(TABLE_ID_5, dls_ls_intensity, &profile->laser_intensity);
     osSemaphoreGiven(&m33_data_sem);   
     return (uint32_t)sem_ret; 
 }

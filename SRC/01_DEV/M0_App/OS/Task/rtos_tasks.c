@@ -25,6 +25,8 @@
 #include "task_experiment.h"
 #include "task_update_onboard_adc.h"
 #include "printf.h"
+#include "remote_call.h"
+#include "app_temperature.h"
 
 #define CREATE_TASK(task_func, task_name, stack, param, priority, handle) \
     if (xTaskCreate(task_func, task_name, stack, param, priority, handle) != pdPASS) { \
@@ -96,11 +98,11 @@ void EXP_RootGrowUp(void)
 /*************************************************
  *               	TASK INIT	                 *
  *************************************************/
-osSemaphore exp_task_sem = NULL;
-osSemaphore rptx_sem = NULL;
+QueueHandle_t experiment_command_queue = NULL;
+osSemaphore rptx_mutex = NULL;    //used for rpmsg_send command
 osSemaphore command_sem = NULL;
 QueueHandle_t remote_message_queue = NULL;
-
+osSemaphore rptx_ram_mutex = NULL;    //mutex to take over the RAM to copy
 
 
 
@@ -109,9 +111,10 @@ static void EXP_App_Create_Communication_Queues(void)
 {
     // Create communication queues here
     command_sem = xSemaphoreCreateBinary();
-    exp_task_sem = xSemaphoreCreateBinary();
-    exp_task_sem = xSemaphoreCreateBinary();
-    rptx_sem = xSemaphoreCreateMutex();
+    experiment_command_queue = xQueueCreate(6, sizeof(uint16_t));
+
+    rptx_mutex = xSemaphoreCreateMutex();
+    rptx_ram_mutex = xSemaphoreCreateMutex();
   remote_message_queue = xQueueCreate(30, sizeof(remote_message_t));
 
 }
@@ -127,6 +130,8 @@ PRINTF("growing task\r\n");
     CREATE_TASK(RPMSG_Tx_Task, 		"RPMSG_Tx_Task", 		MIN_STACK_SIZE * 3, 	NULL, 	2, NULL);
     CREATE_TASK(RPMSG_Task, 		"RPMSGTask", 		MIN_STACK_SIZE * 3, 	NULL, 	1, NULL);
     CREATE_TASK(Task_Experiment, 		"Task_Experiment", 		MIN_STACK_SIZE * 5, 	NULL, 	2, NULL);
+    CREATE_TASK(task_temperature_control_profile_type0, 		"task_temperature_control_profile_type0", 		MIN_STACK_SIZE * 5, 	NULL, 	2, NULL);
+
   //  CREATE_TASK(Task_Update_Onboard_ADC, 		"Task_Update_Onboard_ADC", 		MIN_STACK_SIZE * 5, 	NULL, 	1, NULL);
 
 
@@ -137,22 +142,7 @@ PRINTF("growing task\r\n");
 /*************************************************
  *               TASK LIST                       *
  *************************************************/
-static void Shell_Task(void *pvParameters)
-{
- //   setup_dynamic_shell();
 
-    while (1)
-    {
-
-        xSemaphoreTake(command_sem, portMAX_DELAY);
-        PRINTF("\r\n [Shell_Task] received message \r\n");
-        uint32_t i = 0;
-
-        PRINTF("\r\n [Shell_Task] %s \r\n",command_bufer);
-        Command_Process(command_bufer);
-
-    }
-}
 
 static void RPMSG_Task(void *pvParameters)
 {
@@ -282,18 +272,20 @@ static void RPMSG_Tx_Task(void *pvParameters)
         uint32_t msg_type = (message.address & 0xF000);
         
         m33_data_get_epoch_lock(&epoch);
+        
         switch (msg_type)
         {
             case UPDATE_PARAM:
-                snprintf(msg_buf, 100, "update_param 0x%03X=%d\r\n",(message.address & 0x0FFF),message.data);
+                snprintf(msg_buf, 100, "update_param 0x%03X=%u\r\n",(message.address & 0x0FFF),(uint16_t)message.data);
                 rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
                 break;
             case DLS_DATA:
                 snprintf(msg_buf, 100, "daily_PLDD_%d.dat\r\n", epoch);
-                rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
+                PRINTF("[ RPMSG_Tx_Task]file request with size = %d\r\n",message.data);
+                RemoteCall_SendFileRequest(message.data,msg_buf);
                 break;
             case TEST_LASER_DATA:
-                snprintf(msg_buf, 100, "oneshot_TLD_%d.dat\r\n", epoch);
+                snprintf(msg_buf, 100, "oneshot_TLPD_%d.dat\r\n", epoch);
                 rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
                 break;
             case TEST_PUMP_DATA:
@@ -306,15 +298,12 @@ static void RPMSG_Tx_Task(void *pvParameters)
                 break;
 
             case SYS_LOG:
-                uint16_t system_stat;
-                m33_data_get_u_lock(TABLE_ID_6, sys_status, &system_stat);
-                if (WARMUP == system_stat) {
-                snprintf(msg_buf, 100, "oneshot_SYSLOG%d\r\n",epoch);}
-                else 
-                {
-                    snprintf(msg_buf, 100, "daily_SYSLOG%d\r\n",epoch);
-                }
-                rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
+                
+                    snprintf(msg_buf, 100, "daily_SYSL_%d.DAT\r\n",epoch);
+                    PRINTF("[ RPMSG_Tx_Task]file request with size = %d\r\n",message.data);
+                    RemoteCall_SendFileRequest(message.data,msg_buf);
+
+//                rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
                 break;
             default:
                 break;
@@ -331,7 +320,7 @@ static void RPMSG_Tx_Task(void *pvParameters)
 
  uint32_t rpmsg_send(uint32_t msg_type, const char *msg)
  {
-    int sem_ret = osSemaphoreTake(&rptx_sem, RPMSG_WAIT);
+    int sem_ret = osSemaphoreTake(&rptx_mutex, RPMSG_WAIT);
 
     if (sem_ret != pdPASS)
     {
@@ -350,7 +339,7 @@ static void RPMSG_Tx_Task(void *pvParameters)
         default:
             break;
     }
-    osSemaphoreGiven(&rptx_sem);
+    osSemaphoreGiven(&rptx_mutex);
     return sem_ret;
     
  }
