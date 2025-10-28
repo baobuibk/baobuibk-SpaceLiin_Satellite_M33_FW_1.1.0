@@ -1,8 +1,7 @@
-D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:59:6:EXP_RootTask	16	static
-D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:76:6:EXP_RootGrowUp	32	static
-D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:108:13:EXP_App_Create_Communication_Queues	8	static
-D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:118:16:EXP_AppInit	24	static
-D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:140:13:Shell_Task	24	static
-D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:157:13:RPMSG_Task	40	static
-D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:264:13:RPMSG_Tx_Task	144	static
-D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:332:11:rpmsg_send	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:61:6:EXP_RootTask	16	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:78:6:EXP_RootGrowUp	32	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:110:13:EXP_App_Create_Communication_Queues	8	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:121:16:EXP_AppInit	24	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:147:13:RPMSG_Task	40	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:254:13:RPMSG_Tx_Task	144	static
+D:/anh_khoa/document/project/baobuibk-SpaceLiin_Satellite_M33_FW_1.1.0/SRC/01_DEV/M0_App/OS/Task/rtos_tasks.c:321:11:rpmsg_send	24	static
