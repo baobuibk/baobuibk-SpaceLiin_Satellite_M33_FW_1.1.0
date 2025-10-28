@@ -20,7 +20,6 @@
 #include "bsp_pump.h"
 #include "do.h"
 
-
 int str2int(char *str, int32_t *ret) {
 
     if (!str || !ret) return 1;
@@ -127,15 +126,12 @@ void time_sync_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 	m33_data_set_u(TABLE_ID_1,time_sync,(uint32_t)time);
 	return;
 }
-
 void pwr_ifb_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])    
  { (void)stdio;(void)argc;(void)argv;  }//PRINTF("pwr_ifb_en\r\n"); }
-
 void pwr_io_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 {
     (void)stdio;(void)argc;(void)argv; //PRINTF("\r\npwr_io_en\r\n");
 }
-
 void pwr_pzp_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])    
 {
     (void)stdio;(void)argc;(void)argv; //PRINTF("pwr_pzp_en\n");
@@ -150,7 +146,6 @@ void pwr_pzp_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
     
     bsp_expander_ctrl(POW_ONOFF_TEC,status);
 }
-
 void pwr_htr_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])   
 {
     (void)stdio;(void)argc;(void)argv; //PRINTF("pwr_htr_en\n");
@@ -165,7 +160,6 @@ void pwr_htr_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
     
     bsp_expander_ctrl(POW_ONOFF_HEATER,status);
 }
-
 void pwr_sln_tec_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 {
     (void)stdio;(void)argc;(void)argv; //PRINTF("pwr_sln_tec_en\n");
@@ -180,7 +174,6 @@ void pwr_sln_tec_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 
     bsp_expander_ctrl(POW_ONOFF_TEC,status);
 }
-
 void pwr_lda_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 {
     (void)stdio;(void)argc;(void)argv; //PRINTF("pwr_lda_en\n");
@@ -195,7 +188,6 @@ void pwr_lda_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 
     bsp_expander_ctrl(POW_ONOFF_LASER,status);
 }
-
 void pwr_pda_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 {
     (void)stdio;(void)argc;(void)argv; //PRINTF("pwr_pda_en\n");
@@ -210,7 +202,6 @@ void pwr_pda_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 
     bsp_expander_ctrl(POW_ONOFF_PHOTO,status);
 }
-
 void pwr_usb_0_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 {
     (void)stdio;(void)argc;(void)argv; //PRINTF("pwr_usb_0_en\n");
@@ -223,6 +214,7 @@ void pwr_usb_0_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
         return;
     }
 
+    // Active High
     if (status)
     {
         do_set(&usb_en0_gpio);
@@ -232,7 +224,6 @@ void pwr_usb_0_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
         do_reset(&usb_en0_gpio);
     }
 }
-
 void pwr_usb_1_en_cmd(uint32_t stdio, uint32_t argc, char *argv[]) 
 {
     (void)stdio;(void)argc;(void)argv; //PRINTF("pwr_usb_1_en\n");
@@ -245,6 +236,7 @@ void pwr_usb_1_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
         return;
     }
 
+    // Active High
     if (status)
     {
         do_set(&usb_en1_gpio);
@@ -254,7 +246,6 @@ void pwr_usb_1_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
         do_reset(&usb_en1_gpio);
     }
 }
-
 void i2c_s_1_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 {
     (void)stdio;(void)argc;(void)argv; //PRINTF("i2c_s_1_en\n");
@@ -267,6 +258,7 @@ void i2c_s_1_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
         return;
     }
 
+    // Active High
     if (status)
     {
         do_set(&sensor_en0_gpio);
@@ -276,7 +268,6 @@ void i2c_s_1_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
         do_reset(&sensor_en0_gpio);
     }
 }
-
 void i2c_s_2_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 {
     (void)stdio;(void)argc;(void)argv; //PRINTF("i2c_s_2_en\n");
@@ -289,6 +280,7 @@ void i2c_s_2_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
         return;
     }
 
+    // Active High
     if (status)
     {
         do_set(&sensor_en1_gpio);
@@ -298,7 +290,6 @@ void i2c_s_2_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
         do_reset(&sensor_en1_gpio);
     }
 }
-
 void i2c_pwm_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 { 
     (void)stdio;(void)argc;(void)argv; //PRINTF("i2c_pwm_en\n");
@@ -311,10 +302,10 @@ void i2c_pwm_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
         return;
     }
 
+    // Active Low
     uint32_t en = (status == 0) ? 1 : 0;
     bsp_expander_ctrl(PWM_I2C_nOE, en);
 }
-
 void i2c_hd4_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 {
     (void)stdio;(void)argc;(void)argv; //PRINTF("i2c_hd4_en\n");
@@ -327,9 +318,9 @@ void i2c_hd4_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
         return;
     }
 
+    // Active High
     bsp_expander_ctrl(HD4_I2C_EN, status);
 }
-
 void i2c_ld_1_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 {
     (void)stdio;(void)argc;(void)argv; //PRINTF("i2c_ld_1_en\n");
@@ -342,6 +333,7 @@ void i2c_ld_1_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
         return;
     }
 
+    // Active High
     if (status)
     {
         do_set(&pump_en_gpio);
@@ -363,6 +355,7 @@ void i2c_ld_2_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
         return;
     }
 
+    // Active High
     if (status)
     {
         do_set(&pump_en2_gpio);
@@ -372,7 +365,6 @@ void i2c_ld_2_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
         do_reset(&pump_en2_gpio);
     }
 }
-
 void tec_0_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])       
 {
     (void)stdio;(void)argc;(void)argv; //PRINTF("tec_0_en\n");
@@ -385,9 +377,9 @@ void tec_0_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
         return;
     }
 
+    // Active High
     bsp_expander_ctrl(TEC_EN_1, status);
 }
-
 void tec_1_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])       
 { 
     (void)stdio;(void)argc;(void)argv; //PRINTF("tec_1_en\n"); 
@@ -400,9 +392,9 @@ void tec_1_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
         return;
     }
 
+    // Active High
     bsp_expander_ctrl(TEC_EN_2, status);
 }
-
 void tec_2_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])       
 { 
     (void)stdio;(void)argc;(void)argv; //PRINTF("tec_2_en\n"); 
@@ -415,9 +407,9 @@ void tec_2_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
         return;
     }
 
+    // Active High
     bsp_expander_ctrl(TEC_EN_3, status);
 }
-
 void tec_3_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])       
 { 
     (void)stdio;(void)argc;(void)argv; //PRINTF("tec_3_en\n"); 
@@ -430,9 +422,9 @@ void tec_3_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
         return;
     }
 
+    // Active High
     bsp_expander_ctrl(TEC_EN_4, status);
 }
-
 void usb_led_1_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])  
 { 
     (void)stdio;(void)argc;(void)argv; //PRINTF("usb_led_1_set\n");
@@ -447,7 +439,6 @@ void usb_led_1_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 
     bsp_heater_turnon(USB_LED_1, status);
 }
-
 void usb_led_2_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])  
 {
     (void)stdio;(void)argc;(void)argv; //PRINTF("usb_led_2_set\n");
@@ -477,7 +468,6 @@ void htr_0_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 
     bsp_heater_turnon(HEATER_PWM_1, status);
 }
-
 void htr_1_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
 {
     (void)stdio;(void)argc;(void)argv; //PRINTF("htr_1_set\n");
@@ -492,7 +482,6 @@ void htr_1_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 
     bsp_heater_turnon(HEATER_PWM_2, status);
 }
-
 void htr_2_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
 { 
     (void)stdio;(void)argc;(void)argv; //PRINTF("htr_2_set\n"); 
@@ -507,7 +496,6 @@ void htr_2_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 
     bsp_heater_turnon(HEATER_PWM_3, status);
 }
-
 void htr_3_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
 { 
     (void)stdio;(void)argc;(void)argv; //PRINTF("htr_3_set\n"); 
@@ -522,7 +510,6 @@ void htr_3_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 
     bsp_heater_turnon(HEATER_PWM_4, status);
 }
-
 void htr_4_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
 { 
     (void)stdio;(void)argc;(void)argv; //PRINTF("htr_4_set\n"); 
@@ -537,7 +524,6 @@ void htr_4_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 
     bsp_heater_turnon(HEATER_PWM_5, status);
 }
-
 void htr_5_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
 { 
     (void)stdio;(void)argc;(void)argv; //PRINTF("htr_5_set\n"); 
@@ -552,7 +538,6 @@ void htr_5_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 
     bsp_heater_turnon(HEATER_PWM_6, status);
 }
-
 void htr_6_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
 { 
     (void)stdio;(void)argc;(void)argv; //PRINTF("htr_6_set\n"); 
@@ -567,7 +552,6 @@ void htr_6_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 
     bsp_heater_turnon(HEATER_PWM_7, status);
 }
-
 void htr_7_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
 { 
     (void)stdio;(void)argc;(void)argv; //PRINTF("htr_7_set\n"); 
@@ -582,7 +566,6 @@ void htr_7_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 
     bsp_heater_turnon(HEATER_PWM_8, status);
 }
-
 void custom_cmd_cmd(uint32_t stdio, uint32_t argc, char *argv[])     { (void)stdio;(void)argc;(void)argv; }//PRINTF("custom_cmd\n"); }
 
 /* ==================== TABLE 2: implementations ==================== */
@@ -600,7 +583,6 @@ void pump_1_ctl_cmd(uint32_t s, uint32_t a, char *v[])
 
     I2C_HD_Pump_set_enable(status);
 }
-
 void pump_1_volt_cmd(uint32_t s, uint32_t a, char *v[])
 {
     (void)s;(void)a;(void)v;PRINTF("pump_1_volt\n");
@@ -615,7 +597,6 @@ void pump_1_volt_cmd(uint32_t s, uint32_t a, char *v[])
 
     I2C_HD_Pump_set_Voltage(status);
 }
-
 void pump_1_freq_cmd(uint32_t s, uint32_t a, char *v[])
 {
     (void)s;(void)a;(void)v;PRINTF("pump_1_freq\n");
@@ -630,11 +611,9 @@ void pump_1_freq_cmd(uint32_t s, uint32_t a, char *v[])
 
     I2C_HD_Pump_Set_Freq(status);
 }
-
 void pump_2_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("pump_2_ctl\n");}
 void pump_2_volt_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("pump_2_volt\n");}
 void pump_2_freq_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("pump_2_freq\n");}
-
 void sln_0_ctl_cmd(uint32_t s, uint32_t a, char *v[])
 {
     (void)s;(void)a;(void)v;//PRINTF("sln_0_ctl\n");
@@ -647,10 +626,8 @@ void sln_0_ctl_cmd(uint32_t s, uint32_t a, char *v[])
         return;
     }
 
-    uint32_t en = (status == 0) ? 1 : 0;
-    bsp_expander_ctrl(SOLENOID_CTR_1, en);
+    bsp_expander_ctrl(SOLENOID_CTR_1, status);
 }
-
 void sln_1_ctl_cmd(uint32_t s, uint32_t a, char *v[])
 {
     (void)s;(void)a;(void)v;//PRINTF("sln_1_ctl\n");
@@ -663,10 +640,8 @@ void sln_1_ctl_cmd(uint32_t s, uint32_t a, char *v[])
         return;
     }
 
-    uint32_t en = (status == 0) ? 1 : 0;
-    bsp_expander_ctrl(SOLENOID_CTR_2, en);
+    bsp_expander_ctrl(SOLENOID_CTR_2, status);
 }
-
 void sln_2_ctl_cmd(uint32_t s, uint32_t a, char *v[])
 {
     (void)s;(void)a;(void)v;//PRINTF("sln_2_ctl\n");
@@ -679,10 +654,8 @@ void sln_2_ctl_cmd(uint32_t s, uint32_t a, char *v[])
         return;
     }
 
-    uint32_t en = (status == 0) ? 1 : 0;
-    bsp_expander_ctrl(SOLENOID_CTR_3, en);
+    bsp_expander_ctrl(SOLENOID_CTR_3, status);
 }
-
 void sln_3_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sln_3_ctl\n");}
 void sln_4_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sln_4_ctl\n");}
 void sln_5_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sln_5_ctl\n");}
@@ -692,7 +665,6 @@ void sln_8_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}/
 void sln_9_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sln_9_ctl\n");}
 void sln_10_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sln_10_ctl\n");}
 void sln_11_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sln_11_ctl\n");}
-
 void sln_valve_1_ctl_cmd(uint32_t s, uint32_t a, char *v[])
 {
     (void)s;(void)a;(void)v;//PRINTF("sln_valve_1_ctl\n");

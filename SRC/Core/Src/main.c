@@ -16,7 +16,7 @@
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
-static void IMX_LPTMP1_Init(void);
+// static void IMX_LPTMP1_Init(void);
 static void IMX_MU_Init(void);
 /*******************************************************************************
  * Code
@@ -55,46 +55,46 @@ int main(void)
   * @param None
   * @retval None
   */
-#define LPTMR_SOURCE_CLOCK 32000U
-#define LPTMR_USEC_COUNT 1000000U
+// #define LPTMR_SOURCE_CLOCK 32000U
+// #define LPTMR_USEC_COUNT 1000000U
 
-static void IMX_LPTMP1_Init(void)
-{
-    lptmr_config_t lptmrConfig;
-    /* Configure LPTMR */
-    /*
-     * lptmrConfig.timerMode = kLPTMR_TimerModeTimeCounter;
-     * lptmrConfig.pinSelect = kLPTMR_PinSelectInput_0;
-     * lptmrConfig.pinPolarity = kLPTMR_PinPolarityActiveHigh;
-     * lptmrConfig.enableFreeRunning = false;
-     * lptmrConfig.bypassPrescaler = true;
-     * lptmrConfig.prescalerClockSource = kLPTMR_PrescalerClock_1;
-     * lptmrConfig.value = kLPTMR_Prescale_Glitch_0;
-     */
+// static void IMX_LPTMP1_Init(void)
+// {
+//     lptmr_config_t lptmrConfig;
+//     /* Configure LPTMR */
+//     /*
+//      * lptmrConfig.timerMode = kLPTMR_TimerModeTimeCounter;
+//      * lptmrConfig.pinSelect = kLPTMR_PinSelectInput_0;
+//      * lptmrConfig.pinPolarity = kLPTMR_PinPolarityActiveHigh;
+//      * lptmrConfig.enableFreeRunning = false;
+//      * lptmrConfig.bypassPrescaler = true;
+//      * lptmrConfig.prescalerClockSource = kLPTMR_PrescalerClock_1;
+//      * lptmrConfig.value = kLPTMR_Prescale_Glitch_0;
+//      */
 
-    /* Ungate the LPTMR clock*/
-    CLOCK_EnableClock(kCLOCK_Lptmr1);
-    /* Get default LPTMR configuration */
-    LPTMR_GetDefaultConfig(&lptmrConfig);
+//     /* Ungate the LPTMR clock*/
+//     CLOCK_EnableClock(kCLOCK_Lptmr1);
+//     /* Get default LPTMR configuration */
+//     LPTMR_GetDefaultConfig(&lptmrConfig);
 
-    /* Initialize the LPTMR */
-    LPTMR_Init(LPTMR1, &lptmrConfig);
+//     /* Initialize the LPTMR */
+//     LPTMR_Init(LPTMR1, &lptmrConfig);
 
-    /*
-     * Set timer period.
-     * Note : the parameter "ticks" of LPTMR_SetTimerPeriod should be equal or greater than 1.
-     */
-    LPTMR_SetTimerPeriod(LPTMR1, USEC_TO_COUNT(LPTMR_USEC_COUNT, LPTMR_SOURCE_CLOCK));
+//     /*
+//      * Set timer period.
+//      * Note : the parameter "ticks" of LPTMR_SetTimerPeriod should be equal or greater than 1.
+//      */
+//     LPTMR_SetTimerPeriod(LPTMR1, USEC_TO_COUNT(LPTMR_USEC_COUNT, LPTMR_SOURCE_CLOCK));
  
-    /* Enable timer interrupt */
-    LPTMR_EnableInterrupts(LPTMR1, kLPTMR_TimerInterruptEnable);
+//     /* Enable timer interrupt */
+//     LPTMR_EnableInterrupts(LPTMR1, kLPTMR_TimerInterruptEnable);
 
-    /* Enable at the NVIC */
-    EnableIRQWithPriority(LPTMR1_IRQn, 10);
+//     /* Enable at the NVIC */
+//     EnableIRQWithPriority(LPTMR1_IRQn, 10);
 
-    /* Start counting */
-    LPTMR_StartTimer(LPTMR1);
-}
+//     /* Start counting */
+//     LPTMR_StartTimer(LPTMR1);
+// }
 
 static void IMX_MU_Init(void)
 {
