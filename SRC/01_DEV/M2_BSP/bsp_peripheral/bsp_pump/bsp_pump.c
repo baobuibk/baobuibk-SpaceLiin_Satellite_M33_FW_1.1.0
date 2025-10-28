@@ -15,7 +15,7 @@
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Defines ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* Bartels mp-Highdriver registers */
-#define I2C_HIGHDRIVER_ADRESS (0x3C) // Default adress for mp-Highdriver
+#define I2C_HIGHDRIVER_ADRESS (0x78) // Default adress for mp-Highdriver
 #define I2C_DEVICEID  0x00
 #define I2C_POWERMODE 0x01
 #define I2C_FREQUENCY 0x02
@@ -57,8 +57,7 @@ void bsp_pump_init()
 
 	do_set(&pump_en_gpio);
 
-	TickType_t last_delay = xTaskGetTickCount();
-	vTaskDelayUntil(&last_delay, pdMS_TO_TICKS(200));
+	vTaskDelay(pdMS_TO_TICKS(200));
 
     Highdriver_init();
 }
