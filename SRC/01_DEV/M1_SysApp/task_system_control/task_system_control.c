@@ -11,8 +11,9 @@
 #include "lwl.h"
 #include "task_update_onboard_adc.h"
 
-extern osSemaphore exp_task_sem;
+extern QueueHandle_t experiment_command_queue;
 extern QueueHandle_t remote_message_queue;
+extern osSemaphore rptx_ram_mutex;
 #define REPORT_INTERVAL 10  // report every 60 seconds
 
 void task_system_control()
@@ -22,7 +23,9 @@ void task_system_control()
     uint16_t exp_remain_time = 0;
     uint8_t  local_counter = 0;
     int16_t board_temperature = 0;
+    uint16_t command;
     char msg_buf[256];
+    uint32_t epoch ;
     remote_message_t message;
     PRINTF("===== [System COntrol Started] =====\r\n");
 
@@ -34,15 +37,25 @@ void task_system_control()
     while (1)
     {
         vTaskDelayUntil( &xLastWakeTime, 1000 );   //update system and collect data every 1 second
+        uint32_t epoch;
+        m33_data_get_epoch_lock(&epoch);
+        epoch ++;
+        m33_data_set_epoch_lock(epoch);
+
         ADC_update();
         local_counter++;
         //check if log is full
         if (lwl_is_full())
         {
+            xSemaphoreTake(rptx_ram_mutex, portMAX_DELAY);
             uint32_t length = lwl_transfer();
+
             message.address = SYS_LOG;
             message.data = length;
-            xQueueSendToFront(remote_message_queue, &message, 1000);//send notification for log
+           // xQueueSendToFront(remote_message_queue, &message, 1000);//send notification for log
+            xQueueSend(remote_message_queue, &message, 1000);//send notification for log
+            vTaskDelay(2000); //make sure data is read
+            xSemaphoreGive(rptx_ram_mutex);
             PRINTF("\r\n[task_system_control] sent syslog notìication\r\n", msg_buf);
 
         }
@@ -62,12 +75,38 @@ void task_system_control()
                 //m33_data_set_u_lock(TABLE_ID_5, exp_mon_delay, exp_remain_time);
                 m33_data_set_u_lock(TABLE_ID_5, exp_mon_delay, 3600);
                 //notify experiment task to start experiment
-                osSemaphoreGiven(&exp_task_sem);
+            command = SLD_RUN;
+            xQueueSend(experiment_command_queue, &command, 100);
             }
         }
+        //check if test laser is enabled
+        m33_data_get_u_lock(TABLE_ID_5, test_ls_current, &is_start_exp);
+        if (1 == is_start_exp)
+        {
+            command = LASER_TEST;
+            xQueueSend(experiment_command_queue, &command, 100);//send notification for log
+            m33_data_set_u_lock(TABLE_ID_5, test_ls_current, 0);
+        }
+        //check if test pump is enabled
+        m33_data_get_u_lock(TABLE_ID_5, test_fluidic_seq, &is_start_exp);
+        if (1 == is_start_exp)
+        {
+            command = FLUIDIC_TEST;
+            xQueueSend(experiment_command_queue, &command, 100);//send notification for log
+            m33_data_set_u_lock(TABLE_ID_5, test_fluidic_seq, 0);
+        }
+
+        m33_data_get_u_lock(TABLE_ID_5, exp_fluidic_seq, &is_start_exp);
+        if (1 == is_start_exp)
+        {
+            command = FLUIDIC_SEQ;
+            xQueueSend(experiment_command_queue, &command, 100);//send notification for log
+            m33_data_set_u_lock(TABLE_ID_5, exp_fluidic_seq, 0);
+        }
+
         if (local_counter >= REPORT_INTERVAL)
         {
-            uint32_t epoch ;
+            
             m33_data_get_epoch_lock(&epoch);
             //log time
             LWL(LWL_EXP_TIMESTAMP, LWL_4(epoch));
@@ -84,7 +123,8 @@ void task_system_control()
             for (int i = 0; i < 12; i++)   
             {
                 message.address = temp_ntc_0 + 0x0600 + i;
-                message.data = NTC_temps[i];
+                message.data =  NTC_temps[i];
+
                 xQueueSend(remote_message_queue, &message, (TickType_t)0);         
             }
             PRINTF("\r\n[task_system_control] sent to remote messae tx task\r\n", msg_buf);

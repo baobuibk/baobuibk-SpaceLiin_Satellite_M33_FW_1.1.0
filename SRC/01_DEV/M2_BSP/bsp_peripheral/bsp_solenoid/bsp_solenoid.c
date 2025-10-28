@@ -46,8 +46,8 @@ void Valve_switch(uint32_t direction)
         bsp_expander_ctrl(SOLENOID_CTR_1, 1);
     }
 
-    TickType_t last_delay = xTaskGetTickCount();
-	vTaskDelayUntil(&last_delay, pdMS_TO_TICKS(30));
+    // TickType_t last_delay = xTaskGetTickCount();
+	vTaskDelay(pdMS_TO_TICKS(30));
     
     bsp_expander_ctrl(SOLENOID_CTR_3, 0);
     bsp_expander_ctrl(SOLENOID_CTR_1, 0);

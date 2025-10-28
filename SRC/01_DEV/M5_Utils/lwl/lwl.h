@@ -72,6 +72,8 @@ typedef enum {
 
 	LWL_EXP_SWITCH_ON_SOLENOID,
 	LWL_EXP_SWITCH_OFF_SOLENOID,
+    LWL_EXP_TURN_ON_PUMP,
+    LWL_EXP_TURN_OFF_PUMP,
 
 
 } log_msg_id_t;
@@ -87,6 +89,7 @@ uint8_t* lwl_get_buffer(uint32_t* len);
 void LWL(uint8_t id, ...) ;
 // The special __COUNTER__ macro (not official C but supported by many
 // compilers) is used to generate LWL IDs.
+void lwl_single_reset(void) ;
 
 void lwl_buffer_full_notify(void);
 void lwl_clear_notification(void);

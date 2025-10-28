@@ -8,6 +8,7 @@
 #include "bsp_pump.h"
 #include "bsp_debug_console.h"
 #include "bsp_expander.h"
+#include "bsp_solenoid.h"
 
 /* Component includes. */
 #include "i2c_io.h"
@@ -60,6 +61,9 @@ void bsp_pump_init()
 	vTaskDelay(pdMS_TO_TICKS(200));
 
     Highdriver_init();
+
+    // Set valve direction to dummy
+    Valve_switch(VALVE_DIRECTION_DUMMY);
 }
 
 void I2C_HD_Pump_set_enable(bool is_enable)

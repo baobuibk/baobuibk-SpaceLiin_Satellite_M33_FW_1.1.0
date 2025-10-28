@@ -31,6 +31,9 @@
     "rtos_tasks.h": "c",
     "lwl.h": "c",
     "freertos.h": "c",
-    "task_update_onboard_adc.h": "c"
+    "task_update_onboard_adc.h": "c",
+    "string_view": "c",
+    "app_temperature.h": "c",
+    "slf3s_flow.h": "c"
   }
 }
