@@ -28,7 +28,7 @@ void task_system_control()
     char msg_buf[256];
     uint32_t epoch ;
     remote_message_t message;
-    PRINTF("===== [System COntrol Started] =====\r\n");
+    PRINTF("===== [System Control Started] =====\r\n");
 
     TickType_t xLastWakeTime;
 
@@ -37,13 +37,13 @@ void task_system_control()
     
     while (1)
     {
-        vTaskDelayUntil( &xLastWakeTime, 1000 );   //update system and collect data every 1 second
+        vTaskDelay(1000);   //update system and collect data every 1 second
 
-        m33_data_get_epoch_lock(&epoch);
-        epoch ++;
-        m33_data_set_epoch_lock(epoch);
+        // TODO: put this in application tick hook
+        // m33_data_get_epoch_lock(&epoch);
+        // epoch ++;
+        // m33_data_set_epoch_lock(epoch);
 
-    //    ADC_update();
         local_counter++;
         //check if log is full
         if (lwl_is_sys_log_full())
@@ -53,33 +53,34 @@ void task_system_control()
 
             message.address = SYS_LOG;
             message.data = length;
-           // xQueueSendToFront(remote_message_queue, &message, 1000);//send notification for log
             xQueueSend(remote_message_queue, &message, 1000);//send notification for log
             vTaskDelay(2000); //make sure data is read
             xSemaphoreGive(rptx_ram_mutex);
-            PRINTF("\r\n[task_system_control] sent syslog notìication\r\n", msg_buf);
+            PRINTF("\r\n[task_system_control] sent syslog notification\r\n", msg_buf);
+        }
 
-        }
+        // TODO: put this in application tick hook
         //check if experiment is enabled
-        m33_data_get_u_lock(TABLE_ID_5, exp_mon_start, &is_start_exp);
-        m33_data_get_u_lock(TABLE_ID_5, exp_mon_delay, &exp_remain_time);
-        if (is_start_exp == 1)  // experiment started                     
-        {
-            if (exp_remain_time > 0)    // still in delay period
-            {
-                exp_remain_time--;
-                m33_data_set_u_lock(TABLE_ID_5, exp_mon_delay, exp_remain_time);
-            }
-            else    // delay period finished, reset delay time for next cycle, trigger experiment task
-            {
-                m33_data_get_u_lock(TABLE_ID_5, exp_mon_interval, &exp_remain_time);
-                //m33_data_set_u_lock(TABLE_ID_5, exp_mon_delay, exp_remain_time);
-                m33_data_set_u_lock(TABLE_ID_5, exp_mon_delay, 3600);
-                //notify experiment task to start experiment
-            command = SLD_RUN;
-            xQueueSend(experiment_command_queue, &command, 100);
-            }
-        }
+        // m33_data_get_u_lock(TABLE_ID_5, exp_mon_start, &is_start_exp);
+        // m33_data_get_u_lock(TABLE_ID_5, exp_mon_delay, &exp_remain_time);
+        // if (is_start_exp == 1)  // experiment started                     
+        // {
+        //     if (exp_remain_time > 0)    // still in delay period
+        //     {
+        //         exp_remain_time--;
+        //         m33_data_set_u_lock(TABLE_ID_5, exp_mon_delay, exp_remain_time);
+        //     }
+        //     else    // delay period finished, reset delay time for next cycle, trigger experiment task
+        //     {
+        //         m33_data_get_u_lock(TABLE_ID_5, exp_mon_interval, &exp_remain_time);
+        //         //m33_data_set_u_lock(TABLE_ID_5, exp_mon_delay, exp_remain_time);
+        //         m33_data_set_u_lock(TABLE_ID_5, exp_mon_delay, 3600);
+        //         //notify experiment task to start experiment
+        //     command = SLD_RUN;
+        //     xQueueSend(experiment_command_queue, &command, 100);
+        //     }
+        // }
+
         //check if test laser is enabled
         m33_data_get_u_lock(TABLE_ID_5, test_ls_current, &is_start_exp);
         if (1 == is_start_exp)
@@ -88,6 +89,7 @@ void task_system_control()
             xQueueSend(experiment_command_queue, &command, 100);//send notification for log
             m33_data_set_u_lock(TABLE_ID_5, test_ls_current, 0);
         }
+
         //check if test pump is enabled
         m33_data_get_u_lock(TABLE_ID_5, test_fluidic_seq, &is_start_exp);
         if (1 == is_start_exp)
@@ -107,7 +109,6 @@ void task_system_control()
 
         if (local_counter >= REPORT_INTERVAL)
         {
-            
             m33_data_get_epoch_lock(&epoch);
             //log time
             LWL_SYS_LOG(LWL_EXP_TIMESTAMP, LWL_4(epoch));
@@ -115,7 +116,7 @@ void task_system_control()
             local_counter = 0;
 
             //m33_data_ntc_temp_get(NTC_temps);
-            m33_data_get_i_lock(TABLE_ID_6, temp_board, &board_temperature);
+            m33_data_get_i_lock(TABLE_ID_6, temp_exp, &board_temperature);
             message.address = temp_exp + 0x0600;
             message.data = board_temperature;
 
@@ -123,8 +124,8 @@ void task_system_control()
             xQueueSend(remote_message_queue, &message, (TickType_t)0);
             for (int i = 0; i < 12; i++)   
             {
-                 message.address = 3 +  0x0600 + i;
-                 message.data =  NTC_temp_C[i];
+                message.address = 3 +  0x0600 + i;
+                message.data =  NTC_temp_C[i];
 
                 xQueueSend(remote_message_queue, &message, (TickType_t)0);  
                 PRINTF("NTC value [i]= %d\r\n", NTC_temp_C[i])   ;    

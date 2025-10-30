@@ -235,7 +235,6 @@ typedef enum {
     temp_ntc_9,
     temp_ntc_10,
     temp_ntc_11,
-    temp_board,
 
     sen1_data_0,
     sen1_data_1,
@@ -267,6 +266,7 @@ uint32_t m33_data_get_u_lock(uint16_t table_id,uint16_t index, uint16_t * value)
 
 uint32_t m33_data_update_NTC(int16_t * p_data);
 uint32_t m33_data_ntc_temp_get(int16_t* p_data);
+uint32_t m33_data_update_EFUSE(uint16_t *p_data);
 uint32_t m33_data_update_board_temp(int16_t data);
 uint32_t m33_data_get_board_temp(int16_t* p_data);
 uint32_t data_prof_type0_get(prof_type0_t *profile, uint16_t index);

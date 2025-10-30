@@ -12,7 +12,6 @@
 /* :::::::::: CMD Line Task ::::::::::::: */
 void Task_Update_Onboard_ADC(void *pvParameters);
 
-void ADC_update();
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of the program ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 #endif /* _TASK_UPDATE_ONBOARD_ADC_H_ */

@@ -25,17 +25,14 @@
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Public Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Public Function ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* :::::::::: Test CAN Task ::::::::::::: */
+// TODO: bỏ task này, move hàm này qua experiment
 void Task_Update_Onboard_ADC(void *pvParameters)
 {
-
-    // flexcan_frame_t RX_frame;
-    PRINTF("[update on board ADC]\r\n");
+    PRINTF("[Task_Update_Onboard_ADC] Started\r\n");
 
     for(;;)
     {
-        PRINTF("update ADC\r\n");
         bsp_onboard_adc_update_raw();
-        PRINTF("update ADC_->1\r\n");
         bsp_onboard_adc_update_volt();
 
         bsp_convert_TEC();
@@ -47,25 +44,5 @@ void Task_Update_Onboard_ADC(void *pvParameters)
         vTaskDelay( 5000);
     }
 }
-
-void ADC_update()
-{
-     bsp_onboard_adc_update_raw();
-        bsp_onboard_adc_update_volt();
-
-        bsp_convert_TEC();
-        bsp_convert_NTC();
-        bsp_convert_eFUSE_Current();
-        bsp_convert_onboard_temp();
-}
-
-//static void CMD_send_splash()
-//{
-//    for(uint8_t i = 0 ; i < 21 ; i++)
-//    {
-//		TASK_CMD_LINE_SEND_STRING((&SPLASH[i][0]);
-//	}
-//	TASK_CMD_LINE_SEND_STRING(("> ");
-//}
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of the program ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */

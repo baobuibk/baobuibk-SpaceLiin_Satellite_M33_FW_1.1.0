@@ -301,15 +301,6 @@ uint32_t m33_data_get_u_lock(uint16_t table_id,uint16_t index, uint16_t * value)
     return 0;
 }
 
-// uint32_t m33_data_get_f(uint32_t table_id,uint32_t index, float * value)
-// {
-//     if (table_id >= TABLE_ID_TOTAL_COUNT) return 1; // tránh out of range
-//     if (index >= tables[table_id].size) return 1;   // tránh vượt giới hạn bảng
-
-//     *value = tables[table_id].data[index].f;
-//     return 0;
-// }
-
 uint32_t m33_data_update_NTC(int16_t *p_data)
 {
     int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
@@ -337,6 +328,29 @@ uint32_t m33_data_update_NTC(int16_t *p_data)
 
     return sem_ret;
 }
+
+uint32_t m33_data_update_EFUSE(uint16_t *p_data)
+{
+    int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
+
+    if (sem_ret != pdPASS)
+    {
+        return (uint32_t)sem_ret;
+    }
+
+    m33_data_set_u(TABLE_ID_6, current_12_pda, p_data[0]);
+    m33_data_set_u(TABLE_ID_6, current_5_cam, p_data[1]);
+    m33_data_set_u(TABLE_ID_6, current_12_lda, p_data[2]);
+    m33_data_set_u(TABLE_ID_6, current_5_hd, p_data[3]);
+    m33_data_set_u(TABLE_ID_6, current_12_tot, p_data[5] + p_data[4] + p_data[8]);
+    m33_data_set_u(TABLE_ID_6, current_5_tec, p_data[6]);
+    m33_data_set_u(TABLE_ID_6, current_5_io, p_data[7]);
+    
+    osSemaphoreGiven(&m33_data_sem);
+
+    return sem_ret;
+}
+
 uint32_t m33_data_update_board_temp(int16_t data)
 {
     int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
@@ -345,7 +359,7 @@ uint32_t m33_data_update_board_temp(int16_t data)
     {
         return (uint32_t)sem_ret;
     }
-    m33_data_set_i(TABLE_ID_6, temp_board, data);   
+    m33_data_set_i(TABLE_ID_6, temp_exp, data);   
     osSemaphoreGiven(&m33_data_sem);
     return sem_ret;
 }
@@ -382,7 +396,7 @@ uint32_t m33_data_get_board_temp(int16_t* p_data)
     {
         return (uint32_t)sem_ret;
     }
-    sem_ret = m33_data_get_i(TABLE_ID_6, temp_board, p_data);
+    sem_ret = m33_data_get_i(TABLE_ID_6, temp_exp, p_data);
     osSemaphoreGiven(&m33_data_sem);
     return (uint32_t)sem_ret;
 }

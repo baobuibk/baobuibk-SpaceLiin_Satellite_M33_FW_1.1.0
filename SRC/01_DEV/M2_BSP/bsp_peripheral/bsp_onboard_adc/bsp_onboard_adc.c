@@ -69,11 +69,13 @@ static  uint32_t adc1_raw[16] = {0};
 
 static 	float    adc0_volt_mv[16] = {0.0};
 static  float	 adc1_volt_mv[16] = {0.0};
+
+// static  uint8_t  TEC_channel_map[TEC_CHANNEL_NUM] = {0, 2, 3, 1};
+static  uint8_t  NTC_channel_map[NTC_CHANNEL_NUM] = {11, 9, 4, 3, 0, 7, 1, 2, 6, 5, 10, 8};
+
+uint16_t TEC_current_ma[TEC_CHANNEL_NUM] = {0};
 int16_t NTC_temp_C[NTC_CHANNEL_NUM] = {0};
 int16_t t_dC = 0;
-
-//static  uint8_t  TEC_channel_map[TEC_CHANNEL_NUM] = {0, 2, 3, 1};
-static  uint8_t  NTC_channel_map[NTC_CHANNEL_NUM] = {11, 9, 4, 3, 0, 7, 1, 2, 6, 5, 10, 8};
 uint16_t eFUSE_current_ma[EFUSE_CHANNEL_NUM] = {0};
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Prototype ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -221,7 +223,10 @@ void bsp_onboard_adc_update_volt()
 
 void bsp_convert_TEC()
 {
-	;
+	for (uint8_t i = 0; i < TEC_CHANNEL_NUM; i++)
+    {
+        TEC_current_ma[i] = 0;
+    }
 }
 
 void bsp_convert_NTC()
@@ -233,11 +238,12 @@ void bsp_convert_NTC()
 		NTC_temp_C[NTC_channel_map[index]] = ntc_convert_from_volt(adc0_volt_mv[PIN_NTC_CHANNEL_12 + index], 5000.0);
     }
 
+    m33_data_update_NTC(NTC_temp_C);
+
     // for (uint8_t index = 0; index < NTC_CHANNEL_NUM; index++)
 	// {
     //     PRINTF("channel %i value %d\r\n", index, NTC_temp_C[index]);
     // }
-   // m33_data_update_NTC(NTC_temp_C[]);
 
 	//system_data_update_NTC(NTC_temp_C);
 }
@@ -282,6 +288,8 @@ void bsp_convert_eFUSE_Current()
 		eFUSE_current_ma[index] = (uint16_t)(adc1_volt_mv[PIN_EFUSE_5V_CAM + index] * 3.343);
 	}
 
+    m33_data_update_EFUSE(eFUSE_current_ma);
+
     // for (uint8_t index = 0; index < EFUSE_CHANNEL_NUM; index++)
 	// {
     //     PRINTF("%s value: %dmA\r\n", efuse_name[index], eFUSE_current_ma[index]);
@@ -291,6 +299,8 @@ void bsp_convert_eFUSE_Current()
 void bsp_convert_onboard_temp()
 {
 	t_dC = (int16_t)adc1_volt_mv[PIN_TEMP_SENSOR] - 500;
+
+    m33_data_update_board_temp(t_dC);
 
     // PRINTF("onboard temp %d\r\n", t_dC);
 }
