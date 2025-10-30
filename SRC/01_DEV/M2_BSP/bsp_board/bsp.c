@@ -72,20 +72,35 @@ static void EXP_InitPins(void)
     IOMUXC_SetPinMux(IOMUXC_PAD_SAI1_RXD0__LPSPI1_SOUT, 0U);
     IOMUXC_SetPinMux(IOMUXC_PAD_SAI1_TXD0__LPSPI1_SCK, 0U);
 
-    IOMUXC_SetPinConfig(IOMUXC_PAD_SAI1_TXC__LPSPI1_SIN, 
+    // IOMUXC_SetPinConfig(IOMUXC_PAD_SAI1_TXC__LPSPI1_SIN, 
+    //                     IOMUXC_PAD_DSE(0x3F) |
+    //                     IOMUXC_PAD_FSEL1(2U) |
+    //                     IOMUXC_PAD_PU_MASK);
+
+    // IOMUXC_SetPinConfig(IOMUXC_PAD_SAI1_RXD0__LPSPI1_SOUT, 
+    //                     IOMUXC_PAD_DSE(0x3F) |
+    //                     IOMUXC_PAD_FSEL1(2U) |
+    //                     IOMUXC_PAD_PU_MASK);
+
+    // IOMUXC_SetPinConfig(IOMUXC_PAD_SAI1_TXD0__LPSPI1_SCK, 
+    //                     IOMUXC_PAD_DSE(0x3F) |
+    //                     IOMUXC_PAD_FSEL1(2U) |
+    //                     IOMUXC_PAD_PU_MASK);
+
+                        IOMUXC_SetPinConfig(IOMUXC_PAD_SAI1_TXC__LPSPI1_SIN, 
                         IOMUXC_PAD_DSE(0x3F) |
-                        IOMUXC_PAD_FSEL1(2U) |
-                        IOMUXC_PAD_PU_MASK);
+                        IOMUXC_PAD_FSEL1(2U) );
+  
 
     IOMUXC_SetPinConfig(IOMUXC_PAD_SAI1_RXD0__LPSPI1_SOUT, 
                         IOMUXC_PAD_DSE(0x3F) |
-                        IOMUXC_PAD_FSEL1(2U) |
-                        IOMUXC_PAD_PU_MASK);
+                        IOMUXC_PAD_FSEL1(2U) );
+
 
     IOMUXC_SetPinConfig(IOMUXC_PAD_SAI1_TXD0__LPSPI1_SCK, 
                         IOMUXC_PAD_DSE(0x3F) |
-                        IOMUXC_PAD_FSEL1(2U) |
-                        IOMUXC_PAD_PU_MASK);
+                        IOMUXC_PAD_FSEL1(2U) );
+
 
     IOMUXC_SetPinMux(IOMUXC_PAD_ENET2_TD3__GPIO4_IO16, 0U);
     IOMUXC_SetPinMux(IOMUXC_PAD_ENET2_TX_CTL__GPIO4_IO20, 0U);
@@ -269,4 +284,13 @@ static void EXP_InitPins(void)
     //                     IOMUXC_PAD_DSE(15U) |
     //                     IOMUXC_PAD_FSEL1(2U) |
     //                     IOMUXC_PAD_PD_MASK);
+}
+
+
+void setMuxFlip()
+{
+        IOMUXC_SetPinConfig(IOMUXC_PAD_SAI1_RXD0__LPSPI1_SOUT, 
+                    IOMUXC_PAD_DSE(0x3F) | 
+                    IOMUXC_PAD_FSEL1(2U) | 
+                    IOMUXC_PAD_OD_MASK); // <-- Thay bằng NO_PULL
 }

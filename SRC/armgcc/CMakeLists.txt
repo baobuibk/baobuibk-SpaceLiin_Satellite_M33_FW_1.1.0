@@ -108,8 +108,8 @@ add_executable(${MCUX_SDK_PROJECT_NAME}
 
     "${SRC_ROOT}/01_DEV/M3_Devices/devices/AD4114/ad4114.c"
     "${SRC_ROOT}/01_DEV/M3_Devices/devices/ADG1414BR/adg1414.c"
-    "${SRC_ROOT}/01_DEV/M3_Devices/devices/AS3004204/as3004.c"
-    "${SRC_ROOT}/01_DEV/M3_Devices/devices/LT8722/lt8722.c"
+    # "${SRC_ROOT}/01_DEV/M3_Devices/devices/AS3004204/as3004.c"
+    # "${SRC_ROOT}/01_DEV/M3_Devices/devices/LT8722/lt8722.c"
     "${SRC_ROOT}/01_DEV/M3_Devices/devices/MCP4902/mcp4902.c"
     "${SRC_ROOT}/01_DEV/M3_Devices/devices/pca9685/pca9685.c"
     "${SRC_ROOT}/01_DEV/M3_Devices/devices/RV3129/rv3129.c"
@@ -124,7 +124,7 @@ add_executable(${MCUX_SDK_PROJECT_NAME}
     "${SRC_ROOT}/01_DEV/M4_Middlewares/os/freertos/osScheduler.c"
     "${SRC_ROOT}/01_DEV/M4_Middlewares/os/freertos/osSemphr.c"
     "${SRC_ROOT}/01_DEV/M4_Middlewares/os/freertos/osThread.c"
-    "${SRC_ROOT}/01_DEV/M4_Middlewares/printf/printf.c"
+    #"${SRC_ROOT}/01_DEV/M4_Middlewares/printf/printf.c"
     # "${SRC_ROOT}/01_DEV/M4_Middlewares/ring_char_buffer/ring_char_buffer.c"
     # "${SRC_ROOT}/01_DEV/M4_Middlewares/ring_buffer/ring_buffer.c"
 

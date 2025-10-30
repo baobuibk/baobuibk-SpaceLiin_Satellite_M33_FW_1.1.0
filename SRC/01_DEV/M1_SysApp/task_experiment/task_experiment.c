@@ -75,7 +75,7 @@ void Task_Experiment(void *pvParameters)
         {
             case SLD_RUN:
             {
-              //  task_experiment_DLS();
+                task_experiment_DLS();
                 break;
             }
                 

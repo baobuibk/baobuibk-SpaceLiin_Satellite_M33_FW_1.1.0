@@ -16,6 +16,7 @@
 
 #include "delay.h"
 #include "m33_data.h"
+#include "bsp.h"
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Defines ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 #define TEC_CHANNEL_NUM 4U
@@ -414,12 +415,12 @@ static uint32_t spi_io_onboard_adc_config(SPI_Io_t *me, uint8_t is_flip)
         return ERROR_INVALID_PARAM;
     }
 
-    // int sem_ret = osSemaphoreTake(&me->lock, 1000);
+    int sem_ret = osSemaphoreTake(&me->lock, 1000);
 
-    // if (sem_ret != pdPASS)
-    // {
-    //     return (uint32_t)sem_ret;
-    // }
+    if (sem_ret != pdPASS)
+    {
+        return (uint32_t)sem_ret;
+    }
 
     LPSPI_Type *base = spi_periph[me->ui32SpiPort];
 
@@ -438,6 +439,8 @@ static uint32_t spi_io_onboard_adc_config(SPI_Io_t *me, uint8_t is_flip)
 
     /* Disable SPI before modifying configuration */
     base->CR &= ~LPSPI_CR_MEN_MASK;
+
+   // setMuxFlip();
 
     // Update TCR: CPOL/CPHA bits (preserve the rest)
     uint32_t temp_cfgr1 = base->CFGR1;

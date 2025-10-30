@@ -234,7 +234,7 @@ void __attribute__((weak)) lwl_buffer_full_notify(lwl_t *lwl)
 
 }
 
-void __attribute__((weak)) lwl_clear_notification(lwl_t *lwl)
+void lwl_clear_notification(lwl_t *lwl)
 {
 	lwl->lwl_buf_over_threshold = 0;
 }
@@ -325,4 +325,7 @@ bool lwl_is_sys_log_full()
     return lwlSysLog.lwl_buf_over_threshold;
 }
 
-
+void lwl_sys_log_clear_notification(void)
+{
+    lwl_clear_notification(&lwlSysLog);
+}

@@ -26,24 +26,24 @@
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Public Function ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* :::::::::: Test CAN Task ::::::::::::: */
 // TODO: bỏ task này, move hàm này qua experiment
-void Task_Update_Onboard_ADC(void *pvParameters)
-{
-    PRINTF("[Task_Update_Onboard_ADC] Started\r\n");
+// void Task_Update_Onboard_ADC(void *pvParameters)
+// {
+//     PRINTF("[Task_Update_Onboard_ADC] Started\r\n");
 
-    for(;;)
-    {
-        bsp_onboard_adc_update_raw();
-        bsp_onboard_adc_update_volt();
+//     for(;;)
+//     {
+//         bsp_onboard_adc_update_raw();
+//         bsp_onboard_adc_update_volt();
 
-        bsp_convert_TEC();
-        bsp_convert_NTC();
-        bsp_convert_eFUSE_Current();
-        bsp_convert_onboard_temp();
+//         bsp_convert_TEC();
+//         bsp_convert_NTC();
+//         bsp_convert_eFUSE_Current();
+//         bsp_convert_onboard_temp();
 
-        // wake up exactly every 1000 ms
-        vTaskDelay( 5000);
-    }
-}
+//         // wake up exactly every 1000 ms
+//         vTaskDelay( 5000);
+//     }
+// }
 
 void Update_Onboard_ADC(void)
 {
@@ -56,6 +56,8 @@ void Update_Onboard_ADC(void)
     bsp_convert_NTC();
     bsp_convert_eFUSE_Current();
     bsp_convert_onboard_temp();
+    PRINTF("[Update_Onboard_ADC] Exitted------------------------------>\r\n");
+
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of the program ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */

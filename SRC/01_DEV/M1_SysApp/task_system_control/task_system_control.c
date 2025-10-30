@@ -22,11 +22,7 @@ void task_system_control()
     // Create system control task here
     uint16_t is_start_exp = 0;
     uint8_t  local_counter = 0;
-    int16_t board_temperature = 0;
     uint16_t command;
-    char msg_buf[256];
-    uint32_t epoch ;
-    remote_message_t message;
     PRINTF("===== [System Control Started] =====\r\n");
     
     while (1)
@@ -35,18 +31,7 @@ void task_system_control()
 
         local_counter++;
         //check if log is full
-        if (lwl_is_sys_log_full())
-        {
-            xSemaphoreTake(rptx_ram_mutex, portMAX_DELAY);
-            uint32_t length = lwl_sys_log_transfer();
 
-            message.address = SYS_LOG;
-            message.data = length;
-            xQueueSend(remote_message_queue, &message, 1000);//send notification for log
-            vTaskDelay(2000); //make sure data is read
-            xSemaphoreGive(rptx_ram_mutex);
-            PRINTF("\r\n[task_system_control] sent syslog notification\r\n", msg_buf);
-        }
 
         //check if experiment is enabled
         uint16_t exp_remain_time;
@@ -92,33 +77,8 @@ void task_system_control()
             command = FLUIDIC_SEQ;
             xQueueSend(experiment_command_queue, &command, 100);//send notification for log
             m33_data_set_u_lock(TABLE_ID_5, exp_fluidic_seq, 0);
-        }
-
-        if (local_counter >= REPORT_INTERVAL)
-        {
-            m33_data_get_epoch_lock(&epoch);
-            //log time
-            LWL_SYS_LOG(LWL_EXP_TIMESTAMP, LWL_4(epoch));
-
-            local_counter = 0;
-
-            //m33_data_ntc_temp_get(NTC_temps);
-            m33_data_get_i_lock(TABLE_ID_6, temp_exp, &board_temperature);
-            message.address = temp_exp + 0x0600;
-            message.data = board_temperature;
-
-
-            xQueueSend(remote_message_queue, &message, (TickType_t)0);
-            for (int i = 0; i < 12; i++)   
-            {
-                message.address = 3 +  0x0600 + i;
-                message.data =  NTC_temp_C[i];
-
-                xQueueSend(remote_message_queue, &message, (TickType_t)0);  
-            }
-
-            PRINTF("\r\n[task_system_control] sent to remote messae tx task\r\n", msg_buf);
-        }
+        }       
     }
 }
+
 

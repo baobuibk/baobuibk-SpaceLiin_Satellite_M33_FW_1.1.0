@@ -104,4 +104,5 @@ bool lwl_is_datal_og_full(void);
 
 uint32_t lwl_data_transfer(void);
 uint32_t lwl_sys_log_transfer(void);
+void lwl_sys_log_clear_notification(void);
 #endif // _LWL_H_

@@ -24,9 +24,11 @@
 #include "rtos.h"
 #include "task_experiment.h"
 #include "task_update_onboard_adc.h"
-#include "printf.h"
+//#include "printf.h"
 #include "remote_call.h"
 #include "app_temperature.h"
+#include "stdio.h"
+#include "lwl.h"
 
 #define CREATE_TASK(task_func, task_name, stack, param, priority, handle) \
     if (xTaskCreate(task_func, task_name, stack, param, priority, handle) != pdPASS) { \
@@ -128,7 +130,7 @@ Std_ReturnType EXP_AppInit(void)
     CREATE_TASK(RPMSG_Tx_Task, 		"RPMSG_Tx_Task", 		MIN_STACK_SIZE * 3, 	NULL, 	2, NULL);
     CREATE_TASK(RPMSG_Task, 		"RPMSGTask", 		MIN_STACK_SIZE * 3, 	NULL, 	1, NULL);
     CREATE_TASK(Task_Experiment, 		"Task_Experiment", 		MIN_STACK_SIZE * 5, 	NULL, 	2, NULL);
-  // CREATE_TASK(task_temperature_control_profile_type0, 		"task_temperature_control_profile_type0", 		MIN_STACK_SIZE * 5, 	NULL, 	2, NULL);
+    CREATE_TASK(task_temperature_control_profile_type0, 		"task_temperature_control_profile_type0", 		MIN_STACK_SIZE * 5, 	NULL, 	2, NULL);
 
     // CREATE_TASK(Task_Update_Onboard_ADC, 		"Task_Update_Onboard_ADC", 		MIN_STACK_SIZE *4, 	NULL, 	2, NULL);
 
@@ -224,7 +226,10 @@ static void RPMSG_Task(void *pvParameters)
 
            char * papp_buff = app_buf;
            while ((0x0A == (*papp_buff)) || (0x0D == (*papp_buff))) papp_buff++;
-           if (0 != (*papp_buff)) Command_Process(papp_buff);
+           if (0 != (*papp_buff)) {
+                Command_Process(papp_buff);
+                rpmsg_send(RPMSG_MSG_RESPONSE_OK,"OK");
+           }
            
         }
         else if (type == CMD_TYPE_FILE_RESP)
@@ -253,63 +258,77 @@ static void RPMSG_Tx_Task(void *pvParameters)
 {
    remote_message_t message;
    uint32_t epoch = 0;
+   uint16_t param_index = 0;
 
     PRINTF("[RPMSG_Tx_Task] Started\r\n");
     char msg_buf[100] = {0};
 
     while (1)
     {
-         vTaskDelay(300);
-        if( xQueueReceive( remote_message_queue,
-                           &( message ),
-                           ( TickType_t ) 0 ) != pdPASS )
+        vTaskDelay(500);
+        if (lwl_is_sys_log_full())
         {
-            continue;
+            xSemaphoreTake(rptx_ram_mutex, portMAX_DELAY);
+            uint32_t length = lwl_sys_log_transfer();
+            lwl_sys_log_clear_notification();
+
+            message.address = SYS_LOG;
+            message.data = length;
+            xQueueSend(remote_message_queue, &message, 1000);//send notification for log
+            vTaskDelay(2000); //make sure data is read
+            xSemaphoreGive(rptx_ram_mutex);
+            PRINTF("\r\n[task_system_control] sent syslog notification\r\n", msg_buf);
         }
-        //process the message
-        uint32_t msg_type = (message.address & 0xF000);
-        
-        m33_data_get_epoch_lock(&epoch);
-        
-        switch (msg_type)
+        if( xQueueReceive( remote_message_queue, &( message ), ( TickType_t ) 0 ) == pdPASS )
         {
-            case UPDATE_PARAM:
-                snprintf(msg_buf, 100, "update_param 0x%03X=%u\r\n",(message.address & 0x0FFF),(uint16_t)message.data);
-                rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
-                break;
-            case DLS_DATA:
-                snprintf(msg_buf, 100, "daily_PLDD_%d.dat\r\n", epoch);
-                PRINTF("[ RPMSG_Tx_Task]file request with size = %d\r\n",message.data);
-                RemoteCall_SendFileRequest(message.data,msg_buf);
-                break;
-            case TEST_LASER_DATA:
-                snprintf(msg_buf, 100, "oneshot_TLPD_%d.dat\r\n", epoch);
-                 RemoteCall_SendFileRequest(message.data,msg_buf);
-
-                break;
-            case TEST_PUMP_DATA:
-                snprintf(msg_buf, 100, "oneshot_TLSR_%d.dat\r\n", epoch);
-                RemoteCall_SendFileRequest(message.data,msg_buf);
-                break;
-            case CAM_CAPTURE:
-                snprintf(msg_buf, 100, "capture %d\r\n",message.data);
-                rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
-                break;
-
-            case SYS_LOG:
-                
-                    snprintf(msg_buf, 100, "daily_SYSL_%d.DAT\r\n",epoch);
-                    PRINTF("[ RPMSG_Tx_Task]file request with size = %d\r\n",message.data);
+            //process the message
+            uint32_t msg_type = (message.address & 0xF000);
+            
+            m33_data_get_epoch_lock(&epoch);
+            
+            switch (msg_type)
+            {
+                case UPDATE_PARAM:
+                    snprintf(msg_buf, 100, "update_param 0x%03X=%u\r\n",(message.address & 0x0FFF),(unsigned int)message.data);
+                    rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
+                    break;
+                case DLS_DATA:
+                    snprintf(msg_buf, 100, "daily_PLDD_%u.dat\r\n", (unsigned int)epoch);
+                    PRINTF("[ RPMSG_Tx_Task]file request with size = %u\r\n",message.data);
+                    RemoteCall_SendFileRequest(message.data,msg_buf);
+                    break;
+                case TEST_LASER_DATA:
+                    snprintf(msg_buf, 100, "oneshot_TLPD_%d.dat\r\n", (unsigned int)epoch);
                     RemoteCall_SendFileRequest(message.data,msg_buf);
 
-//                rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
-                break;
-            default:
-                break;
+                    break;
+                case TEST_PUMP_DATA:
+                    snprintf(msg_buf, 100, "oneshot_TLSR_%d.dat\r\n", (unsigned int)epoch);
+                    RemoteCall_SendFileRequest(message.data,msg_buf);
+                    break;
+                case CAM_CAPTURE:
+                    snprintf(msg_buf, 100, "capture %d\r\n",(unsigned int)message.data);
+                    rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
+                    break;
+
+                case SYS_LOG:
+                    
+                    snprintf(msg_buf, 100, "daily_SYSL_%d.DAT\r\n",(unsigned int)epoch);
+                    PRINTF("[ RPMSG_Tx_Task]file request with size = %d\r\n",message.data);
+                    RemoteCall_SendFileRequest(message.data,msg_buf);
+                    break;
+                default:
+                    break;
+            }
         }
+ //xend the table 6 data
+        uint16_t param = 0;
+        m33_data_get_u_lock(TABLE_ID_6,param_index, &param);
+        snprintf(msg_buf, 100, "update_param 0x%03X=%u\r\n",((param_index + 0x6000) & 0x0FFF),(uint16_t)param);
+        rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
         PRINTF("\r\n[RPMSG_Tx_Task] sent %s\r\n",msg_buf);
-
-
+        param_index++;
+        if (TABLE6_TOTAL_COUNT == param_index) param_index = 0;
     }
 }
 

@@ -26,5 +26,6 @@
 void BSP_Init(void);
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of the program ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+void setMuxFlip();
 
 #endif /* _BSUPPORT_H_ */
