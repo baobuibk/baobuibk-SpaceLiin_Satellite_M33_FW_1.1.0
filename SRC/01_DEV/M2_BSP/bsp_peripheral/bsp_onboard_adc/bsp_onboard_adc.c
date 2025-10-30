@@ -242,22 +242,57 @@ void bsp_convert_NTC()
 	//system_data_update_NTC(NTC_temp_C);
 }
 
+// typedef enum
+// {
+//     ONBOARD_ADC1_0,
+//     ONBOARD_ADC1_1,
+//     PIN_EFUSE_12V_PHOTO,
+//     PIN_EFUSE_5V_CAM,
+//     PIN_TEMP_SENSOR,
+//     PIN_EFUSE_12V_LASER,
+//     PIN_EFUSE_5V_HD4,
+//     PIN_EFUSE_12V_HEADER,
+//     PIN_EFUSE_12V, //EFUSE_12V_IN
+//     PIN_EFUSE_5V_TEC,
+//     PIN_EFUSE_5V_IO,
+//     PIN_EFUSE_12V_SOLENOID,
+// } Onboard_ADC1_Channel;
+// const char* efuse_name[] =
+// {
+//     "PIN_EFUSE_12V_PHOTO",
+//     "PIN_EFUSE_5V_CAM",
+//     "PIN_EFUSE_12V_LASER",
+//     "PIN_EFUSE_5V_HD4",
+//     "PIN_EFUSE_12V_HEADER",
+//     "PIN_EFUSE_12V", //EFUSE_12V_IN
+//     "PIN_EFUSE_5V_TEC",
+//     "PIN_EFUSE_5V_IO",
+//     "PIN_EFUSE_12V_SOLENOID",
+// };
+
 void bsp_convert_eFUSE_Current()
 {
+    // efuse index 0 and 1 start at PIN_EFUSE_12V_PHOTO
 	eFUSE_current_ma[0] = (uint16_t)(adc1_volt_mv[PIN_EFUSE_12V_PHOTO] * 3.343);
 	eFUSE_current_ma[1] = (uint16_t)(adc1_volt_mv[PIN_EFUSE_12V_PHOTO + 1] * 3.343);
 
+    // the rest of efuse index is start at PIN_EFUSE_5V_CAM
 	for (uint8_t index = 2; index < EFUSE_CHANNEL_NUM; index++)
 	{
 		eFUSE_current_ma[index] = (uint16_t)(adc1_volt_mv[PIN_EFUSE_5V_CAM + index] * 3.343);
 	}
+
+    // for (uint8_t index = 0; index < EFUSE_CHANNEL_NUM; index++)
+	// {
+    //     PRINTF("%s value: %dmA\r\n", efuse_name[index], eFUSE_current_ma[index]);
+    // }
 }
 
 void bsp_convert_onboard_temp()
 {
 	t_dC = (int16_t)adc1_volt_mv[PIN_TEMP_SENSOR] - 500;
 
-    PRINTF("onboard temp %d\r\n", t_dC);
+    // PRINTF("onboard temp %d\r\n", t_dC);
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Function ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
