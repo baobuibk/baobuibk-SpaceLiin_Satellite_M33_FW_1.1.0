@@ -1,6 +1,8 @@
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Include~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 #include "spi_io.h"
 
+#include "bsp_board.h"
+
 #include "fsl_lpspi.h"
 #include "MIMX9352_cm33.h"
 
@@ -42,6 +44,193 @@ static LPSPI_Type* const spi_periph[SPI_MAX_BUS_NUMBER + 1] =
 // };
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Prototype ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+static void bsp_core_init_onboard_adc_spi(void)
+{
+    uint32_t srcClock_Hz;
+    lpspi_master_config_t masterConfig;
+
+    const clock_root_config_t lpspiClkCfg =
+    {
+        .clockOff = false,
+	    .mux = 0,
+	    .div = 1
+    };
+
+    CLOCK_SetRootClock(ONBOARD_ADC_SPI_CLOCK_ROOT, &lpspiClkCfg);
+    CLOCK_EnableClock(ONBOARD_ADC_SPI_CLOCK_GATE);
+
+    /* Get LPSPI module default Configuration. */
+    /*
+     * 
+     * masterConfig->baudRate                       = 500000;
+     * masterConfig->bitsPerFrame                   = 8;
+     * masterConfig->cpol                           = kLPSPI_ClockPolarityActiveHigh;
+     * masterConfig->cpha                           = kLPSPI_ClockPhaseFirstEdge;
+     * masterConfig->direction                      = kLPSPI_MsbFirst;
+
+     * masterConfig->pcsToSckDelayInNanoSec         = (1000000000U / masterConfig->baudRate) / 2U;
+     * masterConfig->lastSckToPcsDelayInNanoSec     = (1000000000U / masterConfig->baudRate) / 2U;
+     * masterConfig->betweenTransferDelayInNanoSec  = (1000000000U / masterConfig->baudRate) / 2U;
+
+     * masterConfig->whichPcs                       = kLPSPI_Pcs0;
+     * masterConfig->pcsActiveHighOrLow             = kLPSPI_PcsActiveLow;
+
+     * masterConfig->pinCfg                         = kLPSPI_SdiInSdoOut;
+     * masterConfig->dataOutConfig                  = kLpspiDataOutRetained;
+
+     * masterConfig->enableInputDelay               = false;
+     */
+    LPSPI_MasterGetDefaultConfig(&masterConfig);
+    masterConfig.pcsToSckDelayInNanoSec         = 0;
+    masterConfig.lastSckToPcsDelayInNanoSec     = 0;
+    masterConfig.betweenTransferDelayInNanoSec  = 0;
+    masterConfig.direction                      = kLPSPI_MsbFirst;
+    masterConfig.cpol                           = kLPSPI_ClockPolarityActiveLow;
+    masterConfig.cpha                           = kLPSPI_ClockPhaseSecondEdge;
+
+    // fix cứng, có thể chỉnh lại
+    // masterConfig.pinCfg                         = kLPSPI_SdoInSdiOut;
+    masterConfig.baudRate = ONBOARD_ADC_SPI_BAUDRATE;
+    masterConfig.whichPcs = kLPSPI_Pcs1;
+    
+    srcClock_Hz = ONBOARD_ADC_SPI_CLK_FREQ;
+    LPSPI_MasterInit(ONBOARD_ADC_SPI_BASE, &masterConfig, srcClock_Hz);
+
+    // Disable before config
+    ONBOARD_ADC_SPI_BASE->CR &= ~LPSPI_CR_MEN_MASK;
+
+    // Allow stalls (safe)
+    ONBOARD_ADC_SPI_BASE->CFGR1 &= ~LPSPI_CFGR1_NOSTALL_MASK;
+
+    // Force 8-bit frames; choose PCS1; hold PCS internally (no real pin toggling)
+    ONBOARD_ADC_SPI_BASE->TCR = (ONBOARD_ADC_SPI_BASE->TCR & ~(LPSPI_TCR_FRAMESZ_MASK |
+                            LPSPI_TCR_RXMSK_MASK   |
+                            LPSPI_TCR_TXMSK_MASK   |
+                            LPSPI_TCR_PCS_MASK     |
+                            LPSPI_TCR_CONT_MASK    |
+                            LPSPI_TCR_CONTC_MASK))
+            |  LPSPI_TCR_FRAMESZ(7)         // 8-bit
+            |  LPSPI_TCR_PCS(1)             // "PCS1" (not pin-muxed)
+            |  LPSPI_TCR_RXMSK(0)
+            |  LPSPI_TCR_TXMSK(0)
+            |  LPSPI_TCR_CONT(1)            // keep PCS asserted internally
+            |  LPSPI_TCR_CONTC(1);
+
+    // Clean state
+    ONBOARD_ADC_SPI_BASE->CR |=  (LPSPI_CR_RTF_MASK | LPSPI_CR_RRF_MASK);       // flush TX/RX FIFOs
+    ONBOARD_ADC_SPI_BASE->SR  =   LPSPI_SR_WCF_MASK | LPSPI_SR_FCF_MASK | LPSPI_SR_TCF_MASK; // clear sticky
+
+    // Enable
+    ONBOARD_ADC_SPI_BASE->CR |= LPSPI_CR_MEN_MASK;
+}
+
+static void bsp_core_init_photo_adc_spi(void)
+{
+    uint32_t srcClock_Hz;
+    lpspi_master_config_t masterConfig;
+
+    const clock_root_config_t lpspiClkCfg =
+    {
+        .clockOff = false,
+	    .mux = 0,
+	    .div = 1
+    };
+
+    CLOCK_SetRootClock(PHOTO_ADC_SPI_CLOCK_ROOT, &lpspiClkCfg);
+    CLOCK_EnableClock(PHOTO_ADC_SPI_CLOCK_GATE);
+
+    /* Get LPSPI module default Configuration. */
+    /*
+     * 
+     * masterConfig->baudRate                       = 500000;
+     * masterConfig->bitsPerFrame                   = 8;
+     * masterConfig->cpol                           = kLPSPI_ClockPolarityActiveHigh;
+     * masterConfig->cpha                           = kLPSPI_ClockPhaseFirstEdge;
+     * masterConfig->direction                      = kLPSPI_MsbFirst;
+
+     * masterConfig->pcsToSckDelayInNanoSec         = (1000000000U / masterConfig->baudRate) / 2U;
+     * masterConfig->lastSckToPcsDelayInNanoSec     = (1000000000U / masterConfig->baudRate) / 2U;
+     * masterConfig->betweenTransferDelayInNanoSec  = (1000000000U / masterConfig->baudRate) / 2U;
+
+     * masterConfig->whichPcs                       = kLPSPI_Pcs0;
+     * masterConfig->pcsActiveHighOrLow             = kLPSPI_PcsActiveLow;
+
+     * masterConfig->pinCfg                         = kLPSPI_SdiInSdoOut;
+     * masterConfig->dataOutConfig                  = kLpspiDataOutRetained;
+
+     * masterConfig->enableInputDelay               = false;
+     */
+    LPSPI_MasterGetDefaultConfig(&masterConfig);
+    masterConfig.pcsToSckDelayInNanoSec         = 0;
+    masterConfig.lastSckToPcsDelayInNanoSec     = 0;
+    masterConfig.betweenTransferDelayInNanoSec  = 0;
+    masterConfig.direction                      = kLPSPI_MsbFirst;
+    masterConfig.cpol                           = kLPSPI_ClockPolarityActiveLow;
+    masterConfig.cpha                           = kLPSPI_ClockPhaseSecondEdge;
+    masterConfig.baudRate = PHOTO_ADC_SPI_BAUDRATE;
+    masterConfig.whichPcs = kLPSPI_Pcs1;
+    
+    srcClock_Hz = PHOTO_ADC_SPI_CLK_FREQ;
+    LPSPI_MasterInit(PHOTO_ADC_SPI_BASE, &masterConfig, srcClock_Hz);
+
+    // Disable before config
+    PHOTO_ADC_SPI_BASE->CR &= ~LPSPI_CR_MEN_MASK;
+
+    // Allow stalls (safe)
+    PHOTO_ADC_SPI_BASE->CFGR1 &= ~LPSPI_CFGR1_NOSTALL_MASK;
+
+    // Force 8-bit frames; choose PCS1; hold PCS internally (no real pin toggling)
+    PHOTO_ADC_SPI_BASE->TCR = (PHOTO_ADC_SPI_BASE->TCR & ~(LPSPI_TCR_FRAMESZ_MASK |
+                            LPSPI_TCR_RXMSK_MASK   |
+                            LPSPI_TCR_TXMSK_MASK   |
+                            LPSPI_TCR_PCS_MASK     |
+                            LPSPI_TCR_CONT_MASK    |
+                            LPSPI_TCR_CONTC_MASK))
+            |  LPSPI_TCR_FRAMESZ(7)         // 8-bit
+            |  LPSPI_TCR_PCS(1)             // "PCS1" (not pin-muxed)
+            |  LPSPI_TCR_RXMSK(0)
+            |  LPSPI_TCR_TXMSK(0)
+            |  LPSPI_TCR_CONT(1)            // keep PCS asserted internally
+            |  LPSPI_TCR_CONTC(1);
+
+    // Clean state
+    PHOTO_ADC_SPI_BASE->CR |=  (LPSPI_CR_RTF_MASK | LPSPI_CR_RRF_MASK);       // flush TX/RX FIFOs
+    PHOTO_ADC_SPI_BASE->SR  =   LPSPI_SR_WCF_MASK | LPSPI_SR_FCF_MASK | LPSPI_SR_TCF_MASK; // clear sticky
+
+    // Enable
+    PHOTO_ADC_SPI_BASE->CR |= LPSPI_CR_MEN_MASK;
+}
+
+static uint32_t spi_io_recovery(SPI_Io_t* me)
+{
+    if (!me)
+    {
+        return 0;
+    }
+
+    const uint32_t port = me->ui32SpiPort;
+
+    if (port == 0 || port > SPI_MAX_BUS_NUMBER)
+    {
+        return 0;
+    }
+
+    switch (port)
+    {
+    case 1:
+        bsp_core_init_onboard_adc_spi();
+        break;
+    case 5:
+        bsp_core_init_photo_adc_spi();
+        break;
+    
+    default:
+        break;
+    }    
+
+    return 0;
+}
+
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Public Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Public Function ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 uint32_t spi_io_set_mode(SPI_Io_t *me, uint8_t spi_mode)
@@ -70,7 +259,7 @@ uint32_t spi_io_set_mode(SPI_Io_t *me, uint8_t spi_mode)
     delay_init();
 
     // Ensure module not busy (equiv. to STM32 BSY=0)
-    if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, 1000u))
+    if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, 10000u))
     {
         osSemaphoreGiven(&me->lock);
         return ERROR_TIMEOUT;
@@ -100,9 +289,6 @@ uint32_t spi_io_set_mode(SPI_Io_t *me, uint8_t spi_mode)
 
     return ERROR_OK;
 }
-
-
-
 
 /******************************************************************************/
 /**************************** Asynchronous Functions **************************/
@@ -173,7 +359,7 @@ uint32_t spi_io_read_sync(SPI_Io_t *me, uint8_t *pui8RxBuff, uint32_t ui32Length
     delay_init();
 
     /* 1) Đảm bảo module không bận */
-    if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, 1000u))
+    if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, 10000u))
         return ERROR_TIMEOUT;
 
     /* 2) Chuẩn bị FIFO/flags sạch sẽ */
@@ -201,28 +387,40 @@ uint32_t spi_io_read_sync(SPI_Io_t *me, uint8_t *pui8RxBuff, uint32_t ui32Length
     {
         /* 4) Chờ TX FIFO có chỗ trống */
         if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_TDF_MASK, LPSPI_BYTE_TIMEOUT_US))
+        {
+            spi_io_recovery(me);
             return ERROR_TIMEOUT;
-
+        }
+            
         /* 5) Ghi dummy để clock-in 1 byte từ slave */
         base->TDR = 0xFFU;   // dummy 0xFF an toàn, tùy thiết bị có thể dùng 0x00
 
         /* 6) Chờ RX có dữ liệu */
         if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_RDF_MASK, LPSPI_BYTE_TIMEOUT_US))
+        {
+            spi_io_recovery(me);
             return ERROR_TIMEOUT;
-
+        }
+            
         /* 7) Đọc về 1 byte */
         pui8RxBuff[i] = (uint8_t)base->RDR;
     }
 
     /* 8) Kết thúc: đảm bảo khung đã xong và module không bận */
     if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_TCF_MASK, LPSPI_BYTE_TIMEOUT_US))
+    {
+        spi_io_recovery(me);
         return ERROR_TIMEOUT;
+    }
 
     base->SR = LPSPI_SR_TCF_MASK; // clear TCF
 
     if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, LPSPI_BYTE_TIMEOUT_US))
+    {
+        spi_io_recovery(me);
         return ERROR_TIMEOUT;
-
+    }
+        
     return ERROR_OK;
 }
 
@@ -236,7 +434,7 @@ uint32_t spi_io_write_sync(SPI_Io_t *me, uint8_t *pui8TxBuff, uint32_t ui32Lengt
     delay_init();
 
     /* 1) Đảm bảo module không bận trước khi bắt đầu */
-    if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, 1000u))
+    if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, 10000u))
         return ERROR_TIMEOUT;
 
     /* 2) Chuẩn bị FIFO/flags sạch sẽ (MEN=0 -> flush -> clear TCF -> MEN=1) */
@@ -259,26 +457,38 @@ uint32_t spi_io_write_sync(SPI_Io_t *me, uint8_t *pui8TxBuff, uint32_t ui32Lengt
     {
         /* TX FIFO có chỗ trống? */
         if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_TDF_MASK, LPSPI_BYTE_TIMEOUT_US))
+        {
+            spi_io_recovery(me);
             return ERROR_TIMEOUT;
+        }
 
         /* Ghi dữ liệu ra TDR */
         base->TDR = (uint32_t)pui8TxBuff[i];
 
         /* Với mỗi byte phát đi sẽ có 1 byte “rác” clock-in về RX -> đọc bỏ để tránh đầy FIFO */
         if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_RDF_MASK, LPSPI_BYTE_TIMEOUT_US))
+        {
+            spi_io_recovery(me);
             return ERROR_TIMEOUT;
+        }
 
         (void)base->RDR;  // discard
     }
 
     /* 5) Kết thúc phiên: đợi khung hoàn tất (TCF=1), clear TCF; đợi MBF=0 */
     if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_TCF_MASK, LPSPI_BYTE_TIMEOUT_US))
+    {
+        spi_io_recovery(me);
         return ERROR_TIMEOUT;
+    }
 
     base->SR = LPSPI_SR_TCF_MASK; // clear TCF
 
     if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, LPSPI_BYTE_TIMEOUT_US))
+    {
+        spi_io_recovery(me);
         return ERROR_TIMEOUT;
+    }
 
     return ERROR_OK;
 }
@@ -292,7 +502,7 @@ uint32_t spi_io_transfer_sync(SPI_Io_t *me, uint8_t *pui8TxBuff, uint8_t *pui8Rx
     delay_init();
 
     /* 1) Đảm bảo module không bận trước khi bắt đầu */
-    if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, 1000u))
+    if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, 10000u))
         return ERROR_TIMEOUT;
 
     /* 2) MEN=0 -> flush FIFO -> clear TCF -> MEN=1 */
@@ -314,14 +524,20 @@ uint32_t spi_io_transfer_sync(SPI_Io_t *me, uint8_t *pui8TxBuff, uint8_t *pui8Rx
     {
         /* TX FIFO có chỗ trống? */
         if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_TDF_MASK, LPSPI_BYTE_TIMEOUT_US))
+        {
+            spi_io_recovery(me);
             return ERROR_TIMEOUT;
+        }
 
         /* Ghi 1 byte ra TDR */
         base->TDR = (uint32_t)pui8TxBuff[i];
 
         /* Chờ RX có dữ liệu về */
         if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_RDF_MASK, LPSPI_BYTE_TIMEOUT_US))
+        {
+            spi_io_recovery(me);
             return ERROR_TIMEOUT;
+        }
 
         /* Đọc 1 byte vào buffer */
         pui8RxBuff[i] = (uint8_t)base->RDR;
@@ -329,12 +545,18 @@ uint32_t spi_io_transfer_sync(SPI_Io_t *me, uint8_t *pui8TxBuff, uint8_t *pui8Rx
 
     /* 5) Kết thúc phiên: đợi TCF=1 rồi clear; đảm bảo MBF=0 */
     if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_TCF_MASK, LPSPI_BYTE_TIMEOUT_US))
+    {
+        spi_io_recovery(me);
         return ERROR_TIMEOUT;
+    }
 
     base->SR = LPSPI_SR_TCF_MASK; // clear TCF
 
     if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, LPSPI_BYTE_TIMEOUT_US))
+    {
+        spi_io_recovery(me);
         return ERROR_TIMEOUT;
+    }
 
     return ERROR_OK;
 }

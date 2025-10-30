@@ -56,7 +56,7 @@ static void bsp_core_init_photo_adc_cs_gpio(void);
 static void bsp_core_init_photo_switch_gpio(void);
 
 // static void bsp_core_init_gpio(void);
-static void bsp_core_init_tim(void);
+static void bsp_core_init_photo_adc_tim(void);
 
 static int bsp_core_init_laser_adc(void);
 
@@ -73,7 +73,7 @@ static int bsp_core_init_laser_adc(void);
  */
 void bsp_core_init(void)
 {
-        bsp_core_init_io_expander_i2c();
+    bsp_core_init_io_expander_i2c();
     bsp_core_init_tec_cs_gpio();
 
     bsp_core_init_sensor_i2c();
@@ -93,7 +93,7 @@ void bsp_core_init(void)
 
     bsp_core_init_photo_switch_gpio();
 
-    bsp_core_init_tim();
+    bsp_core_init_photo_adc_tim();
 
     bsp_core_init_laser_adc();
 
@@ -106,19 +106,30 @@ void bsp_core_init(void)
     i2c_io_init(&sensor_i2c);
     i2c_io_init(&pump_i2c);
 
-        /* Init board peripheral. */
- //       bsp_debug_console_init();
-        // bsp_libcsp_can_init();
-        bsp_expander_init();
-        bsp_i2c_sensor_init();
+    /* Init board peripheral. */
+    bsp_expander_init();
 
-        bsp_expander_ctrl(RAM_SPI_nCS, 1);
-        bsp_heater_init();
-        bsp_onboard_adc_init();
-        bsp_laser_init();
-        bsp_photo_init();
-        bsp_pump_init();
-     // Pull up RAM SPI nCS
+    // Pull up RAM SPI nCS
+    bsp_expander_ctrl(RAM_SPI_nCS, 1);
+
+    // Turn off laser board for working around
+    // spi issue.
+    bsp_expander_ctrl(POW_ONOFF_LASER, 0);
+
+    for (uint16_t i = 0; i < 10000; i++)
+    {
+        __NOP();
+    }
+
+    bsp_onboard_adc_init();
+    
+    // TODO: Check I2C lib
+    bsp_i2c_sensor_init();
+
+    bsp_heater_init();
+    bsp_laser_init();
+    bsp_photo_init();
+    bsp_pump_init();
 }
 
 /*!
@@ -529,6 +540,7 @@ static void bsp_core_init_onboard_adc_spi(void)
      * masterConfig->enableInputDelay               = false;
      */
     LPSPI_MasterGetDefaultConfig(&masterConfig);
+    masterConfig.baudRate = ONBOARD_ADC_SPI_BAUDRATE;
     masterConfig.pcsToSckDelayInNanoSec         = 0;
     masterConfig.lastSckToPcsDelayInNanoSec     = 0;
     masterConfig.betweenTransferDelayInNanoSec  = 0;
@@ -538,7 +550,6 @@ static void bsp_core_init_onboard_adc_spi(void)
 
     // fix cứng, có thể chỉnh lại
     // masterConfig.pinCfg                         = kLPSPI_SdoInSdiOut;
-    masterConfig.baudRate = ONBOARD_ADC_SPI_BAUDRATE;
     masterConfig.whichPcs = kLPSPI_Pcs1;
     
     srcClock_Hz = ONBOARD_ADC_SPI_CLK_FREQ;
@@ -871,7 +882,7 @@ static void bsp_core_init_photo_switch_gpio(void)
     RGPIO_PinInit(PHOTO_SW_GPIO_CS_PORT, PHOTO_SW_GPIO_CS_PIN, &photo_SW_CS_config);
 }
 
-static void bsp_core_init_tim(void)
+static void bsp_core_init_photo_adc_tim(void)
 {
     const clock_root_config_t lptpmClkCfg =
     {

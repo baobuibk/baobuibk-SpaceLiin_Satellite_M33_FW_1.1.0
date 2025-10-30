@@ -56,7 +56,7 @@
 #define ONBOARD_ADC_SPI_BASE              LPSPI1
 #define ONBOARD_ADC_SPI_IRQn              LPSPI1_IRQn
 
-#define ONBOARD_ADC_SPI_BAUDRATE          (10000)
+#define ONBOARD_ADC_SPI_BAUDRATE          (500000)
 
 #define ONBOARD_ADC_GPIO_CS_CLOCK_ROOT    kCLOCK_Root_BusWakeup
 #define ONBOARD_ADC_GPIO_CS_CLOCK_GATE    kCLOCK_Gpio4

@@ -38,10 +38,10 @@ uint32_t ad4114_init(ad4114_t *p_dev, SPI_Io_t *spi, do_t *cs)
         return (uint32_t)ERROR_INVALID_PARAM;
     }
     
-    p_dev->spi      = spi;
-    p_dev->cs       = cs;
-    p_dev->ifmode   = 0;
-    p_dev->adcmode  = 0;
+    // p_dev->spi      = spi;
+    // p_dev->cs       = cs;
+    // p_dev->ifmode   = 0;
+    // p_dev->adcmode  = 0;
 
     cs_idle(p_dev);
 

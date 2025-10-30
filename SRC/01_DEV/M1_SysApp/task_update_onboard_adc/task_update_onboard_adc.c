@@ -29,13 +29,13 @@ void Task_Update_Onboard_ADC(void *pvParameters)
 {
 
     // flexcan_frame_t RX_frame;
-    PRINTF("update on boarrd ADC");
+    PRINTF("[update on board ADC]\r\n");
 
     for(;;)
     {
-        PRINTF("\r\nupdate ADC\r\n");
+        PRINTF("update ADC\r\n");
         bsp_onboard_adc_update_raw();
-         PRINTF("\r\nupdate ADC_->1\r\n");
+        PRINTF("update ADC_->1\r\n");
         bsp_onboard_adc_update_volt();
 
         bsp_convert_TEC();

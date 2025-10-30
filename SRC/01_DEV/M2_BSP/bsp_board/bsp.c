@@ -75,17 +75,17 @@ static void EXP_InitPins(void)
     IOMUXC_SetPinConfig(IOMUXC_PAD_SAI1_TXC__LPSPI1_SIN, 
                         IOMUXC_PAD_DSE(15U) |
                         IOMUXC_PAD_FSEL1(2U) |
-                        IOMUXC_PAD_PD_MASK);
+                        IOMUXC_PAD_PU_MASK);
 
     IOMUXC_SetPinConfig(IOMUXC_PAD_SAI1_RXD0__LPSPI1_SOUT, 
                         IOMUXC_PAD_DSE(15U) |
                         IOMUXC_PAD_FSEL1(2U) |
-                        IOMUXC_PAD_PD_MASK);
+                        IOMUXC_PAD_PU_MASK);
 
     IOMUXC_SetPinConfig(IOMUXC_PAD_SAI1_TXD0__LPSPI1_SCK, 
                         IOMUXC_PAD_DSE(15U) |
                         IOMUXC_PAD_FSEL1(2U) |
-                        IOMUXC_PAD_PD_MASK);
+                        IOMUXC_PAD_PU_MASK);
 
     IOMUXC_SetPinMux(IOMUXC_PAD_ENET2_TD3__GPIO4_IO16, 0U);
     IOMUXC_SetPinMux(IOMUXC_PAD_ENET2_TX_CTL__GPIO4_IO20, 0U);
@@ -95,22 +95,22 @@ static void EXP_InitPins(void)
     IOMUXC_SetPinConfig(IOMUXC_PAD_ENET2_TD3__GPIO4_IO16, 
                         IOMUXC_PAD_DSE(15U) |
                         IOMUXC_PAD_FSEL1(2U) |
-                        IOMUXC_PAD_PD_MASK);
+                        IOMUXC_PAD_PU_MASK);
 
     IOMUXC_SetPinConfig(IOMUXC_PAD_ENET2_TX_CTL__GPIO4_IO20, 
                         IOMUXC_PAD_DSE(15U) |
                         IOMUXC_PAD_FSEL1(2U) |
-                        IOMUXC_PAD_PD_MASK);
+                        IOMUXC_PAD_PU_MASK);
 
     IOMUXC_SetPinConfig(IOMUXC_PAD_ENET2_TD2__GPIO4_IO17, 
                         IOMUXC_PAD_DSE(15U) |
                         IOMUXC_PAD_FSEL1(2U) |
-                        IOMUXC_PAD_PD_MASK);
+                        IOMUXC_PAD_PU_MASK);
 
     IOMUXC_SetPinConfig(IOMUXC_PAD_ENET2_TXC__GPIO4_IO21, 
                         IOMUXC_PAD_DSE(15U) |
                         IOMUXC_PAD_FSEL1(2U) |
-                        IOMUXC_PAD_PD_MASK);
+                        IOMUXC_PAD_PU_MASK);
 
     /* LASER DAC Init Pin. */
     IOMUXC_SetPinMux(IOMUXC_PAD_ENET2_RD3__GPIO4_IO27, 0U);

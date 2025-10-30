@@ -103,54 +103,87 @@ ad4114_t onboard_adc_dev1 =
 uint32_t bsp_onboard_adc_init()
 {
 	uint32_t ret;
+    uint16_t id = 0;
 
+    // uint8_t tx = 0xAA;
+    // lpspi_transfer_t transfer =
+    // {
+    //     .txData = &tx,
+    //     .rxData = NULL,
+    //     .dataSize = 1,
+    //     .configFlags = kLPSPI_MasterPcs0 | kLPSPI_MasterPcsContinuous | kLPSPI_MasterByteSwap,
+    // };
+    // for (uint16_t i = 0; i < 1000; i++)
+    // {
+    //     LPSPI_MasterTransferBlocking(LPSPI1, &transfer);
+    // }
+    
+	spi_io_onboard_adc_config(&onboard_adc_spi, 1);
 
-	spi_io_onboard_adc_config(onboard_adc_dev0.spi, 1);
-
-
-    for (uint16_t i = 0; i < 2000; i++)
+    for (uint16_t i = 0; i < 10000; i++)
     {
         __NOP();
     }
     
 	ret = ad4114_init(&onboard_adc_dev0, &onboard_adc_spi, &onboard_adc0_cs);
-   
-	if (ret != ERROR_OK)
-	{
-		spi_io_onboard_adc_config(onboard_adc_dev0.spi, 0);
-		return ret;
-	}
 
-	// 0xFFFF Enable 16 pin
+    if (ret != ERROR_OK)
+	{
+		PRINTF("> [bsp_onboard_adc_init] SPI FOR ADC 0 CHIP INIT ERROR\r\n");
+	}
+    else
+    {
+        PRINTF("> [bsp_onboard_adc_init] SPI FOR ADC 0 CHIP INIT OK\r\n");
+    }
+
+    ad4114_read_id(&onboard_adc_dev0, &id);
+    PRINTF("> [bsp_onboard_adc_init] ADC 0 CHIP ID %x\r\n", id);
+
+	// 0xFFFF Enable all channel of ADC 0
 	ret = bsp_onboard_adc_config_channels(&onboard_adc_dev0, 0xFFFF);
 
 	if (ret != ERROR_OK)
 	{
-		spi_io_onboard_adc_config(onboard_adc_dev0.spi, 0);
-		return ret;
+		PRINTF("> [bsp_onboard_adc_init] SPI FOR ADC 0 CHIP INIT ERROR\r\n");
 	}
+    else
+    {
+        PRINTF("> [bsp_onboard_adc_init] SPI FOR ADC 0 CHIP INIT OK\r\n");
+    }
 
 	ret = ad4114_init(&onboard_adc_dev1, &onboard_adc_spi, &onboard_adc1_cs);
 
 	if (ret != ERROR_OK)
 	{
-		spi_io_onboard_adc_config(onboard_adc_dev0.spi, 0);
-		return ret;
+		PRINTF("> [bsp_onboard_adc_init] SPI FOR ADC 1 CHIP INIT ERROR\r\n");
 	}
+    else
+    {
+        PRINTF("> [bsp_onboard_adc_init] SPI FOR ADC 1 CHIP INIT OK\r\n");
+    }
 
-    uint16_t id = 0;
-    ad4114_read_id(&onboard_adc_dev0, &id);
+    ad4114_read_id(&onboard_adc_dev1, &id);
+    PRINTF("> [bsp_onboard_adc_init] ADC 1 CHIP ID %x\r\n", id);
 
 	// ((1 << 10) - 1) << 2: Enable 10 pin, start at pin 2
-    //start at channel 2 to channel 11
+    // start at channel 2 to channel 11
 	ret = bsp_onboard_adc_config_channels(&onboard_adc_dev1, (((1 << 10) - 1) << 2));
 
-	spi_io_onboard_adc_config(onboard_adc_dev1.spi, 0);
-
-	if (ret != ERROR_OK)
+    if (ret != ERROR_OK)
 	{
-		return ret;
+		PRINTF("> [bsp_onboard_adc_init] SPI FOR ADC 1 CHIP INIT ERROR\r\n");
 	}
+    else
+    {
+        PRINTF("> [bsp_onboard_adc_init] SPI FOR ADC 1 CHIP INIT OK\r\n");
+    }
+
+	spi_io_onboard_adc_config(&onboard_adc_spi, 0);
+
+    for (uint16_t i = 0; i < 10000; i++)
+    {
+        __NOP();
+    }
 
     return ERROR_OK;
 }
@@ -160,7 +193,7 @@ uint32_t bsp_onboard_adc_update_raw()
 	uint16_t out_mask_adc0, out_mask_adc1 = 0;
 	uint32_t ret;
 
-	spi_io_onboard_adc_config(onboard_adc_dev0.spi, 1);
+	spi_io_onboard_adc_config(&onboard_adc_spi, 1);
 
 
     ret = ad4114_read_all(&onboard_adc_dev0, 500u, &out_mask_adc0, adc0_raw);
@@ -168,7 +201,7 @@ uint32_t bsp_onboard_adc_update_raw()
 
 	if (ret != ERROR_OK)
 	{
-		spi_io_onboard_adc_config(onboard_adc_dev0.spi, 0);
+		spi_io_onboard_adc_config(&onboard_adc_spi, 0);
 		return ret;
 	}
 
@@ -176,11 +209,11 @@ uint32_t bsp_onboard_adc_update_raw()
 
     if (ret != ERROR_OK)
 	{
-		spi_io_onboard_adc_config(onboard_adc_dev0.spi, 0);
+		spi_io_onboard_adc_config(&onboard_adc_spi, 0);
 		return ret;
 	}
 
-	spi_io_onboard_adc_config(onboard_adc_dev1.spi, 0);
+	spi_io_onboard_adc_config(&onboard_adc_spi, 0);
 
 	if (ret != ERROR_OK)
 	{
@@ -211,7 +244,11 @@ void bsp_convert_NTC()
 	for (uint8_t index = 0; index < NTC_CHANNEL_NUM; index++)
 	{
 		NTC_temp_C[NTC_channel_map[index]] = ntc_convert_from_volt(adc0_volt_mv[PIN_NTC_CHANNEL_12 + index], 5000.0);
-        PRINTF("channel %i value %d\n",index,NTC_temp_C[NTC_channel_map[index]]);
+    }
+
+    for (uint8_t index = 0; index < NTC_CHANNEL_NUM; index++)
+	{
+        PRINTF("channel %i value %d\r\n", index, NTC_temp_C[index]);
     }
    // m33_data_update_NTC(NTC_temp_C[]);
 
@@ -343,12 +380,12 @@ static uint32_t spi_io_onboard_adc_config(SPI_Io_t *me, uint8_t is_flip)
         return ERROR_INVALID_PARAM;
     }
 
-    int sem_ret = osSemaphoreTake(&me->lock, 1000);
+    // int sem_ret = osSemaphoreTake(&me->lock, 1000);
 
-    if (sem_ret != pdPASS)
-    {
-        return (uint32_t)sem_ret;
-    }
+    // if (sem_ret != pdPASS)
+    // {
+    //     return (uint32_t)sem_ret;
+    // }
 
     LPSPI_Type *base = spi_periph[me->ui32SpiPort];
 
@@ -360,7 +397,7 @@ static uint32_t spi_io_onboard_adc_config(SPI_Io_t *me, uint8_t is_flip)
     delay_init();
 
     // Ensure module not busy (equiv. to STM32 BSY=0)
-    if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, 1000u))
+    if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, 10000u))
     {
         return ERROR_TIMEOUT;
     }
@@ -399,7 +436,7 @@ static uint32_t spi_io_onboard_adc_config(SPI_Io_t *me, uint8_t is_flip)
     /* Enable SPI again */
     base->CR |= (LPSPI_CR_MEN_MASK);
 
-     osSemaphoreGiven(&me->lock);
+    // osSemaphoreGiven(&me->lock);
 
     return ERROR_OK;
 }
