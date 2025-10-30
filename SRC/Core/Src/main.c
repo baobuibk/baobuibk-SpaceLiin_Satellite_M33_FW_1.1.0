@@ -58,7 +58,7 @@ int main(void)
 #define LPTMR_SOURCE_CLOCK 32000U
 #define LPTMR_USEC_COUNT 1000000U
 
-static void IMX_LPTMP1_Init(void)
+__attribute__((unused)) static void IMX_LPTMP1_Init(void)
 {
     lptmr_config_t lptmrConfig;
     /* Configure LPTMR */

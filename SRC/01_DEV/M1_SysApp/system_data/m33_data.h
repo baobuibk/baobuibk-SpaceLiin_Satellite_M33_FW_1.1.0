@@ -265,7 +265,7 @@ uint32_t m33_data_get_u(uint16_t table_id,uint16_t index, uint16_t * value);
 uint32_t m33_data_get_i_lock(uint16_t table_id,uint16_t index, int16_t * value);
 uint32_t m33_data_get_u_lock(uint16_t table_id,uint16_t index, uint16_t * value);
 
-uint32_t m33_data_update_NTC(int16_t* p_data);
+uint32_t m33_data_update_NTC(int16_t * p_data);
 uint32_t m33_data_ntc_temp_get(int16_t* p_data);
 uint32_t m33_data_update_board_temp(int16_t data);
 uint32_t m33_data_get_board_temp(int16_t* p_data);

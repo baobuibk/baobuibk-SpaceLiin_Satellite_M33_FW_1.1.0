@@ -34,6 +34,10 @@
     "task_update_onboard_adc.h": "c",
     "string_view": "c",
     "app_temperature.h": "c",
-    "slf3s_flow.h": "c"
+    "slf3s_flow.h": "c",
+    "adg1414.h": "c",
+    "fsl_debug_console.h": "c",
+    "bsp_onboard_adc.h": "c",
+    "fsl_clock.h": "c"
   }
 }

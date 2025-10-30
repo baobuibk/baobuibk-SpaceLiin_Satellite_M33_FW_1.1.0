@@ -7,6 +7,7 @@
 #include "bsp_onboard_adc.h"
 #include "simple_shell.h"
 #include "remote_call.h"
+#include "fsl_debug_console.h"
 /* Component includes. */
 
 /* USER include. */
@@ -26,18 +27,15 @@
 /* :::::::::: Test CAN Task ::::::::::::: */
 void Task_Update_Onboard_ADC(void *pvParameters)
 {
-    // uint8_t time_out;
-    const TickType_t delay_period = pdMS_TO_TICKS(TASK_DELAY_MS);   // 1000 ms
-          TickType_t last_delay;
-
-        last_delay = xTaskGetTickCount();
 
     // flexcan_frame_t RX_frame;
+    PRINTF("update on boarrd ADC");
 
     for(;;)
     {
-        Shell_WriteString("Updating onboard ADC...\r\n");
+        PRINTF("\r\nupdate ADC\r\n");
         bsp_onboard_adc_update_raw();
+         PRINTF("\r\nupdate ADC_->1\r\n");
         bsp_onboard_adc_update_volt();
 
         bsp_convert_TEC();
@@ -46,12 +44,13 @@ void Task_Update_Onboard_ADC(void *pvParameters)
         bsp_convert_onboard_temp();
 
         // wake up exactly every 1000 ms
-        vTaskDelayUntil(&last_delay, 1000);
+        vTaskDelay( 5000);
     }
 }
 
 void ADC_update()
 {
+     bsp_onboard_adc_update_raw();
         bsp_onboard_adc_update_volt();
 
         bsp_convert_TEC();

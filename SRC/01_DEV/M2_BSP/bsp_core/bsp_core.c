@@ -1,4 +1,5 @@
 /* Freescale includes. */
+#include "fsl_debug_console.h"
 #include "fsl_common.h"
 #include "fsl_clock.h"
 #include "fsl_lpuart.h"
@@ -32,6 +33,8 @@
 static void bsp_core_init_uart(void);
 static void bsp_core_init_can(void);
 
+static void bsp_core_init_usb_pwr_en_gpio(void);
+
 static void bsp_core_init_io_expander_i2c(void);
 static void bsp_core_init_tec_cs_gpio(void);
 
@@ -55,7 +58,6 @@ static void bsp_core_init_photo_switch_gpio(void);
 // static void bsp_core_init_gpio(void);
 static void bsp_core_init_tim(void);
 
-static void bsp_core_init_laser_adc_tim(void);
 static int bsp_core_init_laser_adc(void);
 
 /*******************************************************************************
@@ -71,7 +73,7 @@ static int bsp_core_init_laser_adc(void);
  */
 void bsp_core_init(void)
 {
-    bsp_core_init_io_expander_i2c();
+        bsp_core_init_io_expander_i2c();
     bsp_core_init_tec_cs_gpio();
 
     bsp_core_init_sensor_i2c();
@@ -109,20 +111,20 @@ void bsp_core_init(void)
         // bsp_libcsp_can_init();
         bsp_expander_init();
         bsp_i2c_sensor_init();
+
+        bsp_expander_ctrl(RAM_SPI_nCS, 1);
         bsp_heater_init();
         bsp_onboard_adc_init();
         bsp_laser_init();
         bsp_photo_init();
         bsp_pump_init();
-
      // Pull up RAM SPI nCS
-        bsp_expander_ctrl(RAM_SPI_nCS, 1);
 }
 
 /*!
  * @brief bsp_core_init_uart
  */
-static void bsp_core_init_uart(void)
+__attribute__((unused)) static void bsp_core_init_uart(void)
 {
     lpuart_config_t config;
     
@@ -156,7 +158,7 @@ static void bsp_core_init_uart(void)
     LPUART_Init(DEBUG_DB9_LPUART_BASE, &config, DEBUG_DB9_LPUART_CLK_FREQ);
 }
 
-static void bsp_core_init_can(void)
+__attribute__((unused)) static void bsp_core_init_can(void)
 {
     flexcan_config_t flexcanConfig;
     flexcan_timing_config_t flexcan_timing_config;
@@ -274,6 +276,48 @@ static void bsp_core_init_tec_cs_gpio(void)
     RGPIO_PinInit(GPIO3, 31, &TEC_CS_config);
     RGPIO_PinInit(GPIO3, 28, &TEC_CS_config);
     RGPIO_PinInit(GPIO3, 30, &TEC_CS_config);
+}
+
+do_t usb_en0_gpio =
+{
+    .port = 3,
+    .pin  = USB_PWR_GPIO_EN0_PIN,
+    .bStatus = false,
+};
+do_t usb_en1_gpio =
+{
+    .port = 3,
+    .pin  = USB_PWR_GPIO_EN1_PIN,
+    .bStatus = false,
+};
+__attribute__((unused)) static void bsp_core_init_usb_pwr_en_gpio(void)
+{
+    /* Define the init structure for the output LED pin*/
+    rgpio_pin_config_t usb_pwr_config =
+    {
+        kRGPIO_DigitalOutput,
+        0,
+    };
+
+    /* Board pin, clock, debug console init */
+    /* clang-format off */
+
+    const clock_root_config_t rgpioClkCfg =
+    {
+        .clockOff = false,
+        .mux = 0, // 24Mhz Mcore root buswake clock
+        .div = 1
+    };
+
+    CLOCK_SetRootClock(USB_PWR_GPIO_EN0_CLOCK_ROOT, &rgpioClkCfg);
+    CLOCK_EnableClock(USB_PWR_GPIO_EN0_CLOCK_GATE);
+
+    /* Set PCNS register value to 0x0 to prepare the RGPIO initialization */
+    USB_PWR_GPIO_EN0_PORT->PCNS = 0x0;
+
+    /* Init output LED GPIO. */
+    RGPIO_PinInit(USB_PWR_GPIO_EN0_PORT, USB_PWR_GPIO_EN0_PIN, &usb_pwr_config);
+    RGPIO_PinInit(USB_PWR_GPIO_EN0_PORT, USB_PWR_GPIO_EN1_PIN, &usb_pwr_config);
 }
 
 i2c_io_t sensor_i2c =
@@ -409,6 +453,12 @@ do_t pump_en_gpio =
     .pin  = I2C_PUMP_GPIO_EN_PIN,
     .bStatus = false,
 };
+do_t pump_en2_gpio =
+{
+    .port = 4,
+    .pin  = I2C_PUMP_GPIO_EN2_PIN,
+    .bStatus = false,
+};
 static void bsp_core_init_pump_en_gpio(void)
 {
     /* Define the init structure for the output LED pin*/
@@ -434,7 +484,8 @@ static void bsp_core_init_pump_en_gpio(void)
     /* Set PCNS register value to 0x0 to prepare the RGPIO initialization */
     I2C_PUMP_GPIO_EN_PORT->PCNS = 0x0;
 
-    RGPIO_PinInit(I2C_PUMP_GPIO_EN_PORT, I2C_PUMP_GPIO_EN_PIN, &pump_en_config);
+    RGPIO_PinInit(I2C_PUMP_GPIO_EN_PORT, I2C_PUMP_GPIO_EN_PIN,  &pump_en_config);
+    RGPIO_PinInit(I2C_PUMP_GPIO_EN_PORT, I2C_PUMP_GPIO_EN2_PIN, &pump_en_config);
 }
 
 SPI_Io_t onboard_adc_spi =
@@ -484,6 +535,8 @@ static void bsp_core_init_onboard_adc_spi(void)
     masterConfig.direction                      = kLPSPI_MsbFirst;
     masterConfig.cpol                           = kLPSPI_ClockPolarityActiveLow;
     masterConfig.cpha                           = kLPSPI_ClockPhaseSecondEdge;
+
+    // fix cứng, có thể chỉnh lại
     // masterConfig.pinCfg                         = kLPSPI_SdoInSdiOut;
     masterConfig.baudRate = ONBOARD_ADC_SPI_BAUDRATE;
     masterConfig.whichPcs = kLPSPI_Pcs1;
@@ -831,18 +884,7 @@ static void bsp_core_init_tim(void)
     CLOCK_EnableClock(PHOTO_ADC_TIM_CLOCK_GATE);
 }
 
-static void bsp_core_init_laser_adc_tim(void)
-{
-    const clock_root_config_t lptpmClkCfg =
-    {
-        .clockOff = false,
-	    .mux = 0,
-	    .div = 1
-    };
 
-    CLOCK_SetRootClock(LASER_ADC_TIM_CLOCK_ROOT, &lptpmClkCfg);
-    CLOCK_EnableClock(LASER_ADC_TIM_CLOCK_GATE);
-}
 
 #include "MIMX9352_cm33.h"   // Provides SAR_ADC_Type and base pointers (e.g., ADC1)
 
@@ -915,7 +957,7 @@ static inline void _tiny_delay(volatile uint32_t n)
     while (n--) __NOP();
 }
 
-static bool _wait_bits_cleared(volatile uint32_t *reg, uint32_t mask, uint32_t iters)
+static bool _wait_bits_cleared(const volatile uint32_t *reg, uint32_t mask, uint32_t iters)
 {
     while (iters--)
     {
@@ -925,7 +967,7 @@ static bool _wait_bits_cleared(volatile uint32_t *reg, uint32_t mask, uint32_t i
     return false;
 }
 
-static bool _wait_status_equals(volatile uint32_t *reg, uint32_t mask, uint32_t expect, uint32_t iters)
+static bool _wait_status_equals(const volatile uint32_t *reg, uint32_t mask, uint32_t expect, uint32_t iters)
 {
     while (iters--)
     {

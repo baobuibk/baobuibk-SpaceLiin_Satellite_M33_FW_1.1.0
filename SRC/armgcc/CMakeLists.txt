@@ -88,7 +88,7 @@ add_executable(${MCUX_SDK_PROJECT_NAME}
     #"${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_libcsp_can/bsp_libcsp_can.c"
      "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_onboard_adc/bsp_onboard_adc.c"
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_photo/bsp_photo.c"
-    "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_power/bsp_power.c"
+   # "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_power/bsp_power.c"
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_spi_sensor/bsp_spi_sensor.c"
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_pump/bsp_pump.c"
     "${SRC_ROOT}/01_DEV/M2_BSP/bsp_peripheral/bsp_solenoid/bsp_solenoid.c"
@@ -125,8 +125,8 @@ add_executable(${MCUX_SDK_PROJECT_NAME}
     "${SRC_ROOT}/01_DEV/M4_Middlewares/os/freertos/osSemphr.c"
     "${SRC_ROOT}/01_DEV/M4_Middlewares/os/freertos/osThread.c"
     "${SRC_ROOT}/01_DEV/M4_Middlewares/printf/printf.c"
-    "${SRC_ROOT}/01_DEV/M4_Middlewares/ring_char_buffer/ring_char_buffer.c"
-    "${SRC_ROOT}/01_DEV/M4_Middlewares/ring_buffer/ring_buffer.c"
+    # "${SRC_ROOT}/01_DEV/M4_Middlewares/ring_char_buffer/ring_char_buffer.c"
+    # "${SRC_ROOT}/01_DEV/M4_Middlewares/ring_buffer/ring_buffer.c"
 
 
     # ==== 01_DEV / M5_Utils ====

@@ -9,5 +9,5 @@
 
 uint32_t i2c_io_init(i2c_io_t *me)
 {
-	return osSemaphoreCreate(&me->lock);
+	return osSemaphoreCreateMutex(&me->lock);
 }

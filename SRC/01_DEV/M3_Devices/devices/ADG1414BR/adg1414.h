@@ -40,5 +40,7 @@ int adg1414_chain_sw_off(adg1414_dev_t *dev, uint8_t channel_num);
 
 /* Tắt tất cả kênh */
 int adg1414_chain_all_sw_off(adg1414_dev_t *dev);
+int adg1414_chain_sw_on_multi(adg1414_dev_t *dev, const uint8_t *channel_mask);
+
 
 #endif /* ADG1414_H */

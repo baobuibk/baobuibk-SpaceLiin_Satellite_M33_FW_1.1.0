@@ -1,6 +1,7 @@
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Include~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 #include "ad4114.h"
 //#include "bsp_debug_console.h"
+#include "fsl_debug_console.h"
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Defines ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 #define AD4114_COMMS_RW_READ   0x40u  /* Bit6 = 1 (read), 0 = write */
@@ -161,28 +162,28 @@ uint32_t ad4114_config_channel(ad4114_t *p_dev, uint8_t channel, bool enable,
 
 /* ===== Wait for RDY then read DATA ===== */
 
-static uint32_t wait_rdy_low(ad4114_t *p_dev, uint32_t timeout_us)
-{
-    uint8_t st = 0xFF;
-    uint32_t wait_count = (timeout_us == 0) ? 20000u : timeout_us;
+// static uint32_t wait_rdy_low(ad4114_t *p_dev, uint32_t timeout_us)
+// {
+//     uint8_t st = 0xFF;
+//     uint32_t wait_count = (timeout_us == 0) ? 20000u : timeout_us;
 
-    while (wait_count--)
-    {
-        uint32_t rc = ad4114_read8(p_dev, AD4114_RA_STATUS, &st);
+//     while (wait_count--)
+//     {
+//         uint32_t rc = ad4114_read8(p_dev, AD4114_RA_STATUS, &st);
 
-        if (rc != (uint32_t)ERROR_OK)
-        {
-            return rc;
-        }
+//         if (rc != (uint32_t)ERROR_OK)
+//         {
+//             return rc;
+//         }
         
-        if ((st & AD4114_STATUS_RDY) == 0)
-        {
-            return (uint32_t)ERROR_OK;
-        }
-    }
+//         if ((st & AD4114_STATUS_RDY) == 0)
+//         {
+//             return (uint32_t)ERROR_OK;
+//         }
+//     }
 
-    return (uint32_t)ERROR_TIMEOUT;
-}
+//     return (uint32_t)ERROR_TIMEOUT;
+// }
 
 uint32_t ad4114_read_data_wait(ad4114_t *p_dev, uint32_t timeout_us, uint32_t *p_raw24, uint8_t *p_status)
 {
@@ -191,7 +192,8 @@ uint32_t ad4114_read_data_wait(ad4114_t *p_dev, uint32_t timeout_us, uint32_t *p
         return (uint32_t)ERROR_INVALID_PARAM;
     }
 
-    uint32_t rc = wait_rdy_low(p_dev, timeout_us);
+    //uint32_t rc = wait_rdy_low(p_dev, timeout_us); 
+    uint32_t rc = (uint32_t)ERROR_OK;
     if (rc != (uint32_t)ERROR_OK)
     {
         return rc;
@@ -752,7 +754,7 @@ static uint32_t ad4114_write24(ad4114_t *p_dev, uint8_t reg_addr, uint32_t TX_da
     return wr_frame(p_dev, reg_addr, b, 3);
 }
 
-static uint32_t ad4114_read8 (ad4114_t *p_dev, uint8_t reg_addr, uint8_t* p_RX)
+__attribute__((unused)) static uint32_t ad4114_read8 (ad4114_t *p_dev, uint8_t reg_addr, uint8_t* p_RX)
 {
     if (!p_dev || !p_RX)
     {
@@ -764,6 +766,7 @@ static uint32_t ad4114_read8 (ad4114_t *p_dev, uint8_t reg_addr, uint8_t* p_RX)
 
 static uint32_t ad4114_read16(ad4114_t *p_dev, uint8_t reg_addr, uint16_t* p_RX)
 {
+    // PRINTF("\r\n[ad4114_read16] enterred\r\n;");
     if (!p_dev || !p_RX)
     {
         return (uint32_t)ERROR_INVALID_PARAM;
@@ -779,7 +782,7 @@ static uint32_t ad4114_read16(ad4114_t *p_dev, uint8_t reg_addr, uint16_t* p_RX)
     }
     
     *p_RX = (uint16_t)((b[0] << 8) | b[1]);
-
+    // PRINTF("\r\n[ad4114_read16] exitted\r\n;");
     return (uint32_t)ERROR_OK;
 }
 

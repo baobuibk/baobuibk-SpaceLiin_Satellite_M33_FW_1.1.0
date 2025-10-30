@@ -13,6 +13,9 @@
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Types ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prototype ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+#define TEC_CHANNEL_NUM 4U
+#define NTC_CHANNEL_NUM	12U
+#define EFUSE_CHANNEL_NUM 9U
 uint32_t bsp_onboard_adc_init();
 
 uint32_t bsp_onboard_adc_update_raw();

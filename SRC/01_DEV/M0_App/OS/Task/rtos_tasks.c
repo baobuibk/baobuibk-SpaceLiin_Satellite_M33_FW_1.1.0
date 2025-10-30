@@ -43,7 +43,6 @@ static StaticTask_t root_tcb;
 Std_ReturnType EXP_AppInit(void);
 
 static char app_buf[512];
-static char command_bufer[64];
 uint32_t remote_addr;
 
 /*************************************************
@@ -51,7 +50,6 @@ uint32_t remote_addr;
  *************************************************/
 void EXP_RootTask(void *pvParameters);
 
-static void Shell_Task(void *pvParameters);
 static void RPMSG_Task(void *pvParameters);
 static void RPMSG_Tx_Task(void *pvParameters);
 
@@ -124,15 +122,15 @@ Std_ReturnType EXP_AppInit(void)
 	Std_ReturnType ret = E_ERROR;
     EXP_App_Create_Communication_Queues();
     m33_data_init();
-    BSP_Init();
+    BSP_Init();   
 
 PRINTF("growing task\r\n");
     CREATE_TASK(RPMSG_Tx_Task, 		"RPMSG_Tx_Task", 		MIN_STACK_SIZE * 3, 	NULL, 	2, NULL);
     CREATE_TASK(RPMSG_Task, 		"RPMSGTask", 		MIN_STACK_SIZE * 3, 	NULL, 	1, NULL);
-    CREATE_TASK(Task_Experiment, 		"Task_Experiment", 		MIN_STACK_SIZE * 5, 	NULL, 	2, NULL);
-    CREATE_TASK(task_temperature_control_profile_type0, 		"task_temperature_control_profile_type0", 		MIN_STACK_SIZE * 5, 	NULL, 	2, NULL);
+  // CREATE_TASK(Task_Experiment, 		"Task_Experiment", 		MIN_STACK_SIZE * 5, 	NULL, 	2, NULL);
+  // CREATE_TASK(task_temperature_control_profile_type0, 		"task_temperature_control_profile_type0", 		MIN_STACK_SIZE * 5, 	NULL, 	2, NULL);
 
-  //  CREATE_TASK(Task_Update_Onboard_ADC, 		"Task_Update_Onboard_ADC", 		MIN_STACK_SIZE * 5, 	NULL, 	1, NULL);
+    CREATE_TASK(Task_Update_Onboard_ADC, 		"Task_Update_Onboard_ADC", 		MIN_STACK_SIZE *4, 	NULL, 	2, NULL);
 
 
     ret = E_OK;
@@ -286,14 +284,15 @@ static void RPMSG_Tx_Task(void *pvParameters)
                 break;
             case TEST_LASER_DATA:
                 snprintf(msg_buf, 100, "oneshot_TLPD_%d.dat\r\n", epoch);
-                rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
+                 RemoteCall_SendFileRequest(message.data,msg_buf);
+
                 break;
             case TEST_PUMP_DATA:
                 snprintf(msg_buf, 100, "oneshot_TLSR_%d.dat\r\n", epoch);
-                rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
+                RemoteCall_SendFileRequest(message.data,msg_buf);
                 break;
             case CAM_CAPTURE:
-                snprintf(msg_buf, 100, "capture %d\r\n",epoch);
+                snprintf(msg_buf, 100, "capture %d\r\n",message.data);
                 rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
                 break;
 

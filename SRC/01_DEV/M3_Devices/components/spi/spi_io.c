@@ -9,6 +9,6 @@
 #include "osSemphr.h"
 uint32_t spi_io_init(SPI_Io_t *me)
 {
-	return osSemaphoreCreate(&me->lock);
+	return osSemaphoreCreateMutex(&me->lock);
 }
 

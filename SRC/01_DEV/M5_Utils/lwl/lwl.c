@@ -61,7 +61,8 @@ static uint8_t calculate_crc8(const uint8_t *data, uint32_t len) {
 ////////////////////////////////////////////////////////////////////////////////
 
 // Structure for log message metadata
-struct lwl_msg {
+struct lwl_msg_full {
+    uint32_t lwlID;
     const char *fmt;       // Format string
     uint8_t num_arg_bytes; // Total number of argument bytes
 };
@@ -70,14 +71,14 @@ struct lwl_msg {
 struct lwl_data_buffer {
     uint32_t put_idx;
     uint8_t *p_buf;
-};
+}lwl_data_buffer_t;
 
 typedef struct lwl_t{
-	uint32_t lwl_working_buf_index;
-	uint32_t lwl_full_buf_index;
-	bool	 lwl_buf_over_threshold;
-	struct lwl_data_buffer lwl_data_buf[2];
+	struct lwl_data_buffer lwl_data_buf      ;
+	uint16_t	 lwl_buf_over_threshold;
 }lwl_t;
+
+
 
 // __attribute__((aligned(4))) static uint8_t lwl_data_buf_0[LWL_BUF_SIZE] = {0};
 // __attribute__((aligned(4))) static uint8_t lwl_data_buf_1[LWL_BUF_SIZE] = {0};
@@ -97,83 +98,68 @@ typedef struct lwl_t{
 #define OCRAM_BASE_ADDR  0x20480000U
 
 #define OCRAM_SECOND_BUFFER_BASE (OCRAM_BASE_ADDR + LWL_BUF_SIZE)
-#define OCRAM_SINGLE_BUFFER_BASE (OCRAM_BASE_ADDR + 2*LWL_BUF_SIZE)
+//#define OCRAM_SINGLE_BUFFER_BASE (OCRAM_BASE_ADDR + 2*LWL_BUF_SIZE)
 
 uint8_t * lwl_data_buf_0 = (uint8_t *)OCRAM_BASE_ADDR;
 uint8_t * lwl_data_buf_1 = (uint8_t *)OCRAM_SECOND_BUFFER_BASE;
 
-static lwl_t lwl = {
-    .lwl_working_buf_index = 0,
-    .lwl_full_buf_index = 1,
-    .lwl_buf_over_threshold = false,
+static lwl_t lwlSysLog = {
     .lwl_data_buf = {
-        { .put_idx = 0, .p_buf = (uint8_t *)OCRAM_BASE_ADDR },
-        { .put_idx = 0, .p_buf = (uint8_t *)OCRAM_SECOND_BUFFER_BASE }
-    }
+        .p_buf =  (uint8_t *)OCRAM_BASE_ADDR,
+        .put_idx = 0
+    },
+    .lwl_buf_over_threshold = 0
+
 };
 
-// Structure for single buffer lightweight log 
-typedef struct lwl_single_t {
-    bool lwl_buf_over_threshold;
-    struct lwl_data_buffer lwl_data_buf;  // Single buffer
-} lwl_single_t;
-
-uint8_t * lwl_data_buf_2 = (uint8_t *)OCRAM_SINGLE_BUFFER_BASE;
-
-static lwl_single_t lwl_single = {
-    .lwl_buf_over_threshold = false,
+static lwl_t lwlDataLog = {
     .lwl_data_buf = {
-        .put_idx = 0,
-        .p_buf = (uint8_t *)OCRAM_SINGLE_BUFFER_BASE
-    }
-};
-// Log message table (ID is the index)
-static const struct lwl_msg lwl_msg_table[] = {
-    {NULL, 0},                                       // ID 0: EXP_INVALID
-    {"Time: epoch %4d", 4},               // ID 1: EXP_TIMESTAMP
-    {"Temperature: NTC[%1d]: %2d", 3},               // ID 2: EXP_TEMP_SINGLE_NTC
-    {"Temperature: Board temperature: %2d", 2},               // ID 2: EXP_TEMP_SINGLE_NTC
-
-	{"Temperature: Profile[%1d] started, pri_NTC = %1d sec_NTC=%1d setpoint = %2d", 5},                 // ID 4: EXP_TEMP_MANUAL_MODE
-    {"Temperature: Profile[%1d] ERROR pri_temperature=%2d sec_temperature = %2d", 5},                   // ID 5: EXP_TEMP_AUTO_MODE
-    {"Temperature: Profile[%1d] enter HEATING pri_temperature=%2d sec_temperature = %2d", 5},                   // ID 5: EXP_TEMP_AUTO_MODE
-    {"Temperature: Profile[%1d] enter STOP mode", 1},                   // ID 5: EXP_TEMP_AUTO_MODE
-
-    {"Experiment: Start measurement position %1d", 1}, // ID 9: EXP_TEMP_TEC_OVERRIDE_PROFILE
-    {"Experiment: Start capturing image", 0}, // ID 9: EXP_TEMP_TEC_OVERRIDE_PROFILE
-
-    {"Experiment: Switch on solenoid %1d", 1}, // ID 9: EXP_TEMP_TEC_OVERRIDE_PROFILE
-    {"Experiment: Switch off solenoid %1d", 1}, // ID 9: EXP_TEMP_TEC_OVERRIDE_PROFILE
-    {"Experiment: Turn on Pump ", 0}, // ID 9: EXP_TEMP_TEC_OVERRIDE_PROFILE
-    {"Experiment: Turn off Pump ", 0},
-    {"Experiment: Flow Value %4d ", 4}
-
+        .p_buf =  (uint8_t *)OCRAM_SECOND_BUFFER_BASE,
+        .put_idx = 0
+    },
+    .lwl_buf_over_threshold = 0
 };
 
-static const uint8_t lwl_msg_table_size = sizeof(lwl_msg_table) / sizeof(lwl_msg_table[0]);
+
+
+
+static const uint8_t message_num_arg[LWL_MAX_NUM] = 
+{
+    0, //ô
+    4, //1
+    2, //2
+    3, //3
+    5, //4
+    5, //5
+    5, //6
+    1, //7
+    1, //8
+    0, //9
+    1, //10
+    1, //11
+    0, //12
+    0, //13
+    4, //14
+    1, //15
+    2, //16
+    2, //17
+    8, //18
+    0, //19
+
+
+};
+
+
+//static const uint8_t lwl_msg_table_size = sizeof(lwl_msg_table) / sizeof(lwl_msg_table[0]);
 
 
 
 void lwl_init(lwl_t *lwl) {
     // Xóa toàn bộ cấu trúc về 0 bằng memset
-    lwl_t lwl_init = {
-    .lwl_working_buf_index = 0,
-    .lwl_full_buf_index = 1,
-    .lwl_buf_over_threshold = false,
-    .lwl_data_buf = {
-        { .put_idx = 0, .p_buf = (uint8_t *)lwl_data_buf_0 },
-        { .put_idx = 0, .p_buf = (uint8_t *)lwl_data_buf_1 }
-        }
-    };
-    *lwl = lwl_init;
-    memset(lwl->lwl_data_buf[0].p_buf, 0, LWL_BUF_SIZE);
-    memset(lwl->lwl_data_buf[1].p_buf, 0, LWL_BUF_SIZE);
-}
+    lwl->lwl_buf_over_threshold = 0;
+    lwl->lwl_data_buf.put_idx = 0;
+    memset(lwl->lwl_data_buf.p_buf, 0, LWL_BUF_SIZE);
 
-void lwl_start() {
-    // Xóa toàn bộ cấu trúc về 0 bằng memset
-//	lwl_init(&lwl);
-	lwl_clear_notification();
 }
 
 
@@ -188,20 +174,19 @@ void lwl_start() {
  * LENGTH = 1 (length) + 1 (id) + num_arg_bytes + 1 (CRC)
  * CRC is calculated over [ID][ARG_BYTES]
  */
-void LWL(uint8_t id, ...)
+void LWL(lwl_t *lwl, uint8_t id, ...)
 {
     va_list ap;
     uint32_t put_idx;
 
-    struct lwl_data_buffer * lwl_data_buf = &lwl.lwl_data_buf[lwl.lwl_working_buf_index];
+    struct lwl_data_buffer * lwl_data_buf = &lwl->lwl_data_buf;
 
     // Validate ID
-    if (id == 0 || id >= lwl_msg_table_size || lwl_msg_table[id].fmt == NULL) {
+    if (id == 0 || id >= LWL_MAX_NUM) {
         return; // Invalid ID
     }
 
-    const struct lwl_msg *msg = &lwl_msg_table[id];
-    uint8_t length = 1 + 1 + msg->num_arg_bytes + 1; // length + id + args + CRC
+    uint8_t length = 1 + 1 + message_num_arg[id] + 1; // length + id + args + CRC
 
     va_start(ap, id);
 
@@ -219,12 +204,12 @@ void LWL(uint8_t id, ...)
 
     // Write ID
     *(lwl_data_buf->p_buf + put_idx) = id;
-    uint8_t crc_data[1 + msg->num_arg_bytes]; // Buffer for CRC calculation
+    uint8_t crc_data[1 + message_num_arg[id]]; // Buffer for CRC calculation
     crc_data[0] = id;
     put_idx = (put_idx + 1) % LWL_BUF_SIZE;
 
     // Write arguments and collect for CRC
-    for (uint8_t i = 0; i < msg->num_arg_bytes; i++) {
+    for (uint8_t i = 0; i <  message_num_arg[id]; i++) {
         uint32_t arg = va_arg(ap, unsigned);
         *(lwl_data_buf->p_buf + put_idx) = (uint8_t)(arg & 0xFF);
         crc_data[i + 1] = *(lwl_data_buf->p_buf + put_idx);
@@ -232,163 +217,112 @@ void LWL(uint8_t id, ...)
     }
 
     // Calculate and write CRC
-    uint8_t crc = calculate_crc8(crc_data, 1 + msg->num_arg_bytes);
+    uint8_t crc = calculate_crc8(crc_data, 1 +  message_num_arg[id]);
     *(lwl_data_buf->p_buf + put_idx) = crc;
 
     if (lwl_data_buf->put_idx > LWL_BUF_THRESHOLD) 		//buffer nearly full
     {
-    	lwl.lwl_buf_over_threshold = 1;
-
-    	if (lwl.lwl_working_buf_index == 0)
-		{
-    		lwl.lwl_working_buf_index = 1;
-    		lwl.lwl_full_buf_index = 0;
-    		lwl.lwl_data_buf[1].put_idx = 0;
-		}
-    	else
-    	{
-    		lwl.lwl_working_buf_index = 0;
-    		lwl.lwl_full_buf_index = 1;
-    		lwl.lwl_data_buf[0].put_idx = 0;
-    	}
-
-    	lwl_buffer_full_notify();
+    	lwl->lwl_buf_over_threshold = 1;
     }
     va_end(ap);
 }
 
 
 
-// void __attribute__((weak)) lwl_buffer_full_notify()
-// {
-
-// }
-
-void __attribute__((weak)) lwl_clear_notification()
+void __attribute__((weak)) lwl_buffer_full_notify(lwl_t *lwl)
 {
-	lwl.lwl_buf_over_threshold = 0;
 
 }
 
-
-void lwl_reinit_buffer(struct lwl_data_buffer * lwl_buffer)
+void __attribute__((weak)) lwl_clear_notification(lwl_t *lwl)
 {
-//    memset(lwl->lwl_data_buf[0].p_buf, 0, LWL_BUF_SIZE);
-//    memset(lwl->lwl_data_buf[1].p_buf, 0, LWL_BUF_SIZE);
+	lwl->lwl_buf_over_threshold = 0;
 }
 
-uint16_t * lwl_get_full_buffer_addr(void)
+
+
+bool lwl_syslog_is_full(void)
 {
-	return (uint16_t *)lwl.lwl_data_buf[lwl.lwl_full_buf_index].p_buf;
+    return lwlSysLog.lwl_buf_over_threshold;
 }
-
-uint32_t __attribute__((weak))  lwl_log_send(void)
+uint32_t lwl_transfer(lwl_t *lwl)
 {
-	// Add log
-
-	lwl_clear_notification();
-	// Cấu hình địa chỉ buffer
-	return ERROR_OK;
+ 
+    uint8_t *addr = RAM_TEST_BASE ;  
+    memcpy(addr, lwl->lwl_data_buf.p_buf, lwl->lwl_data_buf.put_idx);
+     return lwl->lwl_data_buf.put_idx;
 }
 
 
-QueueHandle_t remote_message_queue; //handle to send message
-void lwl_buffer_full_notify()
-{
-    remote_message_t message = {
-        .address = SYS_LOG
-    };
-    // copy current lwl buffer to RAM
-
-    //trigger write to A55
-    xQueueSendToFront(remote_message_queue, &message, 1000);
+uint32_t lwl_data_transfer() {
+   return lwl_transfer(&lwlDataLog);
+}
+uint32_t lwl_sys_log_transfer() {
+   return lwl_transfer(&lwlSysLog);
 }
 
-bool lwl_is_full()
-{
-    return lwl.lwl_buf_over_threshold;
-}
-uint32_t lwl_transfer(void)
-{
-    if (!lwl.lwl_buf_over_threshold) return 0;
-    
-    uint8_t *addr = RAM_TEST_BASE ;
-    uint32_t index = lwl.lwl_full_buf_index;
-    
-    if (index > 1) 
-    {
-        lwl_init(&lwl);
-        return 0; //errror here, should reset the log
-    }
-    uint32_t length = lwl.lwl_data_buf[index].put_idx;
-    memcpy(addr, lwl.lwl_data_buf[index].p_buf, length);
-    lwl.lwl_buf_over_threshold = 0; //clear full status
-     lwl.lwl_data_buf[index].put_idx = 0;
-     PRINTF("\r\n[lwl] transfer data with length = %d\r\n",length);
-     return length;
-}
-
-
-void lwl_sgl(uint8_t id, ...)
-{
-    va_list ap;
-    uint32_t put_idx;
-
-    if (lwl_single.lwl_buf_over_threshold) return;
-
-    struct lwl_data_buffer *lwl_data_buf = &lwl_single.lwl_data_buf;
-
-    // Validate ID
-    if (id == 0 || id >= lwl_msg_table_size || lwl_msg_table[id].fmt == NULL) {
-        return; // Invalid ID
-    }
-
-    const struct lwl_msg *msg = &lwl_msg_table[id];
-    uint8_t length = 1 + 1 + msg->num_arg_bytes + 1; // length + id + args + CRC
-
-    va_start(ap, id);
-
-    put_idx = lwl_data_buf->put_idx % LWL_BUF_SIZE;
-    lwl_data_buf->put_idx = (put_idx + length + 1) % LWL_BUF_SIZE; // +1 for START_BYTE
-
-    // Write start byte
-    *(lwl_data_buf->p_buf + put_idx) = LWL_START_BYTE;
-    put_idx = (put_idx + 1) % LWL_BUF_SIZE;
-
-    // Write length
-    *(lwl_data_buf->p_buf + put_idx) = length;
-    put_idx = (put_idx + 1) % LWL_BUF_SIZE;
-
-    // Write ID
-    *(lwl_data_buf->p_buf + put_idx) = id;
-    uint8_t crc_data[1 + msg->num_arg_bytes]; // Buffer for CRC calculation
-    crc_data[0] = id;
-    put_idx = (put_idx + 1) % LWL_BUF_SIZE;
-
-    // Write arguments and collect for CRC
-    for (uint8_t i = 0; i < msg->num_arg_bytes; i++) {
-        uint32_t arg = va_arg(ap, unsigned);
-        *(lwl_data_buf->p_buf + put_idx) = (uint8_t)(arg & 0xFF);
-        crc_data[i + 1] = *(lwl_data_buf->p_buf + put_idx);
-        put_idx = (put_idx + 1) % LWL_BUF_SIZE;
-    }
-
-    // Calculate and write CRC
-    uint8_t crc = calculate_crc8(crc_data, 1 + msg->num_arg_bytes);
-    *(lwl_data_buf->p_buf + put_idx) = crc;
-
-    if (lwl_data_buf->put_idx > LWL_BUF_THRESHOLD) {  // buffer nearly full
-        lwl_single.lwl_buf_over_threshold = true;
-        lwl_buffer_full_notify();
-    }
-    va_end(ap);
-}
-void lwl_single_reset(void) {
-    lwl_single.lwl_buf_over_threshold = false;
-    lwl_single.lwl_data_buf.put_idx = 0;
-    memset(lwl_single.lwl_data_buf.p_buf, 0, LWL_BUF_SIZE);
-}
 /*
 LWL(TIMESTAMP, LWL_1(days), LWL_1(hours), LWL_1(minutes), LWL_1(seconds));
 
 */
+
+/**
+ * @brief Record a lightweight log for system log (lwl_sys_log) with start byte, length, and CRC.
+ *
+ * @param[in] id The log message ID (index into lwl_msg_table).
+ * @param[in] ... Variable arguments, each 1 byte (from LWL_n macros).
+ *
+ * Each log record format: [START_BYTE (0xAA)][LENGTH][ID][ARG_BYTES][CRC]
+ * LENGTH = 1 (length) + 1 (id) + num_arg_bytes + 1 (CRC)
+ * CRC is calculated over [ID][ARG_BYTES]
+ */
+void LWL_SYS_LOG(uint8_t id, ...)
+{
+    va_list ap;
+    va_start(ap, id);
+    LWL(&lwlSysLog, id, ap);  // Forward the va_list to the generic LWL function
+    va_end(ap);
+}
+
+/**
+ * @brief Record a lightweight log for data log (lwl_data) with start byte, length, and CRC.
+ *
+ * @param[in] id The log message ID (index into lwl_msg_table).
+ * @param[in] ... Variable arguments, each 1 byte (from LWL_n macros).
+ *
+ * Each log record format: [START_BYTE (0xAA)][LENGTH][ID][ARG_BYTES][CRC]
+ * LENGTH = 1 (length) + 1 (id) + num_arg_bytes + 1 (CRC)
+ * CRC is calculated over [ID][ARG_BYTES]
+ */
+void LWL_DATA_LOG(uint8_t id, ...)
+{
+    va_list ap;
+    va_start(ap, id);
+    LWL(&lwlDataLog, id, ap);  // Forward the va_list to the generic LWL function
+    va_end(ap);
+}
+void lwl_data_log_init(void) {
+    lwl_init(&lwlDataLog);
+}
+bool lwl_is_datal_log_full()
+{
+    return lwlDataLog.lwl_buf_over_threshold  ;
+}
+/**
+ * @brief Initialize the lwl_sys_log buffer.
+ */
+void lwl_sys_log_init(void) {
+    lwl_init(&lwlSysLog);
+}
+
+/**
+ * @brief Initialize the lwl_data buffer.
+ */
+
+
+bool lwl_is_sys_log_full()
+{
+    return lwlSysLog.lwl_buf_over_threshold;
+}
+
+

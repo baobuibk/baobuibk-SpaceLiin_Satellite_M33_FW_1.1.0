@@ -161,19 +161,13 @@ const int16_t table5_data_init[] = {
 
 uint32_t m33_data_init()
 {
-    int sem_ret = osSemaphoreCreate(&m33_data_sem);
+    int sem_ret = osSemaphoreCreateMutex(&m33_data_sem);
 
     if (sem_ret != pdPASS)
     {
         return (uint32_t)sem_ret;
     }
 
-    sem_ret = osSemaphoreCreate(&m33_data_sem);
-
-    if (sem_ret != pdPASS)
-    {
-        return (uint32_t)sem_ret;
-    }
     uint16_t i;
     for (i=0; i < TABLE1_TOTAL_COUNT; i++) 
         {
@@ -316,7 +310,7 @@ uint32_t m33_data_get_u_lock(uint16_t table_id,uint16_t index, uint16_t * value)
 //     return 0;
 // }
 
-uint32_t m33_data_update_NTC(int16_t* p_data)
+uint32_t m33_data_update_NTC(int16_t *p_data)
 {
     int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
 

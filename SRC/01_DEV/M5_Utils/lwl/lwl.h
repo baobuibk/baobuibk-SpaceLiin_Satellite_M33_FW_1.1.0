@@ -74,29 +74,34 @@ typedef enum {
 	LWL_EXP_SWITCH_OFF_SOLENOID,
     LWL_EXP_TURN_ON_PUMP,
     LWL_EXP_TURN_OFF_PUMP,
+    FLOW_VALUE,
+    LWL_EXP_SWITCH_VALVE,
+    LWL_EXP_PUMP_SET_FREQ,
+    LWL_EXP_PUMP_SET_VOLT,
+    LWL_EXP_PUMP_FLOW_TEMP,
+    LWL_EXP_PUMP_OFF,
+    
 
-
+    LWL_MAX_NUM
 } log_msg_id_t;
 
 
-void lwl_start(void);
 
-// Other APIs.
-void lwl_rec(uint8_t id, int32_t num_arg_bytes, ...);
-void lwl_enable(bool on);
-void lwl_dump(void);
-uint8_t* lwl_get_buffer(uint32_t* len);
-void LWL(uint8_t id, ...) ;
-// The special __COUNTER__ macro (not official C but supported by many
-// compilers) is used to generate LWL IDs.
-void lwl_single_reset(void) ;
 
-void lwl_buffer_full_notify(void);
-void lwl_clear_notification(void);
 
-uint16_t * lwl_get_full_buffer_addr(void);
-uint32_t lwl_log_send_to_spi(void);
-uint32_t lwl_transfer(void);
-bool lwl_is_full(void);
+/*
+LWL(TIMESTAMP, LWL_1(days), LWL_1(hours), LWL_1(minutes), LWL_1(seconds));
 
+*/
+
+void LWL_SYS_LOG(uint8_t id, ...);
+void LWL_DATA_LOG(uint8_t id, ...);
+void lwl_sys_log_init(void);
+void lwl_data_log_init(void);
+bool lwl_is_sys_log_full(void);
+bool lwl_is_datal_og_full(void);
+
+
+uint32_t lwl_data_transfer(void);
+uint32_t lwl_sys_log_transfer(void);
 #endif // _LWL_H_

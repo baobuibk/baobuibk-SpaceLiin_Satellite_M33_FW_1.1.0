@@ -17,7 +17,7 @@
 
 #include "osSemphr.h"
 
-int osSemaphoreCreate(osSemaphore* mutex){
+int osSemaphoreCreateMutex(osSemaphore* mutex){
 	*mutex = xSemaphoreCreateMutex();
 	if (*mutex) {
 		return OS_SEMAPHORE_OK;
@@ -26,9 +26,18 @@ int osSemaphoreCreate(osSemaphore* mutex){
 	}
 }
 
+
+int osSemaphoreCreateBinnary(osSemaphore* semaphore){
+	*semaphore = xSemaphoreCreateBinary();
+	if (*semaphore) {
+		return OS_SEMAPHORE_OK;
+	} else {
+		return OS_SEMAPHORE_ERROR;
+	}
+}
+
 int osSemaphoreTake(osSemaphore *mutex, uint32_t timeout){
-	if (timeout != portMAX_DELAY)
-		timeout = timeout / portTICK_RATE_MS;
+
 	if (xSemaphoreTake(*mutex, timeout) == pdPASS) {
 		return OS_SEMAPHORE_OK;
 	} else {

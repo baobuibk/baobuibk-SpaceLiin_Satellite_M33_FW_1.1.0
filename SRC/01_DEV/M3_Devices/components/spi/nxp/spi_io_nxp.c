@@ -5,6 +5,7 @@
 #include "MIMX9352_cm33.h"
 
 #include "delay.h"
+#include "fsl_debug_console.h"
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Defines ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 #define SPI_MAX_BUS_NUMBER 8
@@ -57,7 +58,8 @@ uint32_t spi_io_set_mode(SPI_Io_t *me, uint8_t spi_mode)
         return (uint32_t)sem_ret;
     }
 
-    LPSPI_Type *base = spi_periph[me->ui32SpiPort];
+    // LPSPI_Type *base = spi_periph[me->ui32SpiPort];
+    LPSPI_Type *base = LPSPI1;
 
     if (!base)
     {
@@ -99,195 +101,7 @@ uint32_t spi_io_set_mode(SPI_Io_t *me, uint8_t spi_mode)
     return ERROR_OK;
 }
 
-/******************************************************************************/
-/*************************** Synchronous Functions ****************************/
-/******************************************************************************/
-uint32_t spi_io_read_sync(SPI_Io_t *me, uint8_t *pui8RxBuff, uint32_t ui32Length)
-{
-    LPSPI_Type*base = spi_periph[me->ui32SpiPort];
 
-    if (!base || !pui8RxBuff || ui32Length == 0U)
-    {
-        return ERROR_INVALID_PARAM;
-    }
-
-    int sem_ret = osSemaphoreTake(&me->lock, 1000);
-
-    if (sem_ret != pdPASS)
-    {
-        return (uint32_t)sem_ret;
-    }
-
-    delay_init();
-
-    // Ensure module not busy (equiv. to STM32 BSY=0)
-    if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, 1000u))
-    {
-        osSemaphoreGiven(&me->lock);
-        return ERROR_TIMEOUT;
-    }
-
-    for (uint32_t i = 0; i < ui32Length; i++)
-    {
-        // Wait for TX to ready
-        if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_TDF_MASK, LPSPI_BYTE_TIMEOUT_US))
-        {
-            osSemaphoreGiven(&me->lock);
-            return ERROR_TIMEOUT;
-        }
-        
-        // dummy
-        base->TDR = 0xAA;
-
-        // Wait for RX to ready
-        if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_RDF_MASK, LPSPI_BYTE_TIMEOUT_US))
-        {
-            osSemaphoreGiven(&me->lock);
-            return ERROR_TIMEOUT;
-        }
-
-        // read 1 byte
-        pui8RxBuff[i] = (uint8_t)base->RDR;
-    }
-
-    // Finish: wait complete & not busy (optional but safe)
-    // while (!(base->SR & LPSPI_SR_TCF_MASK))
-    // {
-    //     __NOP();
-    // }
-
-    // while  ( base->SR & LPSPI_SR_MBF_MASK )
-    // {
-    //     __NOP();
-    // }
-
-    // Optional: clear TCF once for neatness
-    base->SR = LPSPI_SR_TCF_MASK;
-
-    osSemaphoreGiven(&me->lock);
-
-    return ERROR_OK;
-}
-
-uint32_t spi_io_write_sync(SPI_Io_t *me, uint8_t *pui8TxBuff, uint32_t ui32Length)
-{
-    LPSPI_Type *base = spi_periph[me->ui32SpiPort];
-
-    if (!base || !pui8TxBuff || ui32Length == 0U)
-    {
-        return ERROR_INVALID_PARAM;
-    }
-
-    int sem_ret = osSemaphoreTake(&me->lock, 1000);
-
-    if (sem_ret != pdPASS)
-    {
-        return (uint32_t)sem_ret;
-    }
-
-    delay_init();
-
-    // Ensure module not busy (equiv. to STM32 BSY=0)
-    if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, 1000u))
-    {
-        osSemaphoreGiven(&me->lock);
-        return ERROR_TIMEOUT;
-    }
-
-    for (uint32_t i = 0; i < ui32Length; i++)
-    {
-        // Wait for TX to ready
-        if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_TDF_MASK, LPSPI_BYTE_TIMEOUT_US))
-        {
-            osSemaphoreGiven(&me->lock);
-            return ERROR_TIMEOUT;
-        }
-
-        // Write one byte
-        base->TDR = (uint32_t)pui8TxBuff[i];
-
-        // Wait for RX to ready
-        if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_RDF_MASK, LPSPI_BYTE_TIMEOUT_US))
-        {
-            osSemaphoreGiven(&me->lock);
-            return ERROR_TIMEOUT;
-        }
-
-        // discard
-        (void)base->RDR;  
-    }
-
-    // Optionally ensure transfer complete & not busy
-    // while (!(base->SR & LPSPI_SR_TCF_MASK)) { __NOP(); }
-    // while (base->SR & LPSPI_SR_MBF_MASK)    { __NOP(); }
-
-    // Optional: clear sticky TCF
-    base->SR = LPSPI_SR_TCF_MASK;
-
-    osSemaphoreGiven(&me->lock);
-
-    return ERROR_OK;
-}
-
-uint32_t spi_io_transfer_sync(SPI_Io_t *me, uint8_t *pui8TxBuff, uint8_t *pui8RxBuff, uint32_t ui32Length)
-{
-    LPSPI_Type *base = spi_periph[me->ui32SpiPort];
-
-    if (!base || !pui8TxBuff || !pui8RxBuff || ui32Length == 0U)
-    {
-        return ERROR_INVALID_PARAM;
-    }
-
-    int sem_ret = osSemaphoreTake(&me->lock, 1000);
-
-    if (sem_ret != pdPASS)
-    {
-        return (uint32_t)sem_ret;
-    }
-
-    delay_init();
-
-    // Ensure module not busy (equiv. to STM32 BSY=0)
-    if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, 1000u))
-    {
-        osSemaphoreGiven(&me->lock);
-        return ERROR_TIMEOUT;
-    }
-
-    for (uint32_t i = 0; i < ui32Length; i++)
-    {
-        // Wait for TX to ready
-        if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_TDF_MASK, LPSPI_BYTE_TIMEOUT_US))
-        {
-            osSemaphoreGiven(&me->lock);
-            return ERROR_TIMEOUT;
-        }
-
-        // Write one byte
-        base->TDR = (uint32_t)pui8TxBuff[i];
-
-        // Wait for RX to ready
-        if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_RDF_MASK, LPSPI_BYTE_TIMEOUT_US))
-        {
-            osSemaphoreGiven(&me->lock);
-            return ERROR_TIMEOUT;
-        }
-
-        // Read one byte
-        pui8RxBuff[i] = (uint8_t)base->RDR;
-    }
-
-    // Optionally ensure transfer complete & not busy
-    // while (!(base->SR & LPSPI_SR_TCF_MASK)) { __NOP(); }
-    // while (base->SR & LPSPI_SR_MBF_MASK)    { __NOP(); }
-
-    // Optional: clear sticky TCF
-    base->SR = LPSPI_SR_TCF_MASK;
-
-    osSemaphoreGiven(&me->lock);
-
-    return ERROR_OK;
-}
 
 
 /******************************************************************************/
@@ -348,3 +162,179 @@ uint32_t spi_io_write_and_read_dma(SPI_Io_t *me, uint8_t *pui8TxBuff, uint32_t u
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Function ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of the program ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+uint32_t spi_io_read_sync(SPI_Io_t *me, uint8_t *pui8RxBuff, uint32_t ui32Length)
+{
+    LPSPI_Type *base = spi_periph[me->ui32SpiPort];;  // tùy bạn map từ me->ui32SpiPort
+
+    if (!base || !pui8RxBuff || (ui32Length == 0u))
+        return ERROR_INVALID_PARAM;
+
+    delay_init();
+
+    /* 1) Đảm bảo module không bận */
+    if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, 1000u))
+        return ERROR_TIMEOUT;
+
+    /* 2) Chuẩn bị FIFO/flags sạch sẽ */
+    /* Theo thói quen an toàn:
+       - Tắt MEN để flush (một số bản RM yêu cầu MEN=0 trước khi set RTF/RRF)
+       - Flush TX/RX FIFO
+       - Clear các cờ kết thúc cũ (TCF) */
+    uint32_t cr_saved = base->CR;
+    base->CR &= ~LPSPI_CR_MEN_MASK;                 // MEN = 0
+    base->CR |= (LPSPI_CR_RTF_MASK | LPSPI_CR_RRF_MASK); // flush FIFO
+    base->SR  = LPSPI_SR_TCF_MASK;                  // clear TCF
+    base->CR  = cr_saved | LPSPI_CR_MEN_MASK;       // bật lại MEN
+
+    /* 3) Prime 1 command vào Command FIFO:
+          LPSPI chỉ clock-out khi có cả TCR (command) và TDR (data).
+          Ghi lại chính TCR hiện tại để đẩy một command vào FIFO. */
+    uint32_t tcr_val = base->TCR;
+    /* Bảo đảm FRAMESZ >= 7 (8-bit). Nếu FRAMESZ đang =0 (1-bit) sẽ khó nhìn thấy sóng/data */
+    if (((tcr_val & LPSPI_TCR_FRAMESZ_MASK) >> LPSPI_TCR_FRAMESZ_SHIFT) < 7u) {
+        tcr_val = (tcr_val & ~LPSPI_TCR_FRAMESZ_MASK) | LPSPI_TCR_FRAMESZ(7u);
+    }
+    base->TCR = tcr_val; // đẩy command vào FIFO
+
+    for (uint32_t i = 0; i < ui32Length; i++)
+    {
+        /* 4) Chờ TX FIFO có chỗ trống */
+        if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_TDF_MASK, LPSPI_BYTE_TIMEOUT_US))
+            return ERROR_TIMEOUT;
+
+        /* 5) Ghi dummy để clock-in 1 byte từ slave */
+        base->TDR = 0xFFU;   // dummy 0xFF an toàn, tùy thiết bị có thể dùng 0x00
+
+        /* 6) Chờ RX có dữ liệu */
+        if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_RDF_MASK, LPSPI_BYTE_TIMEOUT_US))
+            return ERROR_TIMEOUT;
+
+        /* 7) Đọc về 1 byte */
+        pui8RxBuff[i] = (uint8_t)base->RDR;
+    }
+
+    /* 8) Kết thúc: đảm bảo khung đã xong và module không bận */
+    if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_TCF_MASK, LPSPI_BYTE_TIMEOUT_US))
+        return ERROR_TIMEOUT;
+
+    base->SR = LPSPI_SR_TCF_MASK; // clear TCF
+
+    if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, LPSPI_BYTE_TIMEOUT_US))
+        return ERROR_TIMEOUT;
+
+    return ERROR_OK;
+}
+
+uint32_t spi_io_write_sync(SPI_Io_t *me, uint8_t *pui8TxBuff, uint32_t ui32Length)
+{
+    LPSPI_Type *base = spi_periph[me->ui32SpiPort];
+
+    if (!base || !pui8TxBuff || (ui32Length == 0u))
+        return ERROR_INVALID_PARAM;
+
+    delay_init();
+
+    /* 1) Đảm bảo module không bận trước khi bắt đầu */
+    if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, 1000u))
+        return ERROR_TIMEOUT;
+
+    /* 2) Chuẩn bị FIFO/flags sạch sẽ (MEN=0 -> flush -> clear TCF -> MEN=1) */
+    uint32_t cr_saved = base->CR;
+    base->CR &= ~LPSPI_CR_MEN_MASK;                           // MEN = 0
+    base->CR |= (LPSPI_CR_RTF_MASK | LPSPI_CR_RRF_MASK);      // flush TX/RX FIFO
+    base->SR  = LPSPI_SR_TCF_MASK;                            // clear TCF
+    base->CR  = cr_saved | LPSPI_CR_MEN_MASK;                 // bật lại MEN
+
+    /* 3) Prime 1 command vào Command FIFO: ghi lại TCR hiện tại
+          & đảm bảo FRAMESZ >= 7 (tức 8-bit) */
+    uint32_t tcr_val = base->TCR;
+    if (((tcr_val & LPSPI_TCR_FRAMESZ_MASK) >> LPSPI_TCR_FRAMESZ_SHIFT) < 7u) {
+        tcr_val = (tcr_val & ~LPSPI_TCR_FRAMESZ_MASK) | LPSPI_TCR_FRAMESZ(7u);
+    }
+    base->TCR = tcr_val; // đẩy command vào FIFO
+
+    /* 4) Ghi từng byte: chờ TDF -> ghi TDR; chờ RDF -> đọc bỏ RDR để giải phóng RX FIFO */
+    for (uint32_t i = 0; i < ui32Length; i++)
+    {
+        /* TX FIFO có chỗ trống? */
+        if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_TDF_MASK, LPSPI_BYTE_TIMEOUT_US))
+            return ERROR_TIMEOUT;
+
+        /* Ghi dữ liệu ra TDR */
+        base->TDR = (uint32_t)pui8TxBuff[i];
+
+        /* Với mỗi byte phát đi sẽ có 1 byte “rác” clock-in về RX -> đọc bỏ để tránh đầy FIFO */
+        if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_RDF_MASK, LPSPI_BYTE_TIMEOUT_US))
+            return ERROR_TIMEOUT;
+
+        (void)base->RDR;  // discard
+    }
+
+    /* 5) Kết thúc phiên: đợi khung hoàn tất (TCF=1), clear TCF; đợi MBF=0 */
+    if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_TCF_MASK, LPSPI_BYTE_TIMEOUT_US))
+        return ERROR_TIMEOUT;
+
+    base->SR = LPSPI_SR_TCF_MASK; // clear TCF
+
+    if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, LPSPI_BYTE_TIMEOUT_US))
+        return ERROR_TIMEOUT;
+
+    return ERROR_OK;
+}
+uint32_t spi_io_transfer_sync(SPI_Io_t *me, uint8_t *pui8TxBuff, uint8_t *pui8RxBuff, uint32_t ui32Length)
+{
+    LPSPI_Type *base = spi_periph[me->ui32SpiPort];
+
+    if (!base || !pui8TxBuff || !pui8RxBuff || (ui32Length == 0u))
+        return ERROR_INVALID_PARAM;
+
+    delay_init();
+
+    /* 1) Đảm bảo module không bận trước khi bắt đầu */
+    if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, 1000u))
+        return ERROR_TIMEOUT;
+
+    /* 2) MEN=0 -> flush FIFO -> clear TCF -> MEN=1 */
+    uint32_t cr_saved = base->CR;
+    base->CR &= ~LPSPI_CR_MEN_MASK;                         // MEN = 0
+    base->CR |= (LPSPI_CR_RTF_MASK | LPSPI_CR_RRF_MASK);    // flush TX/RX FIFO
+    base->SR  = LPSPI_SR_TCF_MASK;                          // clear TCF
+    base->CR  = cr_saved | LPSPI_CR_MEN_MASK;               // bật lại MEN
+
+    /* 3) Prime 1 command vào Command FIFO & đảm bảo FRAMESZ >= 7 (8-bit) */
+    uint32_t tcr_val = base->TCR;
+    if (((tcr_val & LPSPI_TCR_FRAMESZ_MASK) >> LPSPI_TCR_FRAMESZ_SHIFT) < 7u) {
+        tcr_val = (tcr_val & ~LPSPI_TCR_FRAMESZ_MASK) | LPSPI_TCR_FRAMESZ(7u);
+    }
+    base->TCR = tcr_val;   // đẩy command vào FIFO
+
+    /* 4) Full-duplex: ghi từng byte và đọc lại byte tương ứng */
+    for (uint32_t i = 0; i < ui32Length; i++)
+    {
+        /* TX FIFO có chỗ trống? */
+        if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_TDF_MASK, LPSPI_BYTE_TIMEOUT_US))
+            return ERROR_TIMEOUT;
+
+        /* Ghi 1 byte ra TDR */
+        base->TDR = (uint32_t)pui8TxBuff[i];
+
+        /* Chờ RX có dữ liệu về */
+        if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_RDF_MASK, LPSPI_BYTE_TIMEOUT_US))
+            return ERROR_TIMEOUT;
+
+        /* Đọc 1 byte vào buffer */
+        pui8RxBuff[i] = (uint8_t)base->RDR;
+    }
+
+    /* 5) Kết thúc phiên: đợi TCF=1 rồi clear; đảm bảo MBF=0 */
+    if (delay_wait_flag_set_timeout(&base->SR, LPSPI_SR_TCF_MASK, LPSPI_BYTE_TIMEOUT_US))
+        return ERROR_TIMEOUT;
+
+    base->SR = LPSPI_SR_TCF_MASK; // clear TCF
+
+    if (delay_wait_flag_clr_timeout(&base->SR, LPSPI_SR_MBF_MASK, LPSPI_BYTE_TIMEOUT_US))
+        return ERROR_TIMEOUT;
+
+    return ERROR_OK;
+}

@@ -114,7 +114,7 @@ void task_temperature_control_profile_type0(void *param)
 		{
 			if (!enaProfile.prof_ena[i]) continue;
 			data_prof_type0_get(&profile, i);
-            PRINTF("[temperature_control] start profile %d\n", i);
+            PRINTF("\r\n[temperature_control] start profile %d\r\n", i);
 
 			if (profile.pri_NTC < NUM_NTC)
 			{
@@ -131,7 +131,7 @@ void task_temperature_control_profile_type0(void *param)
                 {
                 	prof0_ctrl_state[i] = TEMP_PROF0_ERROR;
                 	pid_init(&PID_Controller[i], KP, KI, KD);
-                     PRINTF("[temperature_control]  profile %d ERROR, pri = %d sec=%d\n", i,pri_temperature,sec_temperature);
+                     PRINTF("\r\n[temperature_control]  profile %d ERROR, pri = %d sec=%d\r\n", i,pri_temperature,sec_temperature);
                 }
 
 			}
@@ -143,7 +143,7 @@ void task_temperature_control_profile_type0(void *param)
             	if (TEMP_PROF0_HEAT != prof0_ctrl_state[i])
             	{
             		prof0_ctrl_state[i] = TEMP_PROF0_HEAT;
-         PRINTF("[temperature_control]  profile %d heater ON, pri = %d sec=%d\n", i,pri_temperature,sec_temperature);
+         PRINTF("\r\n[temperature_control]  profile %d heater ON, pri = %d sec=%d\r\n", i,pri_temperature,sec_temperature);
 
 
             	}

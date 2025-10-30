@@ -10,12 +10,13 @@
 #include "rtos.h"
 #include "lwl.h"
 #include "task_update_onboard_adc.h"
+#include "bsp_onboard_adc.h"
 
 extern QueueHandle_t experiment_command_queue;
 extern QueueHandle_t remote_message_queue;
 extern osSemaphore rptx_ram_mutex;
 #define REPORT_INTERVAL 10  // report every 60 seconds
-
+extern int16_t NTC_temp_C[NTC_CHANNEL_NUM];
 void task_system_control()
 {
     // Create system control task here
@@ -37,18 +38,18 @@ void task_system_control()
     while (1)
     {
         vTaskDelayUntil( &xLastWakeTime, 1000 );   //update system and collect data every 1 second
-        uint32_t epoch;
+
         m33_data_get_epoch_lock(&epoch);
         epoch ++;
         m33_data_set_epoch_lock(epoch);
 
-        ADC_update();
+    //    ADC_update();
         local_counter++;
         //check if log is full
-        if (lwl_is_full())
+        if (lwl_is_sys_log_full())
         {
             xSemaphoreTake(rptx_ram_mutex, portMAX_DELAY);
-            uint32_t length = lwl_transfer();
+            uint32_t length = lwl_sys_log_transfer();
 
             message.address = SYS_LOG;
             message.data = length;
@@ -109,11 +110,11 @@ void task_system_control()
             
             m33_data_get_epoch_lock(&epoch);
             //log time
-            LWL(LWL_EXP_TIMESTAMP, LWL_4(epoch));
+            LWL_SYS_LOG(LWL_EXP_TIMESTAMP, LWL_4(epoch));
 
             local_counter = 0;
-            int16_t NTC_temps[12];
-            m33_data_ntc_temp_get(NTC_temps);
+
+            //m33_data_ntc_temp_get(NTC_temps);
             m33_data_get_i_lock(TABLE_ID_6, temp_board, &board_temperature);
             message.address = temp_exp + 0x0600;
             message.data = board_temperature;
@@ -122,10 +123,11 @@ void task_system_control()
             xQueueSend(remote_message_queue, &message, (TickType_t)0);
             for (int i = 0; i < 12; i++)   
             {
-                message.address = temp_ntc_0 + 0x0600 + i;
-                message.data =  NTC_temps[i];
+                 message.address = 3 +  0x0600 + i;
+                 message.data =  NTC_temp_C[i];
 
-                xQueueSend(remote_message_queue, &message, (TickType_t)0);         
+                xQueueSend(remote_message_queue, &message, (TickType_t)0);  
+                PRINTF("NTC value [i]= %d\r\n", NTC_temp_C[i])   ;    
             }
             PRINTF("\r\n[task_system_control] sent to remote messae tx task\r\n", msg_buf);
         }

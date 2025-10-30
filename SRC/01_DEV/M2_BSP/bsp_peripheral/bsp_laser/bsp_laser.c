@@ -116,6 +116,9 @@ void bsp_laser_ext_sw_on(uint8_t channel)
 	adg1414_chain_sw_on(&laser_ext_dev, real_channel);
 }
 
+
+
+
 void bsp_laser_ext_sw_off(uint8_t channel)
 {
 	uint8_t real_channel = map_ext_LD_position(channel);
@@ -129,88 +132,6 @@ void bsp_laser_ext_all_sw_off(void)
 	adg1414_chain_all_sw_off(&laser_ext_dev);
 }
 
-void bsp_laser_setup_timmer(uint32_t sampling_rate_khz)
-{
-	tpm_config_t exp_tpm_config;
-
-	laser_adc_set_count = 32 * 2;
-	laser_adc_count = 0;
-
-	TPM_GetDefaultConfig(&exp_tpm_config);
-
-	uint32_t exp_period_us =  1000 / sampling_rate_khz;
-
-	/* TPM clock divide by TPM_PRESCALER */
-    exp_tpm_config.prescale = TPM_CalculateCounterClkDiv(LASER_ADC_TIM_BASE, (sampling_rate_khz * 1000), LASER_ADC_TIM_CLK_FREQ);
-
-    /* Initialize TPM module */
-    TPM_Init(LASER_ADC_TIM_BASE, &exp_tpm_config);
-
-	/* Set timer period */
-    // TPM_SetTimerPeriod(LASER_ADC_TIM_BASE, USEC_TO_COUNT(exp_period_us, LASER_ADC_TIM_CLK_FREQ / (1U << exp_tpm_config.prescale)));
-
-    // TPM_EnableInterrupts(LASER_ADC_TIM_BASE, kTPM_TimeOverflowInterruptEnable);
-
-	// NVIC_ClearPendingIRQ(LASER_ADC_TIM_IRQn);
-    // NVIC_SetPriority   	(LASER_ADC_TIM_IRQn, 4);
-    // NVIC_EnableIRQ     	(LASER_ADC_TIM_IRQn);
-}
-
-void bsp_laser_start_timer(void)
-{
-	if (is_laser_tim_run == 1)
-	{
-		return;
-	}
-	
-	is_laser_tim_run = 1;
-
-	TPM_Type *base = LASER_ADC_TIM_BASE;
-
-    // Optional: reset counter to 0 before starting
-    base->CNT = 0U;
-
-    // Start TPM: select system clock (CMOD = 1). Preserve prescaler and other bits.
-    uint32_t sc = base->SC;
-    sc &= ~TPM_SC_CMOD_MASK;        		// clear CMOD
-    sc |= TPM_SC_CMOD(kTPM_SystemClock);    // 1 = TPM counter increments on TPM input clock
-    base->SC = sc;
-}
-
-// void bsp_laser_stop_timer(void)
-// {
-//     TPM_Type *base = LASER_ADC_TIM_BASE;
-
-//     // Stop TPM: disable clock to counter (CMOD = 0). Preserve other bits.
-//     base->SC &= ~TPM_SC_CMOD_MASK;
-// }
-
-// void TPM3_IRQHandler(void);
-// void TPM3_IRQHandler(void)
-// {
-// 	/* Clear interrupt flag.*/
-// 	LASER_ADC_TIM_BASE->STATUS = kTPM_TimeOverflowFlag;
-	
-// 	laser_current[laser_adc_count] = bsp_laser_int_current_adc_polling();
-// 	laser_adc_count += 1;
-
-// 	if (laser_adc_count < laser_adc_set_count)
-// 	{
-// 		return;
-// 	}
-// 	// else if (photo_spi_count >= photo_spi_set_count)
-// 	// reset the spi count
-// 	laser_adc_count = 0;
-// 	is_laser_tim_run = 0;
-
-// 	TPM_Type *base = LASER_ADC_TIM_BASE;
-
-// 	// Stop TPM: disable clock to counter (CMOD = 0). Preserve other bits.
-// 	base->SC &= ~TPM_SC_CMOD_MASK;
-
-// 	// Reset counter to 0
-// 	base->CNT = 0U;
-// }
 
 /* ============================================================
  * 1) TRIGGER: select channel and start a one-shot conversion

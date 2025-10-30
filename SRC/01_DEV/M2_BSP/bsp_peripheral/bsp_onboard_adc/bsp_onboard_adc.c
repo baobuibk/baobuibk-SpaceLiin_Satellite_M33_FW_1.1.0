@@ -1,9 +1,8 @@
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Include~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 #include "stdint.h"
-#include "bsp_board.h"
+
 #include "bsp_onboard_adc.h"
-#include "bsp_debug_console.h"
-#include "m33_data.h"
+#include "fsl_debug_console.h"
 
 #include "spi_io.h"
 #include "do.h"
@@ -16,7 +15,8 @@
 #include "MIMX9352_cm33.h"
 
 #include "delay.h"
-#include "lwl.h"
+#include "m33_data.h"
+
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Defines ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 #define TEC_CHANNEL_NUM 4U
 #define NTC_CHANNEL_NUM	12U
@@ -69,16 +69,15 @@ static  uint32_t adc1_raw[16] = {0};
 
 static 	float    adc0_volt_mv[16] = {0.0};
 static  float	 adc1_volt_mv[16] = {0.0};
+int16_t NTC_temp_C[NTC_CHANNEL_NUM] = {0};
+int32_t t_dC = 0;
 
-static  int16_t  NTC_temperature[NTC_CHANNEL_NUM] = {0};
-uint16_t        eFUSE_current_ma[EFUSE_CHANNEL_NUM] = {0};
-static int16_t  t_dC = 0; // Onboard temperature in dC
-
-static  uint8_t  TEC_channel_map[TEC_CHANNEL_NUM] = {0, 2, 3, 1};
+//static  uint8_t  TEC_channel_map[TEC_CHANNEL_NUM] = {0, 2, 3, 1};
 static  uint8_t  NTC_channel_map[NTC_CHANNEL_NUM] = {11, 9, 4, 3, 0, 7, 1, 2, 6, 5, 10, 8};
+uint16_t eFUSE_current_ma[EFUSE_CHANNEL_NUM] = {0};
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Prototype ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-static uint32_t bsp_onboard_adc_config(ad4114_t* p_dev, uint16_t enable_mask);
+static uint32_t bsp_onboard_adc_config_channels(ad4114_t* p_dev, uint16_t enable_mask);
 static uint32_t bsp_onboard_adc_get_vin_mv(uint32_t raw24, float vref_mv, float* vin_out_mv);
 static uint32_t spi_io_onboard_adc_config(SPI_Io_t *me, uint8_t is_flip);
 
@@ -101,17 +100,21 @@ ad4114_t onboard_adc_dev1 =
 };
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Public Function ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-uint32_t bsp_onboard_update_m33_data()
-{
-    m33_data_update_NTC(NTC_temperature);
-    m33_data_update_board_temp(t_dC);
-}
 uint32_t bsp_onboard_adc_init()
 {
 	uint32_t ret;
-	spi_io_onboard_adc_config(onboard_adc_dev0.spi, 1);
-	ret = ad4114_init(&onboard_adc_dev0, &onboard_adc_spi, &onboard_adc0_cs);
 
+
+	spi_io_onboard_adc_config(onboard_adc_dev0.spi, 1);
+
+
+    for (uint16_t i = 0; i < 2000; i++)
+    {
+        __NOP();
+    }
+    
+	ret = ad4114_init(&onboard_adc_dev0, &onboard_adc_spi, &onboard_adc0_cs);
+   
 	if (ret != ERROR_OK)
 	{
 		spi_io_onboard_adc_config(onboard_adc_dev0.spi, 0);
@@ -119,7 +122,7 @@ uint32_t bsp_onboard_adc_init()
 	}
 
 	// 0xFFFF Enable 16 pin
-	ret = bsp_onboard_adc_config(&onboard_adc_dev0, 0xFFFF);
+	ret = bsp_onboard_adc_config_channels(&onboard_adc_dev0, 0xFFFF);
 
 	if (ret != ERROR_OK)
 	{
@@ -135,8 +138,12 @@ uint32_t bsp_onboard_adc_init()
 		return ret;
 	}
 
+    uint16_t id = 0;
+    ad4114_read_id(&onboard_adc_dev0, &id);
+
 	// ((1 << 10) - 1) << 2: Enable 10 pin, start at pin 2
-	ret = bsp_onboard_adc_config(&onboard_adc_dev1, (((1 << 10) - 1) << 2));
+    //start at channel 2 to channel 11
+	ret = bsp_onboard_adc_config_channels(&onboard_adc_dev1, (((1 << 10) - 1) << 2));
 
 	spi_io_onboard_adc_config(onboard_adc_dev1.spi, 0);
 
@@ -155,15 +162,23 @@ uint32_t bsp_onboard_adc_update_raw()
 
 	spi_io_onboard_adc_config(onboard_adc_dev0.spi, 1);
 
-    ret = ad4114_read_all(&onboard_adc_dev0, 5000u, &out_mask_adc0, adc0_raw);
+
+    ret = ad4114_read_all(&onboard_adc_dev0, 500u, &out_mask_adc0, adc0_raw);
+
 
 	if (ret != ERROR_OK)
 	{
 		spi_io_onboard_adc_config(onboard_adc_dev0.spi, 0);
 		return ret;
 	}
-	
-	ret = ad4114_read_all(&onboard_adc_dev1, 5000u, &out_mask_adc1, adc1_raw);
+
+	ret = ad4114_read_all(&onboard_adc_dev1, 500u, &out_mask_adc1, adc1_raw);
+
+    if (ret != ERROR_OK)
+	{
+		spi_io_onboard_adc_config(onboard_adc_dev0.spi, 0);
+		return ret;
+	}
 
 	spi_io_onboard_adc_config(onboard_adc_dev1.spi, 0);
 
@@ -191,21 +206,20 @@ void bsp_convert_TEC()
 
 void bsp_convert_NTC()
 {
-	int16_t NTC_temp_C[NTC_CHANNEL_NUM] = {0};
+	//int16_t NTC_temp_C[NTC_CHANNEL_NUM] = {0};
 	
 	for (uint8_t index = 0; index < NTC_CHANNEL_NUM; index++)
 	{
 		NTC_temp_C[NTC_channel_map[index]] = ntc_convert_from_volt(adc0_volt_mv[PIN_NTC_CHANNEL_12 + index], 5000.0);
-        LWL(LWL_EXP_TEMP_SINGLE_NTC,LWL_1(NTC_channel_map[index]),LWL_2(NTC_temp_C[NTC_channel_map[index]] ));
+        PRINTF("channel %i value %d\n",index,NTC_temp_C[NTC_channel_map[index]]);
     }
+   // m33_data_update_NTC(NTC_temp_C[]);
 
-//	system_data_update_NTC(NTC_temp_C);
+	//system_data_update_NTC(NTC_temp_C);
 }
 
 void bsp_convert_eFUSE_Current()
 {
-
-
 	eFUSE_current_ma[0] = (uint16_t)(adc1_volt_mv[PIN_EFUSE_12V_PHOTO] * 3.343);
 	eFUSE_current_ma[1] = (uint16_t)(adc1_volt_mv[PIN_EFUSE_12V_PHOTO + 1] * 3.343);
 
@@ -222,7 +236,7 @@ void bsp_convert_onboard_temp()
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Function ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 // Use this once right after ad4114_init() for each ADC.
-static uint32_t bsp_onboard_adc_config(ad4114_t* p_dev, uint16_t enable_mask)
+static uint32_t bsp_onboard_adc_config_channels(ad4114_t* p_dev, uint16_t channel_mask)
 {
     if (!p_dev)
 	{
@@ -260,7 +274,7 @@ static uint32_t bsp_onboard_adc_config(ad4114_t* p_dev, uint16_t enable_mask)
     if (rc) return rc;
 
 	// 7) Enable channel follow enable mask
-	ad4114_channels_enable_mask(p_dev, enable_mask);
+	ad4114_channels_enable_mask(p_dev, channel_mask);
 	if (rc) return rc;
 
     return (uint32_t)ERROR_OK;
@@ -385,7 +399,7 @@ static uint32_t spi_io_onboard_adc_config(SPI_Io_t *me, uint8_t is_flip)
     /* Enable SPI again */
     base->CR |= (LPSPI_CR_MEN_MASK);
 
-    osSemaphoreGiven(&me->lock);
+     osSemaphoreGiven(&me->lock);
 
     return ERROR_OK;
 }

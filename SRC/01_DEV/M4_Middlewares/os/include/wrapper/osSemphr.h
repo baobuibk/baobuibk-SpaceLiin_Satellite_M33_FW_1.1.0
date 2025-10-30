@@ -32,7 +32,8 @@
     #define OS_MUTEX_ERROR		OS_SEMAPHORE_ERROR
 
 
-int osSemaphoreCreate(osSemaphore* mutex);
+int osSemaphoreCreateMutex(osSemaphore* mutex);
+int osSemaphoreCreateBinnary(osSemaphore* semaphore);
 int osSemaphoreTake(osSemaphore* mutex, uint32_t timeout);
 int osSemaphoreGiven(osSemaphore* mutex);
 

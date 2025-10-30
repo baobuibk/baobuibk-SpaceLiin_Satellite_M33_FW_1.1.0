@@ -56,7 +56,7 @@
 #define ONBOARD_ADC_SPI_BASE              LPSPI1
 #define ONBOARD_ADC_SPI_IRQn              LPSPI1_IRQn
 
-#define ONBOARD_ADC_SPI_BAUDRATE          (500000)
+#define ONBOARD_ADC_SPI_BAUDRATE          (10000)
 
 #define ONBOARD_ADC_GPIO_CS_CLOCK_ROOT    kCLOCK_Root_BusWakeup
 #define ONBOARD_ADC_GPIO_CS_CLOCK_GATE    kCLOCK_Gpio4
@@ -212,13 +212,27 @@
 
 #define I2C_PUMP_GPIO_EN_PORT         GPIO4
 #define I2C_PUMP_GPIO_EN_PIN          22U
+#define I2C_PUMP_GPIO_EN2_PIN         23U
+
+/*********************USP PWR EN GPIO**********************/
+#define USB_PWR_GPIO_EN0_CLOCK_ROOT   kCLOCK_Root_BusWakeup
+#define USB_PWR_GPIO_EN0_CLOCK_GATE   kCLOCK_Gpio3
+#define USB_PWR_GPIO_EN0_CLK_FREQ     CLOCK_GetIpFreq(USB_PWR_GPIO_EN0_CLOCK_ROOT)
+
+#define USB_PWR_GPIO_EN0_PORT         GPIO3
+#define USB_PWR_GPIO_EN0_PIN          23U
+
+#define USB_PWR_GPIO_EN1_CLOCK_ROOT   kCLOCK_Root_BusWakeup
+#define USB_PWR_GPIO_EN1_CLOCK_GATE   kCLOCK_Gpio3
+#define USB_PWR_GPIO_EN1_CLK_FREQ     CLOCK_GetIpFreq(USB_PWR_GPIO_EN1_CLOCK_ROOT)
+
+#define USB_PWR_GPIO_EN1_PORT         GPIO3
+#define USB_PWR_GPIO_EN1_PIN          24U
 
 #define RPMSG_SMEM_BASE  ((uint8_t *)0xA4220000U) 
 #define RPMSG_SMEM_SIZE  (0x08000000U)   // 128 MB
 
 #define RAM_TEST_BASE  ((uint8_t *)0xA4220000U)
 #define RAM_TEST_END   ((uint8_t *)(0xA4220000U + 10U + 0x08000000U))
-
-
 
 #endif /* _BSP_BOARD_H_ */
