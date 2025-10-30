@@ -45,4 +45,17 @@ void Task_Update_Onboard_ADC(void *pvParameters)
     }
 }
 
+void Update_Onboard_ADC(void)
+{
+    PRINTF("[Update_Onboard_ADC] Started\r\n");
+
+    bsp_onboard_adc_update_raw();
+    bsp_onboard_adc_update_volt();
+
+    bsp_convert_TEC();
+    bsp_convert_NTC();
+    bsp_convert_eFUSE_Current();
+    bsp_convert_onboard_temp();
+}
+
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of the program ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */

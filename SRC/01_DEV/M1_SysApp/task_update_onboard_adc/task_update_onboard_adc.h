@@ -11,6 +11,7 @@
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prototype ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* :::::::::: CMD Line Task ::::::::::::: */
 void Task_Update_Onboard_ADC(void *pvParameters);
+void Update_Onboard_ADC(void);
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of the program ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 

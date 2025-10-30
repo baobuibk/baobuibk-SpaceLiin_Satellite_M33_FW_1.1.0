@@ -142,8 +142,8 @@ const int16_t table5_data_init[] = {
 
     0x00,  // exp_fluidic_seq
     0x00,  // exp_mon_start
-    2000,  // exp_mon_delay -> Thay đổi để test, nhớ đổi lại bằng 0
-    28800,  // exp_mon_interval
+    60,  // exp_mon_delay -> Thay đổi để test, nhớ đổi lại bằng 0
+    60,  // exp_mon_interval -> Thay đổi để test, nhớ đổi lại bằng 28800
 
     25,  // dls_ls_intensity
     15,  // cam_ls_intensity
@@ -197,9 +197,10 @@ uint32_t m33_data_set_u(uint16_t table_id,uint16_t index, uint16_t value)
 
 uint32_t m33_data_decrease_exp_remaining_time()
 {
-    uint32_t remaining_time = tables[TABLE_ID_5].data[exp_mon_delay].u;
+    uint16_t remaining_time = tables[TABLE_ID_5].data[exp_mon_delay].u;
+    uint16_t is_start_exp = tables[TABLE_ID_5].data[exp_mon_start].u;
 
-    if (remaining_time > 0)
+    if ((is_start_exp > 0) && (remaining_time > 0))
     {
         remaining_time --;
         tables[TABLE_ID_5].data[exp_mon_delay].u = remaining_time;

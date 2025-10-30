@@ -55,13 +55,13 @@ void vApplicationTickHook(void)
     epoch ++;
     m33_data_set_epoch(epoch);
 
-    // PRINTF("epoch = %d\n\r", epoch);
+    PRINTF("epoch = %d\n\r", epoch);
 
-    // uint32_t remaining_time;
-    // m33_data_get_remaining_time(&remaining_time);
+    uint32_t remaining_time;
+    m33_data_get_remaining_time(&remaining_time);
     m33_data_decrease_exp_remaining_time();
 
-    // PRINTF("remaining time = %d\n\r", remaining_time);
+    PRINTF("remaining time = %d\n\r", remaining_time);
 }
 
 static StaticTask_t xIdleTaskTCB;
