@@ -12,13 +12,11 @@
 static osSemaphore m33_data_sem = NULL;
 #define M33_DATA_SEMAPHOR_TIMEOUT 2000
 
-uint64_t    epoch_time = 0;
-
- value16_t table1_data[TABLE1_TOTAL_COUNT];
- value16_t table2_data[TABLE2_TOTAL_COUNT];
- value16_t table3_data[TABLE3_TOTAL_COUNT];
- value16_t table5_data[TABLE5_TOTAL_COUNT];
- value16_t table6_data[TABLE6_TOTAL_COUNT];
+value16_t table1_data[TABLE1_TOTAL_COUNT];
+value16_t table2_data[TABLE2_TOTAL_COUNT];
+value16_t table3_data[TABLE3_TOTAL_COUNT];
+value16_t table5_data[TABLE5_TOTAL_COUNT];
+value16_t table6_data[TABLE6_TOTAL_COUNT];
 
 table_info_t tables[TABLE_ID_TOTAL_COUNT] = {
     [TABLE_ID_1] = { table1_data, TABLE1_TOTAL_COUNT },
@@ -144,7 +142,7 @@ const int16_t table5_data_init[] = {
 
     0x00,  // exp_fluidic_seq
     0x00,  // exp_mon_start
-    0x00,  // exp_mon_delay
+    2000,  // exp_mon_delay -> Thay đổi để test, nhớ đổi lại bằng 0
     28800,  // exp_mon_interval
 
     25,  // dls_ls_intensity
@@ -197,6 +195,79 @@ uint32_t m33_data_set_u(uint16_t table_id,uint16_t index, uint16_t value)
     return 0;
 }
 
+uint32_t m33_data_decrease_exp_remaining_time()
+{
+    uint32_t remaining_time = tables[TABLE_ID_5].data[exp_mon_delay].u;
+
+    if (remaining_time > 0)
+    {
+        remaining_time --;
+        tables[TABLE_ID_5].data[exp_mon_delay].u = remaining_time;
+    }
+
+    return 0;
+}
+
+uint32_t m33_data_set_remaining_time(uint32_t value)
+{
+    tables[TABLE_ID_5].data[exp_mon_delay].u = value;
+
+    return 0;
+}
+
+uint32_t m33_data_get_remaining_time(uint32_t * value)
+{
+    *value = tables[TABLE_ID_5].data[exp_mon_delay].u;
+
+    return 0;
+}
+
+uint32_t m33_data_set_remaining_time_lock(uint32_t value)
+{
+    int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
+
+    if (sem_ret != pdPASS)
+    {
+        return (uint32_t)sem_ret;
+    }
+
+    tables[TABLE_ID_5].data[exp_mon_delay].u = value;
+
+    osSemaphoreGiven(&m33_data_sem);
+
+    return 0;
+}
+
+uint32_t m33_data_get_remaining_time_lock(uint32_t * value)
+{
+    int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
+
+    if (sem_ret != pdPASS)
+    {
+        return (uint32_t)sem_ret;
+    }
+
+    *value = tables[TABLE_ID_5].data[exp_mon_delay].u;
+
+    osSemaphoreGiven(&m33_data_sem);
+
+    return 0;
+}
+
+uint32_t m33_data_set_epoch(uint32_t value)
+{
+    tables[TABLE_ID_1].data[time_sync].u = value;
+
+    return 0;
+}
+
+uint32_t m33_data_get_epoch(uint32_t * value)
+{
+    *value = tables[TABLE_ID_1].data[time_sync].u;
+
+    return 0;
+}
+
 uint32_t m33_data_set_epoch_lock(uint32_t value)
 {
     int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
@@ -205,8 +276,11 @@ uint32_t m33_data_set_epoch_lock(uint32_t value)
     {
         return (uint32_t)sem_ret;
     }
-    epoch_time = value;
+
+    tables[TABLE_ID_1].data[time_sync].u = value;
+
     osSemaphoreGiven(&m33_data_sem);
+
     return 0;
 }
 
@@ -218,8 +292,11 @@ uint32_t m33_data_get_epoch_lock(uint32_t * value)
     {
         return (uint32_t)sem_ret;
     }
-   * value = epoch_time;
+
+    *value = tables[TABLE_ID_1].data[time_sync].u;
+
     osSemaphoreGiven(&m33_data_sem);
+
     return 0;
 }
 
@@ -235,7 +312,6 @@ uint32_t m33_data_set_u_lock(uint16_t table_id,uint16_t index, uint16_t value)
     osSemaphoreGiven(&m33_data_sem);
     return 0;
 }
-
 
 uint32_t m33_data_set_i(uint16_t table_id,uint16_t index, int16_t value)
 {

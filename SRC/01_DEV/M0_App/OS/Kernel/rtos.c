@@ -10,6 +10,8 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "m33_data.h"
+
+#include "fsl_debug_console.h"
 /*--------------------Start RTOS--------------*/
 void EXP_RTOS_Start(void)
 {
@@ -36,13 +38,30 @@ void vApplicationIdleHook(void)
 }
 
 /* Tick Hook */
+static uint16_t tick_count = 0;
 void vApplicationTickHook(void)
 {
-    uint32_t epoch;
-        m33_data_get_epoch_lock(&epoch);
-        epoch ++;
-        m33_data_set_epoch_lock(epoch);
+    tick_count++;
 
+    if (tick_count < 1000)
+    {
+        return;
+    }
+    
+    tick_count = 0;
+
+    uint32_t epoch;
+    m33_data_get_epoch(&epoch);
+    epoch ++;
+    m33_data_set_epoch(epoch);
+
+    // PRINTF("epoch = %d\n\r", epoch);
+
+    // uint32_t remaining_time;
+    // m33_data_get_remaining_time(&remaining_time);
+    m33_data_decrease_exp_remaining_time();
+
+    // PRINTF("remaining time = %d\n\r", remaining_time);
 }
 
 static StaticTask_t xIdleTaskTCB;

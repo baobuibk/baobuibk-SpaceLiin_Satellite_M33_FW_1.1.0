@@ -20,8 +20,7 @@ extern int16_t NTC_temp_C[NTC_CHANNEL_NUM];
 void task_system_control()
 {
     // Create system control task here
-       uint16_t is_start_exp = 0;
-    uint16_t exp_remain_time = 0;
+    uint16_t is_start_exp = 0;
     uint8_t  local_counter = 0;
     int16_t board_temperature = 0;
     uint16_t command;
@@ -29,11 +28,6 @@ void task_system_control()
     uint32_t epoch ;
     remote_message_t message;
     PRINTF("===== [System Control Started] =====\r\n");
-
-    TickType_t xLastWakeTime;
-
-    // Initialise the xLastWakeTime variable with the current time.
-    xLastWakeTime = xTaskGetTickCount();
     
     while (1)
     {
