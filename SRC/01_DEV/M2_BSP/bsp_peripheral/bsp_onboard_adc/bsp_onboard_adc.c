@@ -104,19 +104,6 @@ uint32_t bsp_onboard_adc_init()
 {
 	uint32_t ret;
     uint16_t id = 0;
-
-    // uint8_t tx = 0xAA;
-    // lpspi_transfer_t transfer =
-    // {
-    //     .txData = &tx,
-    //     .rxData = NULL,
-    //     .dataSize = 1,
-    //     .configFlags = kLPSPI_MasterPcs0 | kLPSPI_MasterPcsContinuous | kLPSPI_MasterByteSwap,
-    // };
-    // for (uint16_t i = 0; i < 1000; i++)
-    // {
-    //     LPSPI_MasterTransferBlocking(LPSPI1, &transfer);
-    // }
     
 	spi_io_onboard_adc_config(&onboard_adc_spi, 1);
 
