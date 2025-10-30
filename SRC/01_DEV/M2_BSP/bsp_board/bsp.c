@@ -73,17 +73,17 @@ static void EXP_InitPins(void)
     IOMUXC_SetPinMux(IOMUXC_PAD_SAI1_TXD0__LPSPI1_SCK, 0U);
 
     IOMUXC_SetPinConfig(IOMUXC_PAD_SAI1_TXC__LPSPI1_SIN, 
-                        IOMUXC_PAD_DSE(15U) |
+                        IOMUXC_PAD_DSE(0x3F) |
                         IOMUXC_PAD_FSEL1(2U) |
                         IOMUXC_PAD_PU_MASK);
 
     IOMUXC_SetPinConfig(IOMUXC_PAD_SAI1_RXD0__LPSPI1_SOUT, 
-                        IOMUXC_PAD_DSE(15U) |
+                        IOMUXC_PAD_DSE(0x3F) |
                         IOMUXC_PAD_FSEL1(2U) |
                         IOMUXC_PAD_PU_MASK);
 
     IOMUXC_SetPinConfig(IOMUXC_PAD_SAI1_TXD0__LPSPI1_SCK, 
-                        IOMUXC_PAD_DSE(15U) |
+                        IOMUXC_PAD_DSE(0x3F) |
                         IOMUXC_PAD_FSEL1(2U) |
                         IOMUXC_PAD_PU_MASK);
 
@@ -124,7 +124,7 @@ static void EXP_InitPins(void)
     IOMUXC_SetPinConfig(IOMUXC_PAD_ENET2_RD0__GPIO4_IO24, 
                         IOMUXC_PAD_DSE(15U) |
                         IOMUXC_PAD_FSEL1(2U) |
-                        IOMUXC_PAD_PD_MASK);
+                        IOMUXC_PAD_PU_MASK);
 
     /* LASER SWITCH Init Pin */
     IOMUXC_SetPinMux(IOMUXC_PAD_ENET2_RD1__GPIO4_IO25, 0U);
@@ -133,12 +133,12 @@ static void EXP_InitPins(void)
     IOMUXC_SetPinConfig(IOMUXC_PAD_ENET2_RD1__GPIO4_IO25, 
                         IOMUXC_PAD_DSE(15U) |
                         IOMUXC_PAD_FSEL1(2U) |
-                        IOMUXC_PAD_PD_MASK);
+                        IOMUXC_PAD_PU_MASK);
 
     IOMUXC_SetPinConfig(IOMUXC_PAD_ENET2_RD2__GPIO4_IO26, 
                         IOMUXC_PAD_DSE(15U) |
                         IOMUXC_PAD_FSEL1(2U) |
-                        IOMUXC_PAD_PD_MASK);
+                        IOMUXC_PAD_PU_MASK);
 
     /* PHOTO SPI Init Pin */
     IOMUXC_SetPinMux(IOMUXC_PAD_GPIO_IO19__LPSPI5_SIN, 0U);
@@ -188,22 +188,22 @@ static void EXP_InitPins(void)
     IOMUXC_SetPinConfig(IOMUXC_PAD_DAP_TMS_SWDIO__GPIO3_IO29, 
                         IOMUXC_PAD_DSE(15U) |
                         IOMUXC_PAD_FSEL1(2U) |
-                        IOMUXC_PAD_PD_MASK);
+                        IOMUXC_PAD_PU_MASK);
 
     IOMUXC_SetPinConfig(IOMUXC_PAD_DAP_TDO_TRACESWO__GPIO3_IO31, 
                         IOMUXC_PAD_DSE(15U) |
                         IOMUXC_PAD_FSEL1(2U) |
-                        IOMUXC_PAD_PD_MASK);
+                        IOMUXC_PAD_PU_MASK);
 
     IOMUXC_SetPinConfig(IOMUXC_PAD_DAP_TDI__GPIO3_IO28, 
                         IOMUXC_PAD_DSE(15U) |
                         IOMUXC_PAD_FSEL1(2U) |
-                        IOMUXC_PAD_PD_MASK);
+                        IOMUXC_PAD_PU_MASK);
 
     IOMUXC_SetPinConfig(IOMUXC_PAD_DAP_TCLK_SWCLK__GPIO3_IO30, 
                         IOMUXC_PAD_DSE(15U) |
                         IOMUXC_PAD_FSEL1(2U) |
-                        IOMUXC_PAD_PD_MASK);
+                        IOMUXC_PAD_PU_MASK);
 
     /* I2C SENSOR Init Pin. */
     IOMUXC_SetPinMux(IOMUXC_PAD_GPIO_IO03__LPI2C4_SCL, 1U);

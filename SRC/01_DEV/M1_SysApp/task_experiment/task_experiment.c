@@ -220,6 +220,11 @@ static void task_experiment_DLS()
 
     bsp_expander_ctrl(POW_ONOFF_LASER,0);
     bsp_expander_ctrl(POW_ONOFF_PHOTO,0);
+
+    for (uint16_t i = 0; i < 10000; i++)
+    {
+        __NOP();
+    }
 }
 
 static void fluidic_test_flow()

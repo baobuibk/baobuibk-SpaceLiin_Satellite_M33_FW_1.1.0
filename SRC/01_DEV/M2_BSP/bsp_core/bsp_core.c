@@ -47,7 +47,6 @@ static void bsp_core_init_pump_en_gpio(void);
 static void bsp_core_init_onboard_adc_spi(void);
 static void bsp_core_init_onboard_adc_cs_gpio(void);
 
-static void bsp_core_init_laser_dac_gpio(void);
 static void bsp_core_init_laser_switch_gpio(void);
 
 static void bsp_core_init_photo_adc_spi(void);
@@ -82,11 +81,10 @@ void bsp_core_init(void)
     bsp_core_init_pump_i2c();
     bsp_core_init_pump_en_gpio();
 
-    bsp_core_init_onboard_adc_spi();
-    bsp_core_init_onboard_adc_cs_gpio();
-
-    bsp_core_init_laser_dac_gpio();
+    // bsp_core_init_laser_dac_gpio();
     bsp_core_init_laser_switch_gpio();
+    bsp_core_init_onboard_adc_cs_gpio();
+    bsp_core_init_onboard_adc_spi();
 
     bsp_core_init_photo_adc_spi();
     bsp_core_init_photo_adc_cs_gpio();
@@ -110,26 +108,43 @@ void bsp_core_init(void)
     bsp_expander_init();
 
     // Pull up RAM SPI nCS
-    bsp_expander_ctrl(RAM_SPI_nCS, 1);
+    bsp_expander_ctrl(RAM_SPI_nCS, 0);
 
     // Turn off laser board for working around
     // spi issue.
-    bsp_expander_ctrl(POW_ONOFF_LASER, 0);
+    // bsp_expander_ctrl(POW_ONOFF_LASER, 0);
 
     for (uint16_t i = 0; i < 10000; i++)
     {
         __NOP();
     }
 
+    bsp_expander_ctrl(POW_ONOFF_LASER,0);
+    bsp_expander_ctrl(POW_ONOFF_PHOTO,0);
+
+    // bsp_laser_init();
+    // bsp_photo_init();
+
+    for (uint16_t i = 0; i < 30000; i++)
+    {
+        __NOP();
+    }
+
     bsp_onboard_adc_init();
+
+    // for (uint32_t i = 0; i < 30000; i++)
+    // {
+    //     __NOP();
+    // }
+
+    // bsp_expander_ctrl(POW_ONOFF_LASER,1);
+    // bsp_core_init_laser_dac_gpio();
     
     // TODO: Check I2C lib
-    bsp_i2c_sensor_init();
+    // bsp_i2c_sensor_init();
 
-    bsp_heater_init();
-    bsp_laser_init();
-    bsp_photo_init();
-    bsp_pump_init();
+    // bsp_heater_init();
+    // bsp_pump_init();
 }
 
 /*!
@@ -643,13 +658,13 @@ do_t laser_dac_latch =
     .port = 4,
     .pin  = LASER_DAC_GPIO_LATCH_PIN,
 };
-static void bsp_core_init_laser_dac_gpio(void)
+void bsp_core_init_laser_dac_gpio(void)
 {
     /* Define the init structure for the output LED pin*/
     rgpio_pin_config_t laser_DAC_CS_config =
     {
         kRGPIO_DigitalOutput,
-        1,
+        0,
     };
 
     rgpio_pin_config_t laser_DAC_latch_config =

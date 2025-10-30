@@ -18,6 +18,7 @@
 #include "bsp_heater.h"
 #include "bsp_solenoid.h"
 #include "bsp_pump.h"
+#include "bsp_laser.h"
 #include "do.h"
 
 
@@ -194,6 +195,7 @@ void pwr_lda_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
     }
 
     bsp_expander_ctrl(POW_ONOFF_LASER,status);
+    bsp_core_init_laser_dac_gpio();
 }
 
 void pwr_pda_en_cmd(uint32_t stdio, uint32_t argc, char *argv[])
@@ -1131,7 +1133,38 @@ void exp_post_time_cmd(uint32_t s,uint32_t a,char *v[]){
 	if (ret) return;
 	m33_data_set_u_lock(TABLE_ID_5,exp_post_time,(uint32_t)status);
 }
-void custom_ctl_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("custom_ctl\n");}
+void custom_ctl_cmd(uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;(void)a;(void)v;PRINTF("custom_ctl\n");
+
+    int32_t status;
+    uint32_t ret = str2int(v[1], &status);
+
+	if (ret)
+    {
+        return;
+    }
+
+    if (status == 0)
+    {
+        bsp_expander_ctrl(POW_ONOFF_LASER, 0);
+        bsp_laser_int_set_dac(0);
+        bsp_laser_int_sw_off(1);
+    }
+    else
+    {
+        bsp_core_init_laser_dac_gpio();
+
+        vTaskDelay(10);
+
+        bsp_expander_ctrl(POW_ONOFF_LASER, 1);
+
+        vTaskDelay(10);
+        
+        bsp_laser_int_set_dac(127);
+        bsp_laser_int_sw_on(1);
+    }
+}
 
 /* ==================== TABLE 6: implementations ==================== */
 void sys_status_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sys_status\n");}
