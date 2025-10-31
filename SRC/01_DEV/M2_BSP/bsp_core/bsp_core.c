@@ -132,19 +132,28 @@ void bsp_core_init(void)
 
     bsp_onboard_adc_init();
 
-    // for (uint32_t i = 0; i < 30000; i++)
-    // {
-    //     __NOP();
-    // }
+    for (uint32_t i = 0; i < 30000; i++)
+    {
+        __NOP();
+    }
 
-    // bsp_expander_ctrl(POW_ONOFF_LASER,1);
-    // bsp_core_init_laser_dac_gpio();
+    bsp_expander_ctrl(POW_ONOFF_LASER,1);
+    for (uint32_t i = 0; i < 30000; i++)
+    {
+        __NOP();
+    }
+    bsp_core_init_laser_dac_gpio();
     
-    // TODO: Check I2C lib
-    // bsp_i2c_sensor_init();
+   // TODO: Check I2C lib
+    bsp_i2c_sensor_init();
 
-    // bsp_heater_init();
-    // bsp_pump_init();
+    bsp_heater_init();
+    bsp_pump_init();
+    bsp_expander_ctrl(POW_ONOFF_LASER,0);
+    for (uint32_t i = 0; i < 30000; i++)
+    {
+        __NOP();
+    }
 }
 
 /*!

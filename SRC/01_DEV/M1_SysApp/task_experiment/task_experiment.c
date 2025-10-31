@@ -39,7 +39,7 @@
 static void task_experiment_DLS(void);
 static void fluidic_test_flow(void);
 static void main_exp_fluidic_flow();
-
+static void task_experiment_test_laser();
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Public Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 extern uint32_t photo_spi_set_count;
 extern uint32_t photo_spi_count;
@@ -53,8 +53,6 @@ extern osSemaphore rptx_ram_mutex;
 /* :::::::::: Experiment Task ::::::::::::: */
 void Task_Experiment(void *pvParameters)
 {
-    static uint16_t command = 0;
-
     // exp_last_delay = xTaskGetTickCount();
     PRINTF("Experiment Control...\r\n");
 
@@ -62,38 +60,44 @@ void Task_Experiment(void *pvParameters)
     {
         vTaskDelay(2000);
         Update_Onboard_ADC();
-
-        if(xQueueReceive(experiment_command_queue, &command, 0) != pdPASS)
+       //check if experiment is enabled
+        uint16_t exp_remain_time;
+        uint16_t ext_interval;
+        uint16_t is_start_exp = 0;
+        m33_data_get_u_lock(TABLE_ID_5, exp_mon_start, &is_start_exp);
+        m33_data_get_u_lock(TABLE_ID_5, exp_mon_delay, &exp_remain_time);
+        if (is_start_exp == 1)  // experiment started                     
         {
-            continue;
+            if (exp_remain_time == 0)    // start DLS, update delay time to interval
+            {
+                m33_data_get_u_lock(TABLE_ID_5, exp_mon_interval, &ext_interval);
+                m33_data_set_u_lock(TABLE_ID_5, exp_mon_delay, ext_interval);
+                PRINTF("[task_system_control] triggered dls experiment\r\n");
+                task_experiment_DLS();          
+            }
+        }
+//check if laser test is enabled
+        m33_data_get_u_lock(TABLE_ID_5, test_ls_current, &is_start_exp);
+        if (1 == is_start_exp)
+        {           
+            task_experiment_test_laser();
+            m33_data_set_u_lock(TABLE_ID_5, test_ls_current, 0);
         }
 
-        PRINTF("Experiment Starting ...\r\n");
-
-        // TODO: system_data_get_exp_profile(&s_exp_profile);
-        switch (command)
+                //check if test pump is enabled
+        m33_data_get_u_lock(TABLE_ID_5, test_fluidic_seq, &is_start_exp);
+        if (1 == is_start_exp)
         {
-            case SLD_RUN:
-            {
-                task_experiment_DLS();
-                break;
-            }
-                
-            case FLUIDIC_TEST:
-            {
-                fluidic_test_flow();
-                break;
-            }
-    
-            case FLUIDIC_SEQ:
-            {
-                main_exp_fluidic_flow();
-                break;
-            }
-
-            default:
-                break;
+            fluidic_test_flow();
+            m33_data_set_u_lock(TABLE_ID_5, test_fluidic_seq, 0);          
         }
+
+        m33_data_get_u_lock(TABLE_ID_5, exp_fluidic_seq, &is_start_exp);
+        if (1 == is_start_exp)
+        {
+            main_exp_fluidic_flow();
+            m33_data_set_u_lock(TABLE_ID_5, exp_fluidic_seq, 0);
+        }     
     }
 }
 
@@ -122,6 +126,7 @@ static void task_experiment_DLS()
     wait_delay   = pdMS_TO_TICKS(5);
     bsp_expander_ctrl(POW_ONOFF_LASER,1);
     bsp_expander_ctrl(POW_ONOFF_PHOTO,1);
+    PRINTF("[exp] task_experiment_DLS started\r\n");
 
     // TODO: Comment for test
     photo_spi_set_count = s_exp_profile.sampling_rate_khz * (s_exp_profile.pre_time_ms + s_exp_profile.sampling_time_ms + s_exp_profile.post_time_ms);
@@ -235,6 +240,8 @@ static void fluidic_test_flow()
     // 0. capture USBcam image
     // TODO: capture
     remote_message_t message;
+
+    PRINTF("[exp] main_exp_fluidic_flow started\r\n");
     message.address = CAM_CAPTURE;
     message.data = 4;
     xQueueSend(remote_message_queue, &message, 1000);//send notification for log
@@ -295,6 +302,7 @@ static void main_exp_fluidic_flow()
     slf3s_readings_t flow_data;
     float volumn = 0.0;
     lwl_data_log_init();
+     PRINTF("[exp] main_exp_fluidic_flow started\r\n");
 
     // 1. pump on
     // make sure valve dir is on dummy
@@ -343,4 +351,9 @@ static void main_exp_fluidic_flow()
 
     vTaskDelay(2000);
     xSemaphoreGive(rptx_ram_mutex);
+}
+
+static void task_experiment_test_laser()
+{
+    PRINTF("[exp] task_experiment_test_laser started\r\n");
 }

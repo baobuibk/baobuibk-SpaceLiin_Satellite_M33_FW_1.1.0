@@ -98,9 +98,8 @@ void EXP_RootGrowUp(void)
 /*************************************************
  *               	TASK INIT	                 *
  *************************************************/
-QueueHandle_t experiment_command_queue = NULL;
+
 osSemaphore rptx_mutex = NULL;    //used for rpmsg_send command
-osSemaphore command_sem = NULL;
 QueueHandle_t remote_message_queue = NULL;
 osSemaphore rptx_ram_mutex = NULL;    //mutex to take over the RAM to copy
 
@@ -110,9 +109,8 @@ osSemaphore rptx_ram_mutex = NULL;    //mutex to take over the RAM to copy
 static void EXP_App_Create_Communication_Queues(void)
 {
     // Create communication queues here
-    command_sem = xSemaphoreCreateBinary();
-    experiment_command_queue = xQueueCreate(6, sizeof(uint16_t));
 
+ 
     rptx_mutex = xSemaphoreCreateMutex();
     rptx_ram_mutex = xSemaphoreCreateMutex();
   remote_message_queue = xQueueCreate(30, sizeof(remote_message_t));

@@ -20,64 +20,12 @@ extern int16_t NTC_temp_C[NTC_CHANNEL_NUM];
 void task_system_control()
 {
     // Create system control task here
-    uint16_t is_start_exp = 0;
-    uint8_t  local_counter = 0;
-    uint16_t command;
+
     PRINTF("===== [System Control Started] =====\r\n");
     
     while (1)
     {
         vTaskDelay(1000);
-
-        local_counter++;
-        //check if log is full
-
-
-        //check if experiment is enabled
-        uint16_t exp_remain_time;
-        uint16_t ext_interval;
-        m33_data_get_u_lock(TABLE_ID_5, exp_mon_start, &is_start_exp);
-        m33_data_get_u_lock(TABLE_ID_5, exp_mon_delay, &exp_remain_time);
-        if (is_start_exp == 1)  // experiment started                     
-        {
-            if (exp_remain_time == 0)    // still in delay period
-            {
-                m33_data_get_u_lock(TABLE_ID_5, exp_mon_interval, &ext_interval);
-                m33_data_set_u_lock(TABLE_ID_5, exp_mon_delay, ext_interval);
-
-                //notify experiment task to start experiment
-                command = SLD_RUN;
-                xQueueSend(experiment_command_queue, &command, 100);
-
-                PRINTF("[task_system_control] triggered dls experiment\r\n");
-            }
-        }
-
-        //check if test laser is enabled
-        m33_data_get_u_lock(TABLE_ID_5, test_ls_current, &is_start_exp);
-        if (1 == is_start_exp)
-        {
-            command = LASER_TEST;
-            xQueueSend(experiment_command_queue, &command, 100);//send notification for log
-            m33_data_set_u_lock(TABLE_ID_5, test_ls_current, 0);
-        }
-
-        //check if test pump is enabled
-        m33_data_get_u_lock(TABLE_ID_5, test_fluidic_seq, &is_start_exp);
-        if (1 == is_start_exp)
-        {
-            command = FLUIDIC_TEST;
-            xQueueSend(experiment_command_queue, &command, 100);//send notification for log
-            m33_data_set_u_lock(TABLE_ID_5, test_fluidic_seq, 0);
-        }
-
-        m33_data_get_u_lock(TABLE_ID_5, exp_fluidic_seq, &is_start_exp);
-        if (1 == is_start_exp)
-        {
-            command = FLUIDIC_SEQ;
-            xQueueSend(experiment_command_queue, &command, 100);//send notification for log
-            m33_data_set_u_lock(TABLE_ID_5, exp_fluidic_seq, 0);
-        }       
     }
 }
 
