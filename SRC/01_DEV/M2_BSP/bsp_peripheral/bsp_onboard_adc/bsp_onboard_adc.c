@@ -185,12 +185,12 @@ uint32_t bsp_onboard_adc_update_raw()
 
 	spi_io_onboard_adc_config(&onboard_adc_spi, 1);
 
-
     ret = ad4114_read_all(&onboard_adc_dev0, 500u, &out_mask_adc0, adc0_raw);
 
 
 	if (ret != ERROR_OK)
 	{
+        PRINTF("[bsp_onboard_adc_update_raw] ERROR\r\n");
 		spi_io_onboard_adc_config(&onboard_adc_spi, 0);
 		return ret;
 	}
@@ -473,7 +473,7 @@ static uint32_t spi_io_onboard_adc_config(SPI_Io_t *me, uint8_t is_flip)
     /* Enable SPI again */
     base->CR |= (LPSPI_CR_MEN_MASK);
 
-    // osSemaphoreGiven(&me->lock);
+    osSemaphoreGiven(&me->lock);
 
     return ERROR_OK;
 }

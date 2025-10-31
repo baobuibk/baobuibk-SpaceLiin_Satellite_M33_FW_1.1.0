@@ -81,7 +81,7 @@ void bsp_core_init(void)
     bsp_core_init_pump_i2c();
     bsp_core_init_pump_en_gpio();
 
-    // bsp_core_init_laser_dac_gpio();
+    bsp_core_init_laser_dac_gpio();
     bsp_core_init_laser_switch_gpio();
     bsp_core_init_onboard_adc_cs_gpio();
     bsp_core_init_onboard_adc_spi();
@@ -94,9 +94,7 @@ void bsp_core_init(void)
     bsp_core_init_photo_adc_tim();
 
     bsp_core_init_laser_adc();
-
-    // bsp_core_init_uart();
-    // bsp_core_init_can();  
+ 
     spi_io_init(&onboard_adc_spi);
     spi_io_init(&photo_adc_spi);
 
@@ -108,11 +106,7 @@ void bsp_core_init(void)
     bsp_expander_init();
 
     // Pull up RAM SPI nCS
-    bsp_expander_ctrl(RAM_SPI_nCS, 0);
-
-    // Turn off laser board for working around
-    // spi issue.
-    // bsp_expander_ctrl(POW_ONOFF_LASER, 0);
+    bsp_expander_ctrl(RAM_SPI_nCS, 1);
 
     for (uint16_t i = 0; i < 10000; i++)
     {
@@ -121,9 +115,6 @@ void bsp_core_init(void)
 
     bsp_expander_ctrl(POW_ONOFF_LASER,0);
     bsp_expander_ctrl(POW_ONOFF_PHOTO,0);
-
-    // bsp_laser_init();
-    // bsp_photo_init();
 
     for (uint16_t i = 0; i < 30000; i++)
     {
@@ -136,13 +127,6 @@ void bsp_core_init(void)
     {
         __NOP();
     }
-
-    bsp_expander_ctrl(POW_ONOFF_LASER,1);
-    for (uint32_t i = 0; i < 30000; i++)
-    {
-        __NOP();
-    }
-    bsp_core_init_laser_dac_gpio();
     
    // TODO: Check I2C lib
     bsp_i2c_sensor_init();
