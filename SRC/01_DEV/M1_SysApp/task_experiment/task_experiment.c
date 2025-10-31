@@ -54,6 +54,7 @@ extern osSemaphore rptx_ram_mutex;
 /* :::::::::: Experiment Task ::::::::::::: */
 void Task_Experiment(void *pvParameters)
 {
+    remote_message_t message;
     // exp_last_delay = xTaskGetTickCount();
     PRINTF("Experiment Control...\r\n");
 
@@ -86,6 +87,11 @@ void Task_Experiment(void *pvParameters)
         {           
             task_experiment_test_laser();
             m33_data_set_u_lock(TABLE_ID_5, test_ls_current, 0);
+
+            message.address = UPDATE_PARAM | (0x0500 + test_ls_current);
+            message.data = 0;
+            xQueueSend(remote_message_queue, &message, 1000);//send notification for log
+            PRINTF("[task_system_control] test_ls_current finished\r\n");
         }
 
         //check if test pump is enabled
@@ -93,7 +99,12 @@ void Task_Experiment(void *pvParameters)
         if (1 == is_start_exp)
         {
             fluidic_test_flow();
-            m33_data_set_u_lock(TABLE_ID_5, test_fluidic_seq, 0);          
+            m33_data_set_u_lock(TABLE_ID_5, test_fluidic_seq, 0);
+
+            message.address = UPDATE_PARAM | (0x0500 + test_fluidic_seq);
+            message.data = 0;
+            xQueueSend(remote_message_queue, &message, 1000);//send notification for log
+            PRINTF("[task_system_control] test_fluidic_seq finished\r\n");
         }
 
         m33_data_get_u_lock(TABLE_ID_5, exp_fluidic_seq, &is_start_exp);
@@ -101,6 +112,11 @@ void Task_Experiment(void *pvParameters)
         {
             main_exp_fluidic_flow();
             m33_data_set_u_lock(TABLE_ID_5, exp_fluidic_seq, 0);
+
+            message.address = UPDATE_PARAM | (0x0500 + exp_fluidic_seq);
+            message.data = 0;
+            xQueueSend(remote_message_queue, &message, 1000);//send notification for log
+            PRINTF("[task_system_control] exp_fluidic_seq finished\r\n");
         }     
     }
 }
@@ -297,6 +313,8 @@ static void fluidic_test_flow()
     // 4. pump off
     I2C_HD_Pump_set_Voltage(0); //<-- After this line, pump off.
     LWL_DATA_LOG(LWL_EXP_PUMP_OFF);
+
+    PRINTF("[exp] main_exp_fluidic_flow exited\r\n");
 }
 
 static void main_exp_fluidic_flow()
@@ -355,6 +373,8 @@ static void main_exp_fluidic_flow()
 
     vTaskDelay(2000);
     xSemaphoreGive(rptx_ram_mutex);
+
+    PRINTF("[exp] main_exp_fluidic_flow exited\r\n");
 }
 
 static void task_experiment_test_ext_laser(uint8_t dac_code)
