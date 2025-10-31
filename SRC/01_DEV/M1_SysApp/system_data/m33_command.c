@@ -125,7 +125,7 @@ void time_sync_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 { 	int32_t time ;
 	uint32_t ret = str2int(argv[1], &time);
 	if (ret) return;
-	m33_data_set_u(TABLE_ID_1,time_sync,(uint32_t)time);
+	m33_data_set_epoch_lock((uint32_t)time);
 	return;
 }
 

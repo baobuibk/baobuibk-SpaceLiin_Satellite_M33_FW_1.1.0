@@ -66,18 +66,21 @@ void EXP_RootTask(void *pvParameters)
     {
 
     }
-PRINTF("===== start controlling =====\r\n");
+
+    PRINTF("===== start controlling =====\r\n");
     task_system_control();
 
     vTaskDelete(NULL);
-    while(1){
-
+    while(1)
+    {
+        ;
     }
 }
 
 void EXP_RootGrowUp(void)
 {
-    TaskHandle_t task_handle = xTaskCreateStatic(
+    TaskHandle_t task_handle = xTaskCreateStatic
+    (
         EXP_RootTask,
         "EXP_RootTask",
         ROOT_STACK_SIZE,
@@ -109,13 +112,12 @@ osSemaphore rptx_ram_mutex = NULL;    //mutex to take over the RAM to copy
 static void EXP_App_Create_Communication_Queues(void)
 {
     // Create communication queues here
-
- 
     rptx_mutex = xSemaphoreCreateMutex();
     rptx_ram_mutex = xSemaphoreCreateMutex();
-  remote_message_queue = xQueueCreate(30, sizeof(remote_message_t));
+    remote_message_queue = xQueueCreate(30, sizeof(remote_message_t));
 
 }
+
 Std_ReturnType EXP_AppInit(void)
 {
 
@@ -125,10 +127,11 @@ Std_ReturnType EXP_AppInit(void)
     BSP_Init();   
 
     PRINTF("growing task\r\n");
-    CREATE_TASK(RPMSG_Tx_Task, 		"RPMSG_Tx_Task", 		MIN_STACK_SIZE * 3, 	NULL, 	2, NULL);
-    CREATE_TASK(RPMSG_Task, 		"RPMSGTask", 		MIN_STACK_SIZE * 3, 	NULL, 	1, NULL);
-    CREATE_TASK(Task_Experiment, 		"Task_Experiment", 		MIN_STACK_SIZE * 5, 	NULL, 	2, NULL);
-    // CREATE_TASK(task_temperature_control_profile_type0, 		"task_temperature_control_profile_type0", 		MIN_STACK_SIZE * 5, 	NULL, 	2, NULL);
+    CREATE_TASK(RPMSG_Tx_Task,      "RPMSG_Tx_Task",    MIN_STACK_SIZE * 3, NULL, 2, NULL);
+    CREATE_TASK(RPMSG_Task, 	    "RPMSGTask", 		MIN_STACK_SIZE * 3, NULL, 1, NULL);
+    CREATE_TASK(Task_Experiment,    "Task_Experiment", 	MIN_STACK_SIZE * 5, NULL, 2, NULL);
+
+    CREATE_TASK(task_temperature_control_profile_type0, "task_temperature_control_profile_type0", MIN_STACK_SIZE * 5, NULL, 2, NULL);
 
     // CREATE_TASK(Task_Update_Onboard_ADC, 		"Task_Update_Onboard_ADC", 		MIN_STACK_SIZE *4, 	NULL, 	2, NULL);
 
@@ -166,7 +169,6 @@ static void RPMSG_Task(void *pvParameters)
         return;
     }
 
-    
     PRINTF("[rpmsg] Ready for incoming messages...\r\n");
 
     while (1)
@@ -311,7 +313,6 @@ static void RPMSG_Tx_Task(void *pvParameters)
                     break;
 
                 case SYS_LOG:
-                    
                     snprintf(msg_buf, 100, "daily_SYSL_%d.DAT\r\n",(unsigned int)epoch);
                     PRINTF("[ RPMSG_Tx_Task]file request with size = %d\r\n",message.data);
                     RemoteCall_SendFileRequest(message.data,msg_buf);
@@ -320,14 +321,21 @@ static void RPMSG_Tx_Task(void *pvParameters)
                     break;
             }
         }
- //xend the table 6 data
+
+        //xend the table 6 data
         uint16_t param = 0;
         m33_data_get_u_lock(TABLE_ID_6,param_index, &param);
-        snprintf(msg_buf, 100, "update_param 0x%03X=%u\r\n",((param_index + 0x6000) & 0x0FFF),(uint16_t)param);
-        rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
+
+        snprintf(msg_buf, 100, "update_param 0x%03X=%u\r\n", ((param_index + 0x600) & 0x0FFF), (uint16_t)param);
+        rpmsg_send(RPMSG_MSG_UPDATE_PARAM, msg_buf);
+
         PRINTF("\r\n[RPMSG_Tx_Task] sent %s\r\n",msg_buf);
+        
         param_index++;
-        if (TABLE6_TOTAL_COUNT == param_index) param_index = 0;
+        if (TABLE6_TOTAL_COUNT == param_index)
+        {
+            param_index = 0;
+        }
     }
 }
 

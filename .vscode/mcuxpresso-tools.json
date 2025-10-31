@@ -1,13 +1,13 @@
 {
   "version": "25.3",
-  "toolchainPath": "C:/Users/Admin/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi",
+  "toolchainPath": "C:/Users/duong/.mcuxpressotools/arm-gnu-toolchain-14.2.rel1-mingw-w64-x86_64-arm-none-eabi",
   "linkedProjects": [],
   "trustZoneType": "none",
   "multicoreType": "none",
   "projectType": "sdk-freestanding",
   "sdk": {
     "version": "2.14.0",
-    "path": "d:\\PROJECT\\XpressoSDK\\SDK_2_14_0_MIMX9352xxxxK",
+    "path": "d:\\anh_khoa\\document\\project\\nxp_mcux\\workspace\\space_liin_tech\\satelite_exp_imx93\\00_sdk\\SDK_2_14_0_MIMX9352xxxxK",
     "boardId": "mcimx93evk",
     "deviceId": "MIMX9352xxxxM",
     "coreId": "cm33_MIMX9352xxxxM"

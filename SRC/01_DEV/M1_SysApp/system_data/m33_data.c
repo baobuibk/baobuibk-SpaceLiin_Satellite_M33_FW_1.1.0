@@ -12,6 +12,8 @@
 static osSemaphore m33_data_sem = NULL;
 #define M33_DATA_SEMAPHOR_TIMEOUT 2000
 
+uint32_t epoch = 0;
+
 value16_t table1_data[TABLE1_TOTAL_COUNT];
 value16_t table2_data[TABLE2_TOTAL_COUNT];
 value16_t table3_data[TABLE3_TOTAL_COUNT];
@@ -257,14 +259,16 @@ uint32_t m33_data_get_remaining_time_lock(uint32_t * value)
 
 uint32_t m33_data_set_epoch(uint32_t value)
 {
-    tables[TABLE_ID_1].data[time_sync].u = value;
+    // tables[TABLE_ID_1].data[time_sync].u = value;
+    epoch = value;
 
     return 0;
 }
 
 uint32_t m33_data_get_epoch(uint32_t * value)
 {
-    *value = tables[TABLE_ID_1].data[time_sync].u;
+    // *value = tables[TABLE_ID_1].data[time_sync].u;
+    *value = epoch;
 
     return 0;
 }
@@ -278,7 +282,8 @@ uint32_t m33_data_set_epoch_lock(uint32_t value)
         return (uint32_t)sem_ret;
     }
 
-    tables[TABLE_ID_1].data[time_sync].u = value;
+    // tables[TABLE_ID_1].data[time_sync].u = value;
+    epoch = value;
 
     osSemaphoreGiven(&m33_data_sem);
 
@@ -294,7 +299,8 @@ uint32_t m33_data_get_epoch_lock(uint32_t * value)
         return (uint32_t)sem_ret;
     }
 
-    *value = tables[TABLE_ID_1].data[time_sync].u;
+    // *value = tables[TABLE_ID_1].data[time_sync].u;
+    *value = epoch;
 
     osSemaphoreGiven(&m33_data_sem);
 
