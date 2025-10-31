@@ -13,13 +13,14 @@
 // #include "osDelay.h"
 // #include "math.h"
 #include "fsl_debug_console.h"
+#include "bsp_expander.h"
 
 
 
 #define 	TEMPERTURE_CONTROL_INTERVAL	 2000
 // #define 	TEMPERATURE_CONTROL_WAIT	 10		//when reaching setpoint, wait some cycle to be sure
 // #define 	TEMPERATURE_CONTROL_DEADBAND 1		//deadband is 0.1
-#define 	TEMPERATURE_DELTA	5				//delta between primary and secondary NTC to detect error
+#define 	TEMPERATURE_DELTA	50				//delta between primary and secondary NTC to detect error
 
 // #define KP	(0.4)
 // #define KI	(0.1)
@@ -121,6 +122,7 @@ void task_temperature_control_profile_type0(void *param)
 
 		if (!enaProfile.master_ena)
 		{
+			bsp_heater_list_turnoff(255);
 			continue;
 		}
 
@@ -128,12 +130,22 @@ void task_temperature_control_profile_type0(void *param)
 
 		for ( i = 0; i < 6; i++)
 		{
+
+			data_prof_type0_get(&profile, i);
+
 			if (!enaProfile.prof_ena[i])
 			{
+				bsp_heater_list_turnoff(profile.heaters_list);
+				// PRINTF("\r\n[temperature_control]  profile %d heater OFF, pri = %d sec=%d\r\n", i,pri_temperature,sec_temperature);
+				if (TEMP_PROF0_STOP != prof0_ctrl_state[i])
+				{
+					prof0_ctrl_state[i] = TEMP_PROF0_STOP;
+					// PRINTF("\r\n[temperature_control]  profile %d heater OFF, pri = %d sec=%d\r\n", i,pri_temperature,sec_temperature);
+				}
+
 				continue;
 			}
 
-			data_prof_type0_get(&profile, i);
             PRINTF("\r\n[temperature_control] start profile %d\r\n", i);
 
 			if (profile.pri_NTC < NUM_NTC)
@@ -168,23 +180,33 @@ void task_temperature_control_profile_type0(void *param)
 			}
 			else
 			{
-				//calculate the PID
-				// float output = pid_update(&PID_Controller[i], profile.setpoint, pri_temperature, 1);
-
-				// Chuyển sang int cho set_heater``
-				// uint32_t heater_duty = (uint32_t)round(output);
 				uint32_t heater_duty = 50;
+				if (pri_temperature < profile.setpoint)
+				{
+					// bsp_heater_list_turnon(profile.heaters_list, heater_duty);
+					bsp_expander_ctrl(POW_ONOFF_HEATER, 1);
+					bsp_heater_list_turnon(profile.heaters_list, heater_duty);
 
-				bsp_heater_list_turnon(profile.heaters_list, heater_duty);
+					PRINTF("\r\n[temperature_control]  profile %d heater ON, pri = %d sec=%d\r\n", i,pri_temperature,sec_temperature);
 
-            	if (TEMP_PROF0_HEAT != prof0_ctrl_state[i])
-            	{
-            		prof0_ctrl_state[i] = TEMP_PROF0_HEAT;
-         			PRINTF("\r\n[temperature_control]  profile %d heater ON, pri = %d sec=%d\r\n", i,pri_temperature,sec_temperature);
-            	}
+            		if (TEMP_PROF0_HEAT != prof0_ctrl_state[i])
+            		{
+            			prof0_ctrl_state[i] = TEMP_PROF0_HEAT;
+         				PRINTF("\r\n[temperature_control]  profile %d heater ON, pri = %d sec=%d\r\n", i,pri_temperature,sec_temperature);
+            		}
+				}
+				else
+				{
+					bsp_expander_ctrl(POW_ONOFF_HEATER, 0);
+					bsp_heater_list_turnoff(profile.heaters_list);
+					PRINTF("\r\n[temperature_control]  profile %d heater OFF, pri = %d sec=%d\r\n", i,pri_temperature,sec_temperature);
+            		if (TEMP_PROF0_STOP != prof0_ctrl_state[i])
+            		{
+            			prof0_ctrl_state[i] = TEMP_PROF0_STOP;
+         				PRINTF("\r\n[temperature_control]  profile %d heater OFF, pri = %d sec=%d\r\n", i,pri_temperature,sec_temperature);
+            		}
+				}
 			}
 		}
 	}
 }
-
-

@@ -60,7 +60,6 @@ typedef struct prof_type0_t
 {
 	uint16_t	pri_NTC;
 	uint16_t	sec_NTC;
-	uint16_t	duty;
 	uint16_t	heaters_list;
     uint16_t	tecs_list;
 	int16_t		setpoint;

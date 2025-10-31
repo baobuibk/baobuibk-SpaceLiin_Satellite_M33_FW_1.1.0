@@ -125,7 +125,7 @@ void time_sync_cmd(uint32_t stdio, uint32_t argc, char *argv[])
 { 	int32_t time ;
 	uint32_t ret = str2int(argv[1], &time);
 	if (ret) return;
-	m33_data_set_epoch_lock((uint32_t)time);
+	m33_data_set_epoch((uint32_t)time);
 	return;
 }
 
@@ -1147,22 +1147,27 @@ void custom_ctl_cmd(uint32_t s,uint32_t a,char *v[])
 
     if (status == 0)
     {
-        bsp_expander_ctrl(POW_ONOFF_LASER, 0);
-        bsp_laser_int_set_dac(0);
-        bsp_laser_int_sw_off(1);
+        // bsp_expander_ctrl(POW_ONOFF_LASER, 0);
+        // bsp_laser_int_set_dac(0);
+        // bsp_laser_int_sw_off(1);
+        bsp_expander_ctrl(POW_ONOFF_HEATER, 0);
+        bsp_heater_turnon(1, 0);
     }
     else
     {
-        bsp_core_init_laser_dac_gpio();
+        // bsp_core_init_laser_dac_gpio();
 
-        vTaskDelay(10);
+        // vTaskDelay(10);
 
-        bsp_expander_ctrl(POW_ONOFF_LASER, 1);
+        // bsp_expander_ctrl(POW_ONOFF_LASER, 1);
 
-        vTaskDelay(10);
+        // vTaskDelay(10);
         
-        bsp_laser_int_set_dac(127);
-        bsp_laser_int_sw_on(1);
+        // bsp_laser_int_set_dac(127);
+        // bsp_laser_int_sw_on(1);
+        // bsp_heater_enable();
+        bsp_expander_ctrl(POW_ONOFF_HEATER, 1);
+        bsp_heater_turnon(1, 50);
     }
 }
 

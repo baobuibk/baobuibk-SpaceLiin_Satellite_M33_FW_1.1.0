@@ -102,19 +102,19 @@ const int16_t table3_data_init[] = {
 
     200,  // temp_p_1_setpoint
     0x00,  // temp_p_1_ntcp
-    1,  // temp_p_1_ntcs
+    2,  // temp_p_1_ntcs
     0x01,  // temp_p_1_htr
     0x00,  // temp_p_1_tec
 
     200,  // temp_p_2_setpoint
     4,  // temp_p_2_ntcp
-    5,  // temp_p_2_ntcs
-    0x02,  // temp_p_2_htr
+    4,  // temp_p_2_ntcs
+    0x06,  // temp_p_2_htr
     0x00,  // temp_p_2_tec
 
     250,  // temp_p_3_setpoint
-    6,  // temp_p_3_ntcp
-    7,  // temp_p_3_ntcs
+    5,  // temp_p_3_ntcp
+    5,  // temp_p_3_ntcs
     (1 << 3),  // temp_p_3_htr
     0x00,  // temp_p_3_tec
 
@@ -516,7 +516,6 @@ uint32_t data_prof_type0_get(prof_type0_t *profile, uint16_t index)
         case 0:
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_1_ntcp, &profile->pri_NTC);
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_1_ntcs, &profile->sec_NTC);
-            profile->duty = 0; // not used
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_1_htr, &profile->heaters_list);
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_1_tec, &profile->tecs_list);
             sem_ret += m33_data_get_i(TABLE_ID_3, temp_p_1_setpoint, &profile->setpoint);
@@ -524,7 +523,6 @@ uint32_t data_prof_type0_get(prof_type0_t *profile, uint16_t index)
         case 1:
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_2_ntcp, &profile->pri_NTC);
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_2_ntcs, &profile->sec_NTC);
-            profile->duty = 0; // not used
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_2_htr, &profile->heaters_list);
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_2_tec, &profile->tecs_list);
             sem_ret += m33_data_get_i(TABLE_ID_3, temp_p_2_setpoint, &profile->setpoint);
@@ -532,7 +530,6 @@ uint32_t data_prof_type0_get(prof_type0_t *profile, uint16_t index)
         case 2:
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_3_ntcp, &profile->pri_NTC);
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_3_ntcs, &profile->sec_NTC);
-            profile->duty = 0; // not used
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_3_htr, &profile->heaters_list);
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_3_tec, &profile->tecs_list);
             sem_ret += m33_data_get_i(TABLE_ID_3, temp_p_3_setpoint, &profile->setpoint);
@@ -540,7 +537,6 @@ uint32_t data_prof_type0_get(prof_type0_t *profile, uint16_t index)
         case 3:
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_4_ntcp, &profile->pri_NTC);
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_4_ntcs, &profile->sec_NTC);
-            profile->duty = 0; // not used
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_4_htr, &profile->heaters_list);
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_4_tec, &profile->tecs_list);
             sem_ret += m33_data_get_i(TABLE_ID_3, temp_p_4_setpoint, &profile->setpoint);
@@ -548,7 +544,6 @@ uint32_t data_prof_type0_get(prof_type0_t *profile, uint16_t index)
         case 4:
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_5_ntcp, &profile->pri_NTC);
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_5_ntcs, &profile->sec_NTC);
-            profile->duty = 0; // not used
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_5_htr, &profile->heaters_list);
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_5_tec, &profile->tecs_list);
             sem_ret += m33_data_get_i(TABLE_ID_3, temp_p_5_setpoint, &profile->setpoint);
@@ -556,7 +551,6 @@ uint32_t data_prof_type0_get(prof_type0_t *profile, uint16_t index)
         case 5:
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_6_ntcp, &profile->pri_NTC);
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_6_ntcs, &profile->sec_NTC);
-            profile->duty = 0; // not used
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_6_htr, &profile->heaters_list);
             sem_ret += m33_data_get_u(TABLE_ID_3, temp_p_6_tec, &profile->tecs_list);
             sem_ret += m33_data_get_i(TABLE_ID_3, temp_p_6_setpoint, &profile->setpoint);

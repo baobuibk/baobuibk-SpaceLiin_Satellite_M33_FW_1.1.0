@@ -20,6 +20,8 @@ pca9685_t pwmDev = {
 		.addr7 = 0x40
 };
 
+static uint8_t map_int_heater_position(int x);
+
 void bsp_heater_enable()
 {
 	bsp_expander_ctrl(PWM_I2C_nOE, LOW);
@@ -41,22 +43,38 @@ void bsp_heater_init()
 }
 void bsp_heater_turnoff(uint32_t channel)
 {
-	pca9685_set_duty_permille(&pwmDev, channel, 0);
+	uint8_t real_channel = map_int_heater_position(channel);
+
+	if (real_channel == 50)
+	{
+		return;
+	}	
+
+	pca9685_set_duty_permille(&pwmDev, real_channel, 0);
 }
 void bsp_heater_turnon(uint32_t channel, uint32_t duty)
 {
-	pca9685_set_duty_percent(&pwmDev, channel, duty);
+	uint8_t real_channel = map_int_heater_position(channel);
+
+	if (real_channel == 50)
+	{
+		return;
+	}
+
+	pca9685_set_duty_percent(&pwmDev, real_channel, duty);
 }
 
 
 void bsp_heater_list_turnoff(uint32_t heaters)	//error, turn off all heaters in the list, (0x03 mean heater 0,1)
 {
 	uint32_t index;
+	uint8_t real_channel;
+
 	for (index = 0; index < 8; index++)
 	{
 		if (heaters & (1 << index))
 		{
-			bsp_heater_turnoff(index);
+			bsp_heater_turnoff(index + 1);
 		}
 	}
 
@@ -64,11 +82,29 @@ void bsp_heater_list_turnoff(uint32_t heaters)	//error, turn off all heaters in 
 void bsp_heater_list_turnon(uint32_t heaters, uint32_t duty)
 {
 	uint32_t index;
+	uint8_t real_channel;
+
 	for (index = 0; index < 8; index++)
 	{
 		if (heaters & (1 << index))
-		{
-			bsp_heater_turnon(index, duty);
+		{	
+			bsp_heater_turnon(index + 1, duty);
 		}
 	}
+}
+
+static uint8_t map_int_heater_position(int x)
+{
+    static const uint8_t map[] =
+	{
+        0,
+        2, 1, 0, 12, 8, 7, 6, 5
+    };
+
+    if (x < 1 || x > 8)
+	{
+		return 50;
+	}
+
+    return map[x];
 }

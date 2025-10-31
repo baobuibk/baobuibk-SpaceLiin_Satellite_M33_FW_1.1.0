@@ -271,19 +271,13 @@ static void EXP_InitPins(void)
                         IOMUXC_PAD_FSEL1(2U) |
                         IOMUXC_PAD_PD_MASK);
 
-    /* USB PWR En GPIO */
-    // IOMUXC_SetPinMux(IOMUXC_PAD_SD3_DATA1__GPIO3_IO23, 0U);
-    // IOMUXC_SetPinMux(IOMUXC_PAD_SD3_DATA2__GPIO3_IO24, 0U);
+    /* DSUB I2C EN GPIO */
+    IOMUXC_SetPinMux(IOMUXC_PAD_ENET2_MDIO__GPIO4_IO15, 0U);
 
-    // IOMUXC_SetPinConfig(IOMUXC_PAD_SD3_DATA1__GPIO3_IO23, 
-    //                     IOMUXC_PAD_DSE(15U) |
-    //                     IOMUXC_PAD_FSEL1(2U) |
-    //                     IOMUXC_PAD_PD_MASK);
-
-    // IOMUXC_SetPinConfig(IOMUXC_PAD_SD3_DATA2__GPIO3_IO24, 
-    //                     IOMUXC_PAD_DSE(15U) |
-    //                     IOMUXC_PAD_FSEL1(2U) |
-    //                     IOMUXC_PAD_PD_MASK);
+    IOMUXC_SetPinConfig(IOMUXC_PAD_ENET2_MDIO__GPIO4_IO15, 
+                        IOMUXC_PAD_DSE(15U) |
+                        IOMUXC_PAD_FSEL1(2U) |
+                        IOMUXC_PAD_PU_MASK);
 }
 
 

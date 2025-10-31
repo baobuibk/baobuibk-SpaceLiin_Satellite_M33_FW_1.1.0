@@ -54,6 +54,8 @@ static void bsp_core_init_photo_adc_cs_gpio(void);
 
 static void bsp_core_init_photo_switch_gpio(void);
 
+static void bsp_core_init_dsub_i2c_en_gpio(void);
+
 // static void bsp_core_init_gpio(void);
 static void bsp_core_init_photo_adc_tim(void);
 
@@ -133,6 +135,7 @@ void bsp_core_init(void)
 
     bsp_heater_init();
     bsp_pump_init();
+    bsp_core_init_dsub_i2c_en_gpio();
     bsp_expander_ctrl(POW_ONOFF_LASER,0);
     for (uint32_t i = 0; i < 30000; i++)
     {
@@ -888,6 +891,35 @@ static void bsp_core_init_photo_switch_gpio(void)
 
     /* Init output LED GPIO. */
     RGPIO_PinInit(PHOTO_SW_GPIO_CS_PORT, PHOTO_SW_GPIO_CS_PIN, &photo_SW_CS_config);
+}
+
+static void bsp_core_init_dsub_i2c_en_gpio(void)
+{
+    /* Define the init structure for the output LED pin*/
+    rgpio_pin_config_t DSUB_en_gpio_config =
+    {
+        kRGPIO_DigitalOutput,
+        1,
+    };
+
+    /* Board pin, clock, debug console init */
+    /* clang-format off */
+
+    const clock_root_config_t rgpioClkCfg =
+    {
+        .clockOff = false,
+        .mux = 1, // 24Mhz Mcore root buswake clock
+        .div = 4
+    };
+
+    CLOCK_SetRootClock(PHOTO_SW_GPIO_CS_CLOCK_ROOT, &rgpioClkCfg);
+    CLOCK_EnableClock(kCLOCK_Gpio4);
+
+    /* Set PCNS register value to 0x0 to prepare the RGPIO initialization */
+    GPIO4->PCNS = 0x0;
+
+    /* Init output LED GPIO. */
+    RGPIO_PinInit(GPIO4, 15U, &DSUB_en_gpio_config);
 }
 
 static void bsp_core_init_photo_adc_tim(void)
