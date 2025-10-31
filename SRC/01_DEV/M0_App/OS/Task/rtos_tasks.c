@@ -313,7 +313,7 @@ static void RPMSG_Tx_Task(void *pvParameters)
                     break;
 
                 case SYS_LOG:
-                    snprintf(msg_buf, 100, "daily_SYSL_%d.DAT\r\n",(unsigned int)epoch);
+                    snprintf(msg_buf, 100, "daily_SYSL_%d.dat\r\n",(unsigned int)epoch);
                     PRINTF("[ RPMSG_Tx_Task]file request with size = %d\r\n",message.data);
                     RemoteCall_SendFileRequest(message.data,msg_buf);
                     break;
