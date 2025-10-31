@@ -128,7 +128,7 @@ Std_ReturnType EXP_AppInit(void)
     CREATE_TASK(RPMSG_Tx_Task, 		"RPMSG_Tx_Task", 		MIN_STACK_SIZE * 3, 	NULL, 	2, NULL);
     CREATE_TASK(RPMSG_Task, 		"RPMSGTask", 		MIN_STACK_SIZE * 3, 	NULL, 	1, NULL);
     CREATE_TASK(Task_Experiment, 		"Task_Experiment", 		MIN_STACK_SIZE * 5, 	NULL, 	2, NULL);
-    CREATE_TASK(task_temperature_control_profile_type0, 		"task_temperature_control_profile_type0", 		MIN_STACK_SIZE * 5, 	NULL, 	2, NULL);
+    // CREATE_TASK(task_temperature_control_profile_type0, 		"task_temperature_control_profile_type0", 		MIN_STACK_SIZE * 5, 	NULL, 	2, NULL);
 
     // CREATE_TASK(Task_Update_Onboard_ADC, 		"Task_Update_Onboard_ADC", 		MIN_STACK_SIZE *4, 	NULL, 	2, NULL);
 
@@ -297,6 +297,7 @@ static void RPMSG_Tx_Task(void *pvParameters)
                     break;
                 case TEST_LASER_DATA:
                     snprintf(msg_buf, 100, "oneshot_TLPD_%d.dat\r\n", (unsigned int)epoch);
+                    PRINTF("[ RPMSG_Tx_Task]file TEST_LASER_DATA %s\r\n",msg_buf);
                     RemoteCall_SendFileRequest(message.data,msg_buf);
 
                     break;

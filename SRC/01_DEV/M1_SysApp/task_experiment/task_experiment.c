@@ -60,10 +60,12 @@ void Task_Experiment(void *pvParameters)
     {
         vTaskDelay(2000);
         Update_Onboard_ADC();
-       //check if experiment is enabled
+
+        // check if experiment is enabled
         uint16_t exp_remain_time;
         uint16_t ext_interval;
         uint16_t is_start_exp = 0;
+
         m33_data_get_u_lock(TABLE_ID_5, exp_mon_start, &is_start_exp);
         m33_data_get_u_lock(TABLE_ID_5, exp_mon_delay, &exp_remain_time);
         if (is_start_exp == 1)  // experiment started                     
@@ -76,7 +78,8 @@ void Task_Experiment(void *pvParameters)
                 task_experiment_DLS();          
             }
         }
-//check if laser test is enabled
+
+        //check if laser test is enabled
         m33_data_get_u_lock(TABLE_ID_5, test_ls_current, &is_start_exp);
         if (1 == is_start_exp)
         {           
@@ -84,7 +87,7 @@ void Task_Experiment(void *pvParameters)
             m33_data_set_u_lock(TABLE_ID_5, test_ls_current, 0);
         }
 
-                //check if test pump is enabled
+        //check if test pump is enabled
         m33_data_get_u_lock(TABLE_ID_5, test_fluidic_seq, &is_start_exp);
         if (1 == is_start_exp)
         {
@@ -140,7 +143,7 @@ static void task_experiment_DLS()
     bsp_photo_int_all_sw_off();
 
     // TODO: Guard intensity = 0
-    DAC_code_from_percent = (uint8_t)((((float)s_exp_profile.laser_intensity * 256.0) / 100.0) - 1.0);
+    DAC_code_from_percent = (uint8_t)((((float)s_exp_profile.laser_intensity * 255.0) / 100.0));
     PRINTF("laser intensity = %d\r\n", DAC_code_from_percent);
 
     bsp_photo_setup_timmer(s_exp_profile.sampling_rate_khz);
@@ -213,13 +216,16 @@ static void task_experiment_DLS()
 
     for (current_channel = 0; current_channel < 3; current_channel++)
     {
-        bsp_laser_ext_sw_on(2*current_channel);
-        bsp_laser_ext_sw_on(2*current_channel + 1);
+        // bsp_laser_ext_sw_on_manual(2*current_channel);
+        // bsp_laser_ext_sw_on_manual(2*current_channel + 1);
+
         vTaskDelay(500);
+
         message.address = CAM_CAPTURE;
         message.data = current_channel;
         xQueueSend(remote_message_queue, &message, 1000);//send notification for log
         vTaskDelay(5000);
+
         bsp_laser_ext_all_sw_off();
     }
 
@@ -253,11 +259,15 @@ static void fluidic_test_flow()
     Valve_switch(VALVE_DIRECTION_DUMMY);
     LWL_DATA_LOG(LWL_EXP_SWITCH_VALVE,LWL_1(VALVE_DIRECTION_DUMMY));
 
+    vTaskDelay(100);
+
     I2C_HD_Pump_Set_Freq(100);
     LWL_DATA_LOG(LWL_EXP_PUMP_SET_FREQ,LWL_2(100));
    
     I2C_HD_Pump_set_Voltage(100); //<-- After this line, pump on.
     LWL_DATA_LOG(LWL_EXP_PUMP_SET_VOLT,LWL_2(100));
+
+    vTaskDelay(100);
 
     // 2. measure flow in every seccond
     for (sec_count = 0; sec_count < 5; sec_count++)
@@ -265,26 +275,18 @@ static void fluidic_test_flow()
 	    Flow_sensor_read(&flow_data);
         LWL_DATA_LOG(LWL_EXP_PUMP_FLOW_TEMP,LWL_4(flow_data.flow), LWL_4(flow_data.temp));
 
-        // TODO: Implement pass data to system data
-
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
-
-    I2C_HD_Pump_set_Voltage(0); //<-- After this line, pump off.
-    LWL_DATA_LOG(LWL_EXP_PUMP_OFF);
 
     // 3. capture USBcam image after 5s
     message.address = CAM_CAPTURE;
     message.data = 4;
-    // xQueueSendToFront(remote_message_queue, &message, 1000);//send notification for log
     xQueueSend(remote_message_queue, &message, 1000);//send notification for log
     PRINTF("\r\n[task_system_control] sent DLS notification with size:%d\r\n", message.data);
     vTaskDelay(2000);
 
-    // TODO: capture
     xSemaphoreTake(rptx_ram_mutex, portMAX_DELAY); // claim RAM
-    message.data = lwl_sys_log_transfer();
-    
+    message.data = lwl_data_transfer();
     message.address = TEST_PUMP_DATA;
     xQueueSend(remote_message_queue, &message, 1000);//send notification for log
     vTaskDelay(2000);
@@ -292,7 +294,8 @@ static void fluidic_test_flow()
     xSemaphoreGive(rptx_ram_mutex);
     
     // 4. pump off
-    
+    I2C_HD_Pump_set_Voltage(0); //<-- After this line, pump off.
+    LWL_DATA_LOG(LWL_EXP_PUMP_OFF);
 }
 
 static void main_exp_fluidic_flow()
@@ -302,7 +305,7 @@ static void main_exp_fluidic_flow()
     slf3s_readings_t flow_data;
     float volumn = 0.0;
     lwl_data_log_init();
-     PRINTF("[exp] main_exp_fluidic_flow started\r\n");
+    PRINTF("[exp] main_exp_fluidic_flow started\r\n");
 
     // 1. pump on
     // make sure valve dir is on dummy
@@ -356,4 +359,63 @@ static void main_exp_fluidic_flow()
 static void task_experiment_test_laser()
 {
     PRINTF("[exp] task_experiment_test_laser started\r\n");
+
+    lwl_data_log_init();
+
+    bsp_expander_ctrl(POW_ONOFF_LASER, 1);
+    LWL_DATA_LOG(LWL_LASER_POWER, LWL_1(1));
+
+    vTaskDelay(100);
+
+    bsp_laser_init();
+
+    uint16_t laser_intensity = 0;
+    m33_data_get_u_lock(TABLE_ID_5, dls_ls_intensity, &laser_intensity);
+
+    PRINTF("[task_experiment_test_laser] laser_intensity %d\r\n", laser_intensity);
+
+    uint8_t dac_code = (uint8_t)(((float)laser_intensity * 255.0) / 100.0);
+
+    PRINTF("[task_experiment_test_laser] dac_code %d\r\n", dac_code);
+
+    bsp_laser_int_set_dac(dac_code);
+    LWL_DATA_LOG(LWL_LASER_INTENSITY, LWL_1(laser_intensity));
+
+    vTaskDelay(10);
+
+    uint16_t current;
+    for (uint8_t i = 1; i < 25; i++)
+    {
+        bsp_laser_int_sw_on(i);
+        LWL_DATA_LOG(LWL_LASER_ON, LWL_1(i));
+
+        vTaskDelay(2000);
+
+        current = bsp_laser_int_current_adc_polling();
+        LWL_DATA_LOG(LWL_LASER_CURRENT, LWL_2(current));
+
+        PRINTF("[task_experiment_test_laser] channel %d current %dmA", i, current);
+
+        vTaskDelay(2000);
+
+        bsp_laser_int_sw_off(i);
+        LWL_DATA_LOG(LWL_LASER_OFF, LWL_1(i));
+    }
+    
+    bsp_expander_ctrl(POW_ONOFF_LASER, 0);
+    LWL_DATA_LOG(LWL_LASER_POWER, LWL_1(0));
+
+    bsp_laser_int_set_dac(0);
+    bsp_laser_int_sw_off(1);
+
+    remote_message_t message;
+    xSemaphoreTake(rptx_ram_mutex, portMAX_DELAY); // claim RAM
+    message.data = lwl_sys_log_transfer();
+    message.address = TEST_LASER_DATA;
+    xQueueSend(remote_message_queue, &message, 1000);//send notification for log
+
+    vTaskDelay(2000);
+    xSemaphoreGive(rptx_ram_mutex);
+
+    vTaskDelay(100);
 }

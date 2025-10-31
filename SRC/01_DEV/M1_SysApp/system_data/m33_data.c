@@ -145,7 +145,7 @@ const int16_t table5_data_init[] = {
     60,  // exp_mon_delay -> Thay đổi để test, nhớ đổi lại bằng 0
     60,  // exp_mon_interval -> Thay đổi để test, nhớ đổi lại bằng 28800
 
-    25,  // dls_ls_intensity
+    50,  // dls_ls_intensity -> Thay đổi để test, nhớ đổi lại bằng 25 
     15,  // cam_ls_intensity
 
     100,  // exp_samp_rate

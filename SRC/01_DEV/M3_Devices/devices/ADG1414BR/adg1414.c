@@ -102,16 +102,62 @@ int adg1414_chain_all_sw_off(adg1414_dev_t *dev)
     return adg1414_chain_write(dev);
 }
 
+// #define INTERNAL_MASK_CHANNEL_NUM 16777215
+// #define EXTERNAL_MASK_CHANNEL_NUM 255
 
-
-int adg1414_chain_sw_on_multi(adg1414_dev_t *dev, const uint8_t *channel_mask)
+int adg1414_manual_sw_on(adg1414_dev_t *dev, uint8_t channel_num)
 {
-    if (!dev || !channel_mask) return (int)ERROR_INVALID_PARAM;
+    if (!dev) return (int)ERROR_INVALID_PARAM;
 
-    // Sao chép bit mask từ channel_mask vào switch_state
-    // Mỗi byte trong mask tương ứng 1 chip: bit 0 = kênh 1, bit 1 = kênh 2, ..., bit 7 = kênh 8
-    // Kênh toàn cục: chip 0 (kênh 1-8), chip 1 (kênh 9-16), v.v.
-    memcpy(dev->switch_state, channel_mask, dev->num_of_sw);
+    /* INTERNAL mode (1 byte => 8 kênh) */
+    if (dev->num_of_sw == INTERNAL_CHAIN_SWITCH_NUM) {
+        if (channel_num > INTERNAL_CHAIN_CHANNEL_NUM) return (int)ERROR_INVALID_PARAM;
+        // for (int i = 0; i < dev->num_of_sw; i++) dev->switch_state[i] = 0x00;
+        if (channel_num) {
+            uint8_t chip_idx = (uint8_t)((channel_num - 1) / 8);
+            uint8_t bit_idx  = (uint8_t)((channel_num - 1) % 8);
+            dev->switch_state[chip_idx] |= (uint8_t)(1u << bit_idx);
+        }
+    }
+    /* EXTERNAL mode (1 byte => 8 kênh) */
+    else if (dev->num_of_sw == EXTERNAL_CHAIN_SWITCH_NUM) {
+        if (channel_num > EXTERNAL_CHAIN_CHANNEL_NUM) return (int)ERROR_INVALID_PARAM;
+        if (channel_num) dev->switch_state[0] |= (uint8_t)(1u << (channel_num - 1));
+        else             dev->switch_state[0] = 0x00;
+    }
+    else {
+        /* Mặc định bật đúng 1 kênh (nếu channel_num > 0) */
+        // for (int i = 0; i < dev->num_of_sw; i++) dev->switch_state[i] = 0x00;
+        if (channel_num) {
+            uint8_t chip_idx = (uint8_t)((channel_num - 1) / 8);
+            uint8_t bit_idx  = (uint8_t)((channel_num - 1) % 8);
+            if (chip_idx >= dev->num_of_sw) return (int)ERROR_INVALID_PARAM;
+            dev->switch_state[chip_idx] |= (uint8_t)(1u << bit_idx);
+        }
+    }
+    return adg1414_chain_write(dev);
+}
 
-    return adg1414_chain_write(dev);  // Ghi toàn bộ chain ra hardware
+int adg1414_manual_sw_off(adg1414_dev_t *dev, uint8_t channel_num)
+{
+    if (!dev || channel_num == 0) return (int)ERROR_INVALID_PARAM;
+
+    if (dev->num_of_sw == INTERNAL_CHAIN_SWITCH_NUM) {
+        if (channel_num > INTERNAL_CHAIN_CHANNEL_NUM) return (int)ERROR_INVALID_PARAM;
+        uint8_t chip_idx = (uint8_t)((channel_num - 1) / 6);
+        uint8_t bit_idx  = (uint8_t)((channel_num - 1) % 6);
+        dev->switch_state[chip_idx] = (uint8_t)(dev->switch_state[chip_idx] & (uint8_t)~(1u << bit_idx));
+    }
+    else if (dev->num_of_sw == EXTERNAL_CHAIN_SWITCH_NUM) {
+        if (channel_num > EXTERNAL_CHAIN_CHANNEL_NUM) return (int)ERROR_INVALID_PARAM;
+        dev->switch_state[0] = (uint8_t)(dev->switch_state[0] & (uint8_t)~(1u << (channel_num - 1)));
+    }
+    else {
+        uint8_t chip_idx = (uint8_t)((channel_num - 1) / 8);
+        uint8_t bit_idx  = (uint8_t)((channel_num - 1) % 8);
+        if (chip_idx >= dev->num_of_sw) return (int)ERROR_INVALID_PARAM;
+        dev->switch_state[chip_idx] = (uint8_t)(dev->switch_state[chip_idx] & (uint8_t)~(1u << bit_idx));
+    }
+
+    return adg1414_chain_write(dev);
 }

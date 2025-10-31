@@ -1049,7 +1049,7 @@ void temp_p_6_tec_cmd(uint32_t s,uint32_t a,char *v[])
 /* ==================== TABLE 5: implementations ==================== */
 void test_ls_current_cmd(uint32_t s,uint32_t a,char *v[])
 {
-    (void)s;(void)a;(void)v;PRINTF("test_ls_current\n");
+    (void)s;(void)a;(void)v;PRINTF("test_ls_current----------------------------------------------------------->\n");
     int32_t status ;
 	uint32_t ret = str2int(v[1], &status);
 	if (ret) return;

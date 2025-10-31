@@ -92,6 +92,20 @@ void bsp_laser_int_sw_off(uint8_t channel)
 	adg1414_chain_sw_off(&laser_int_dev, real_channel);
 }
 
+void bsp_laser_int_sw_on_manual(uint8_t channel)
+{
+	uint8_t real_channel = map_int_LD_position(channel);
+	spi_io_set_mode(laser_int_dev.spi, 1);
+	adg1414_manual_sw_on(&laser_int_dev, real_channel);
+}
+
+void bsp_laser_int_sw_off_manual(uint8_t channel)
+{
+	uint8_t real_channel = map_int_LD_position(channel);
+	spi_io_set_mode(laser_int_dev.spi, 1);
+	adg1414_manual_sw_off(&laser_int_dev, real_channel);
+}
+
 void bsp_laser_int_all_sw_off(void)
 {
 	spi_io_set_mode(laser_int_dev.spi, 1);
@@ -116,14 +130,25 @@ void bsp_laser_ext_sw_on(uint8_t channel)
 	adg1414_chain_sw_on(&laser_ext_dev, real_channel);
 }
 
-
-
-
 void bsp_laser_ext_sw_off(uint8_t channel)
 {
 	uint8_t real_channel = map_ext_LD_position(channel);
 	spi_io_set_mode(laser_ext_dev.spi, 1);
 	adg1414_chain_sw_off(&laser_ext_dev, real_channel);
+}
+
+void bsp_laser_ext_sw_on_manual(uint8_t channel)
+{
+	uint8_t real_channel = map_ext_LD_position(channel);
+	spi_io_set_mode(laser_ext_dev.spi, 1);
+	adg1414_manual_sw_on(&laser_ext_dev, real_channel);
+}
+
+void bsp_laser_ext_sw_off_manual(uint8_t channel)
+{
+	uint8_t real_channel = map_ext_LD_position(channel);
+	spi_io_set_mode(laser_ext_dev.spi, 1);
+	adg1414_manual_sw_off(&laser_ext_dev, real_channel);
 }
 
 void bsp_laser_ext_all_sw_off(void)
