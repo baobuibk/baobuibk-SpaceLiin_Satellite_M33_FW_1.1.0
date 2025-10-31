@@ -15,6 +15,7 @@
 #include "bsp_expander.h"
 #include "bsp_pump.h"
 #include "bsp_solenoid.h"
+#include "bsp_core.h"
 #include "lwl.h"
 
 /* Driver inlcudes */
@@ -356,6 +357,27 @@ static void main_exp_fluidic_flow()
     xSemaphoreGive(rptx_ram_mutex);
 }
 
+static void task_experiment_test_ext_laser(uint8_t dac_code)
+{
+    bsp_laser_int_set_dac(0);
+
+    bsp_laser_ext_set_dac(dac_code);
+    vTaskDelay(10);
+
+    for (uint8_t i = 1; i < 9; i++)
+    {
+        bsp_laser_ext_sw_on(i);
+
+        vTaskDelay(2000);
+
+        vTaskDelay(2000);
+
+        bsp_laser_ext_sw_off(i);
+    }
+
+    bsp_laser_ext_set_dac(0);
+}
+
 static void task_experiment_test_laser()
 {
     PRINTF("[exp] task_experiment_test_laser started\r\n");
@@ -394,13 +416,15 @@ static void task_experiment_test_laser()
         current = bsp_laser_int_current_adc_polling();
         LWL_DATA_LOG(LWL_LASER_CURRENT, LWL_2(current));
 
-        PRINTF("[task_experiment_test_laser] channel %d current %dmA", i, current);
+        PRINTF("[task_experiment_test_laser] int channel %d current %duA", i, current);
 
         vTaskDelay(2000);
 
         bsp_laser_int_sw_off(i);
         LWL_DATA_LOG(LWL_LASER_OFF, LWL_1(i));
     }
+
+    task_experiment_test_ext_laser(dac_code);
     
     bsp_expander_ctrl(POW_ONOFF_LASER, 0);
     LWL_DATA_LOG(LWL_LASER_POWER, LWL_1(0));
