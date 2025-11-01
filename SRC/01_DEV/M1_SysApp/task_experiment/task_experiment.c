@@ -37,6 +37,7 @@ static void task_experiment_DLS(void);
 static void fluidic_test_flow(void);
 static void main_exp_fluidic_flow();
 static void task_experiment_test_laser();
+// static void float_to_string(float value, char *buffer, uint8_t precision);
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Public Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 extern uint32_t photo_spi_set_count;
 extern uint32_t photo_spi_count;
@@ -66,7 +67,7 @@ void Task_Experiment(void *pvParameters)
         Update_Onboard_ADC();
         if (ERROR_OK == BMP390_sensor_read(&bmp390_data))
         {
-            int16_t sensor_data = (int16_t) (bmp390_data.Pressure);
+            int16_t sensor_data = (int16_t) (bmp390_data.Pressure / 10.0);
             m33_data_set_i_lock(TABLE_ID_6, sen1_data_0,sensor_data);
             sensor_data = (int16_t)(bmp390_data.Temp);
             m33_data_set_i_lock(TABLE_ID_6, sen1_data_1,sensor_data);
@@ -489,3 +490,58 @@ static void task_experiment_test_laser()
 
     vTaskDelay(100);
 }
+
+// static void float_to_string(float value, char *buffer, uint8_t precision)
+// {
+//     /* Sign */
+//     if (value < 0.0)
+//     {
+//         *buffer++ = '-';
+//         value = -value;
+//     }
+
+//     /* Split into integer and fractional parts */
+//     uint32_t integer_part  = (uint32_t)value;          /* NOTE: clips to 32-bit range */
+//     float   fractional_part = value - (float)integer_part;
+//     if (fractional_part < 0.0) fractional_part = 0.0;  /* guard tiny FP negatives */
+
+//     /* Integer -> string (in place, no sprintf) */
+//     if (integer_part == 0U)
+//     {
+//         *buffer++ = '0';
+//     }
+//     else
+//     {
+//         char rev[10];  /* max 10 digits for uint32_t */
+//         uint8_t n = 0;
+//         while (integer_part != 0U)
+//         {
+//             rev[n++] = (char)('0' + (integer_part % 10U));
+//             integer_part /= 10U;
+//         }
+//         while (n--)
+//         {
+//             *buffer++ = rev[n];
+//         }
+//     }
+
+//     /* Fractional part (truncate, no rounding) */
+//     if (precision > 0U)
+//     {
+//         *buffer++ = '.';
+//         for (uint8_t i = 0; i < precision; i++)
+//         {
+//             fractional_part *= 10.0;
+//             uint8_t digit = (uint8_t)fractional_part;
+
+//             /* Clamp against rare FP edge (e.g., 9.999999 -> 10) */
+//             if (digit > 9U) digit = 9U;
+
+//             *buffer++ = (char)('0' + digit);
+//             fractional_part -= (float)digit;
+//             if (fractional_part < 0.0) fractional_part = 0.0; /* guard drift */
+//         }
+//     }
+
+//     *buffer = '\0';
+// }

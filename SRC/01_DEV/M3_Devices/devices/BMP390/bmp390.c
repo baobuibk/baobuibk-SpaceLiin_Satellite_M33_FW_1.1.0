@@ -163,11 +163,6 @@ uint8_t BMP390_Read(i2c_io_t* p_i2c, uint8_t reg, uint8_t *p_RX_buffer, uint8_t 
     return (n == (uint32_t)byte_count) ? 1u : 0u;
 }
 
-static inline uint32_t bmp390_unpack20(uint8_t msb, uint8_t mid, uint8_t lsb)
-{
-    return ((uint32_t)msb << 12) | ((uint32_t)mid << 4) | ((uint32_t)lsb >> 4);
-}
-
 /* :::::::::: BMP390 Command :::::::: */
 uint8_t BMP390_init(i2c_io_t* p_i2c)
 {

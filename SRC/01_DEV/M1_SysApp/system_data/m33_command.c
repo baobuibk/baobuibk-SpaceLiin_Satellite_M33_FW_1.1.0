@@ -21,6 +21,9 @@
 #include "bsp_laser.h"
 #include "do.h"
 
+#include "rtos_tasks.h"
+#include "rtos.h"
+
 
 int str2int(char *str, int32_t *ret) {
 
@@ -1170,6 +1173,38 @@ void custom_ctl_cmd(uint32_t s,uint32_t a,char *v[])
         bsp_heater_turnon(1, 50);
     }
 }
+
+/*
+    format: table_val_get table index
+*/
+void table_val_get (uint32_t s,uint32_t a,char *v[])
+{
+    (void)s;PRINTF("table_val_get\n");
+
+    int32_t tableNum;
+    int32_t tableIndex;
+    uint16_t value;
+    char msg_buf[100] = {0};
+
+    uint32_t tableNumMap[] = {TABLE_ID_1, TABLE_ID_1, TABLE_ID_2,TABLE_ID_3,TABLE_ID_5, TABLE_ID_5, TABLE_ID_6};
+    if (a != 3) return;
+    uint32_t ret = str2int(v[1], &tableNum);
+    if (ret)    return;
+    if (tableNum > 6) return;
+
+    tableNum = tableNumMap[tableNum];
+    ret = str2int(v[1], &tableIndex);
+    if (ret)    return;
+    m33_data_get_u_lock(tableNum, tableIndex, &value);
+    snprintf(msg_buf, 100, "table_val_get table_id[%d] index [%d] = %d\r\n",(int)tableNum,(int)tableIndex,(int)value);
+    rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
+
+	if (ret)
+    {
+        return;
+    }
+}
+
 
 /* ==================== TABLE 6: implementations ==================== */
 void sys_status_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sys_status\n");}

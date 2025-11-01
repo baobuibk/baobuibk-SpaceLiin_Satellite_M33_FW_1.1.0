@@ -128,6 +128,7 @@ void exp_pre_time_cmd(uint32_t stdio, uint32_t argc, char *argv[]);
 void exp_samp_time_cmd(uint32_t stdio, uint32_t argc, char *argv[]);
 void exp_post_time_cmd(uint32_t stdio, uint32_t argc, char *argv[]);
 void custom_ctl_cmd(uint32_t stdio, uint32_t argc, char *argv[]);
+void table_val_get (uint32_t s,uint32_t a,char *v[]);
 
 /* ==================== Prototypes: TABLE 6 ==================== */
 void sys_status_cmd(uint32_t stdio, uint32_t argc, char *argv[]);
