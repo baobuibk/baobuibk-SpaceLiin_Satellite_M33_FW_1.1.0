@@ -38,8 +38,8 @@ extern do_t     photo_adc_cv;
 
 extern do_t     photo_sw_cs;
 
-extern do_t     usb_en0_gpio;
-extern do_t     usb_en1_gpio;
+// extern do_t     usb_en0_gpio;
+// extern do_t     usb_en1_gpio;
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prototype ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 void bsp_core_init(void);
