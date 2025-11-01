@@ -25,7 +25,6 @@ void BSP_Init(void)
     /* Init board hardware. */
     EXP_InitPins();
 
-
     /* Init core peripheral. */
     bsp_core_init();
 }

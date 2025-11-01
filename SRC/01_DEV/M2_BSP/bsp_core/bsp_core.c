@@ -290,14 +290,14 @@ static void bsp_core_init_tec_cs_gpio(void)
     CLOCK_SetRootClock(kCLOCK_Root_BusWakeup, &rgpioClkCfg);
     CLOCK_EnableClock(kCLOCK_Gpio3);
 
-    /* Set PCNS register value to 0x0 to prepare the RGPIO initialization */
-    GPIO3->PCNS = 0x0;
+    // Option A: keep these pins Secure-only, leave others unchanged
+    // GPIO3->PCNS &= ~((1u << 28) | (1u << 29) | (1u << 30) | (1u << 31));
 
     /* Init output LED GPIO. */
-    RGPIO_PinInit(GPIO3, 29, &TEC_CS_config);
-    RGPIO_PinInit(GPIO3, 31, &TEC_CS_config);
-    RGPIO_PinInit(GPIO3, 28, &TEC_CS_config);
-    RGPIO_PinInit(GPIO3, 30, &TEC_CS_config);
+    RGPIO_PinInit(GPIO3, 29U, &TEC_CS_config);
+    RGPIO_PinInit(GPIO3, 31U, &TEC_CS_config);
+    RGPIO_PinInit(GPIO3, 28U, &TEC_CS_config);
+    RGPIO_PinInit(GPIO3, 30U, &TEC_CS_config);
 }
 
 // do_t usb_en0_gpio =
@@ -424,7 +424,7 @@ static void bsp_core_init_sensor_en_gpio(void)
     CLOCK_EnableClock(I2C_SENSOR_GPIO_EN1_CLOCK_GATE);
 
     /* Set PCNS register value to 0x0 to prepare the RGPIO initialization */
-    I2C_SENSOR_GPIO_EN1_PORT->PCNS = 0x0;
+    // I2C_SENSOR_GPIO_EN1_PORT->PCNS &= ~((1u << I2C_SENSOR_GPIO_EN1_PIN));
 
     /* Init output LED GPIO. */
     RGPIO_PinInit(I2C_SENSOR_GPIO_EN1_PORT, I2C_SENSOR_GPIO_EN1_PIN, &sensor_cs_config);
