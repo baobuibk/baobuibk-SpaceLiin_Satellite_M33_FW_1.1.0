@@ -654,8 +654,7 @@ void sln_0_ctl_cmd(uint32_t s, uint32_t a, char *v[])
         return;
     }
 
-    uint32_t en = (status == 0) ? 1 : 0;
-    bsp_expander_ctrl(SOLENOID_CTR_1, en);
+    m33_data_set_u_lock(TABLE_ID_2,sln_0_ctl,(uint32_t)status);
 }
 
 void sln_1_ctl_cmd(uint32_t s, uint32_t a, char *v[])
@@ -670,8 +669,7 @@ void sln_1_ctl_cmd(uint32_t s, uint32_t a, char *v[])
         return;
     }
 
-    uint32_t en = (status == 0) ? 1 : 0;
-    bsp_expander_ctrl(SOLENOID_CTR_2, en);
+    m33_data_set_u_lock(TABLE_ID_2,sln_1_ctl,(uint32_t)status);
 }
 
 void sln_2_ctl_cmd(uint32_t s, uint32_t a, char *v[])
@@ -686,8 +684,7 @@ void sln_2_ctl_cmd(uint32_t s, uint32_t a, char *v[])
         return;
     }
 
-    uint32_t en = (status == 0) ? 1 : 0;
-    bsp_expander_ctrl(SOLENOID_CTR_3, en);
+    m33_data_set_u_lock(TABLE_ID_2,sln_2_ctl,(uint32_t)status);
 }
 
 void sln_3_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sln_3_ctl\n");}

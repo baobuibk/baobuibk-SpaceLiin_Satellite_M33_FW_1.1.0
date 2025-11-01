@@ -300,6 +300,12 @@ static void fluidic_test_flow()
     
     lwl_data_log_init();
 
+    message.address = CAM_CAPTURE;
+    message.data = 4;
+    xQueueSend(remote_message_queue, &message, 1000);//send notification for log
+    PRINTF("\r\n[task_system_control] sent DLS notification with size:%d\r\n", message.data);
+    vTaskDelay(2000);
+
     // 1. pump on
     // make sure valve dir is on dummy
     bsp_expander_ctrl(POW_ONOFF_TEC, 1);
@@ -358,11 +364,37 @@ static void fluidic_test_flow()
 static void main_exp_fluidic_flow()
 {
     remote_message_t message;
-    uint16_t sec_count = 0;
+    uint32_t sec_count = 0;
     slf3s_readings_t flow_data;
     float volumn = 0.0;
+
+    enum {PUMP_START = 0, PUMP_PASS_THRESH};
+
+    uint16_t pump_state = PUMP_START;
+
+    uint16_t temp = 0;
+    float volumn_setpoint = 5000.0;
+    float flow_thresh;
+
+    uint16_t pump_timeout = 0xffff;
+
+    m33_data_get_u_lock(TABLE_ID_2, sln_0_ctl, &temp);
+    volumn_setpoint = (float)temp;
+
+    m33_data_get_u_lock(TABLE_ID_2, sln_1_ctl, &temp);
+    flow_thresh = (float)temp;
+
+    m33_data_get_u_lock(TABLE_ID_2, sln_2_ctl, &pump_timeout);
+
     lwl_data_log_init();
     PRINTF("[exp] main_exp_fluidic_flow started\r\n");
+
+    // 0. capture
+    message.address = CAM_CAPTURE;
+    message.data = 4;
+    xQueueSend(remote_message_queue, &message, 1000);//send notification for log
+    PRINTF("\r\n[task_system_control] sent DLS notification with size:%d\r\n", message.data);
+    vTaskDelay(2000);
 
     // 1. pump on
     // make sure valve dir is on dummy
@@ -374,10 +406,13 @@ static void main_exp_fluidic_flow()
     bsp_expander_ctrl(POW_ONOFF_HD4, 1);
     vTaskDelay(100);
     bsp_pump_init();
-    I2C_HD_Pump_Set_Freq(100);
+
+    m33_data_get_u_lock(TABLE_ID_2, pump_1_freq, &temp);
+    I2C_HD_Pump_Set_Freq(temp);
     LWL_DATA_LOG(LWL_EXP_PUMP_SET_FREQ,LWL_2(100));
 
-    I2C_HD_Pump_set_Voltage(100); //<-- After this line, pump on.
+    m33_data_get_u_lock(TABLE_ID_2, pump_1_volt, &temp);
+    I2C_HD_Pump_set_Voltage(temp); //<-- After this line, pump on.
     LWL_DATA_LOG(LWL_EXP_PUMP_SET_VOLT,LWL_2(100));
 
     // 2. after 1s, switch valve to MAIN_EXP, measure flow in every second
@@ -386,20 +421,47 @@ static void main_exp_fluidic_flow()
     LWL_DATA_LOG(LWL_EXP_SWITCH_VALVE,LWL_1(VALVE_DIRECTION_MAIN_EXP));
 
     // Flow_sensor_read(&flow_data);
-    Flow_sensor_read(&flow_data);
-    volumn += (flow_data.flow / 60.0);
+    // Flow_sensor_read(&flow_data);
+    // volumn += (flow_data.flow / 60.0);
     
     // measure flow in every seccond, timeout after 6 minutes
     // if the volumn still unable to reach 5000uL, then exit
     // TODO: add a printf or statement to warn about this.
-    for (sec_count = 0; (volumn < 5000.0) || (sec_count < 360); sec_count++)
+    for (sec_count = 0; (volumn < volumn_setpoint) && (sec_count < pump_timeout); sec_count++)
     {
         vTaskDelay(pdMS_TO_TICKS(1000));
+
         Flow_sensor_read(&flow_data);
         LWL_DATA_LOG(LWL_EXP_PUMP_FLOW_TEMP,LWL_4(flow_data.flow), LWL_4(flow_data.temp));
+
         volumn += (flow_data.flow / 60.0);
+
+        if (flow_data.flow > flow_thresh)
+        {
+            pump_state = PUMP_PASS_THRESH;
+            LWL_DATA_LOG(LWL_PUMP_PASS_THRESH);
+        }
+
+        if (PUMP_PASS_THRESH == pump_state)
+        {
+            if (flow_data.flow < flow_thresh)
+            {
+                LWL_DATA_LOG(LWL_PUMP_FLOW_TOO_LOW);
+                break;
+            } 
+        }
     }
 
+    if (sec_count >= pump_timeout)
+    {
+        LWL_DATA_LOG(LWL_PUMP_TIMEOUT);
+    }
+    
+    if (volumn >= volumn_setpoint)
+    {
+        LWL_DATA_LOG(LWL_PUMP_PASS_SETPOINT);
+    }
+    
     // TODO: if flow under 5mL after 360 secs warning or smth
 
     // 3. when volumn reach 5mL (5s at 1.5mL/min), pump off
@@ -414,14 +476,15 @@ static void main_exp_fluidic_flow()
 
     xSemaphoreTake(rptx_ram_mutex, portMAX_DELAY); // claim RAM
     message.data = lwl_data_transfer();
-    message.address = TEST_MAIN_PUMP_SEQ;
-    PRINTF("[task_experiment_test_laser] send TEST_MAIN_PUMP_SEQ data with size of%d\r\n", message.data);
+    message.address = TEST_MAIN_PUMP_SEQ_DATA;
+    PRINTF("[task_experiment_test_laser] send TEST_MAIN_PUMP_SEQ_DATA data with size of%d\r\n", message.data);
 
     xQueueSend(remote_message_queue, &message, 1000);//send notification for log
 
     vTaskDelay(2000);
     xSemaphoreGive(rptx_ram_mutex);
-        message.address = CAM_CAPTURE;
+
+    message.address = CAM_CAPTURE;
     message.data = 4;
     xQueueSend(remote_message_queue, &message, 1000);//send notification for log
     PRINTF("\r\n[task_system_control] sent DLS notification with size:%d\r\n", message.data);
@@ -432,21 +495,48 @@ static void main_exp_fluidic_flow()
 
 static void task_experiment_test_ext_laser(uint8_t dac_code)
 {
-    bsp_laser_int_set_dac(0);
-
     bsp_laser_ext_set_dac(dac_code);
     vTaskDelay(10);
 
-    for (uint8_t i = 1; i < 9; i++)
-    {
-        bsp_laser_ext_sw_on(i);
+    remote_message_t message;
 
-        vTaskDelay(2000);
+    bsp_laser_ext_sw_on_manual(1);
+    bsp_laser_ext_sw_on_manual(2);
 
-        vTaskDelay(2000);
+    vTaskDelay(500);
 
-        bsp_laser_ext_sw_off(i);
-    }
+    message.address = CAM_CAPTURE;
+    message.data = 10;
+    xQueueSend(remote_message_queue, &message, 1000);//send notification for log
+    vTaskDelay(5000);
+
+    bsp_laser_ext_all_sw_off();
+
+    bsp_laser_ext_sw_on_manual(3);
+    bsp_laser_ext_sw_on_manual(4);
+
+    vTaskDelay(500);
+
+    bsp_laser_ext_all_sw_off();
+
+    bsp_laser_ext_sw_on_manual(5);
+    bsp_laser_ext_sw_on_manual(6);
+
+    vTaskDelay(500);
+
+    message.address = CAM_CAPTURE;
+    message.data = 12;
+    xQueueSend(remote_message_queue, &message, 1000);//send notification for log
+    vTaskDelay(5000);
+
+    bsp_laser_ext_all_sw_off();
+
+    bsp_laser_ext_sw_on_manual(7);
+    bsp_laser_ext_sw_on_manual(8);
+
+    vTaskDelay(500);
+
+    bsp_laser_ext_all_sw_off();
 
     bsp_laser_ext_set_dac(0);
 }
@@ -467,11 +557,7 @@ static void task_experiment_test_laser()
     uint16_t laser_intensity = 0;
     m33_data_get_u_lock(TABLE_ID_5, dls_ls_intensity, &laser_intensity);
 
-    PRINTF("[task_experiment_test_laser] laser_intensity %d\r\n", laser_intensity);
-
     uint8_t dac_code = (uint8_t)(((float)laser_intensity * 255.0) / 100.0);
-
-    PRINTF("[task_experiment_test_laser] dac_code %d\r\n", dac_code);
 
     bsp_laser_int_set_dac(dac_code);
     LWL_DATA_LOG(LWL_LASER_INTENSITY, LWL_1(laser_intensity));
@@ -497,6 +583,8 @@ static void task_experiment_test_laser()
         LWL_DATA_LOG(LWL_LASER_OFF, LWL_1(i));
     }
 
+    bsp_laser_int_set_dac(0);
+
     task_experiment_test_ext_laser(dac_code);
     
     bsp_expander_ctrl(POW_ONOFF_LASER, 0);
@@ -506,11 +594,6 @@ static void task_experiment_test_laser()
     bsp_laser_int_sw_off(1);
 
     remote_message_t message;
-    message.address = CAM_CAPTURE;
-    message.data = 4;
-    xQueueSend(remote_message_queue, &message, 1000);//send notification for log
-    PRINTF("\r\n[task_system_control] sent DLS notification with size:%d\r\n", message.data);
-    vTaskDelay(2000);
     xSemaphoreTake(rptx_ram_mutex, portMAX_DELAY); // claim RAM
     message.data = lwl_data_transfer();
     message.address = TEST_LASER_DATA;

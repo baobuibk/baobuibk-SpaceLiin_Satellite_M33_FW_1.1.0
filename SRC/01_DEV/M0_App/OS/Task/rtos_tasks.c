@@ -314,7 +314,7 @@ static void RPMSG_Tx_Task(void *pvParameters)
                     snprintf(msg_buf, 100, "oneshot_TLSR_%d.dat", (unsigned int)epoch);
                     RemoteCall_SendFileRequest(message.data,msg_buf);
                     break;
-                case TEST_MAIN_PUMP_SEQ:
+                case TEST_MAIN_PUMP_SEQ_DATA:
                     snprintf(msg_buf, 100, "oneshot_TMPS_%d.dat", (unsigned int)epoch);
                     RemoteCall_SendFileRequest(message.data,msg_buf);
                     break;

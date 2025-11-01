@@ -20,7 +20,7 @@
     #define 	LWL_BUF_SIZE 		(CONFIG_LWL_BUF_SIZE)
  	 #define 	LWL_BUF_THRESHOLD 	(CONFIG_LWL_BUF_THRESHOLD)
 #else
-    #define LWL_BUF_SIZE 			(1024)
+    #define LWL_BUF_SIZE 			(20 * 1024)
 	#define LWL_BUF_THRESHOLD 		(LWL_BUF_SIZE - 56)
 #endif
 
@@ -146,6 +146,10 @@ static const uint8_t message_num_arg[LWL_MAX_NUM] =
     1, //23
     1, //24
     2, //25
+    0, //26
+    0, //27
+    0, //28
+    0, //29
 };
 
 //static const uint8_t lwl_msg_table_size = sizeof(lwl_msg_table) / sizeof(lwl_msg_table[0]);

@@ -53,7 +53,19 @@ static const struct lwl_msg_full lwl_msg_table[LWL_MAX_NUM] = {
    {LWL_EXP_PUMP_SET_FREQ, "Experiment: pump set freq to %2d",2},
     {LWL_EXP_PUMP_SET_VOLT,"Experiment: pump set volt to %2d",2},
     {LWL_EXP_PUMP_FLOW_TEMP,"Experiment: Pump flow = %4d temp =%4d",8},
-    {LWL_EXP_PUMP_OFF,"Experiment: Pump off",0}
+    {LWL_EXP_PUMP_OFF,"Experiment: Pump off",0},
+
+    {LWL_LASER_ALL_OFF, "Laser All Off", 0},// NO ARGU
+    {LWL_LASER_ON,"Laser [%1d] ON", 1} ,// 1D LASER INDEX
+    {LWL_LASER_OFF,"Laser [1%d] Off ",1}, // 1D LASER INDEX
+    {LWL_LASER_INTENSITY,"Laser intensity = %1d",1}, //1D IN PERCENT
+    {LWL_LASER_POWER,"LASER System Power status [%d] ",1}, //1D STATUS
+    {LWL_LASER_CURRENT, "LASER System Power status [%2d] ",2},// 2D CURRENT
+
+    {LWL_PUMP_PASS_THRESH,"Pump flow pass min threshold ",0}, // 1D LASER INDEX
+    {LWL_PUMP_FLOW_TOO_LOW,"Pump flow too low ",0}, //1D IN PERCENT
+    {LWL_PUMP_PASS_SETPOINT,"Pump flow pass setpoint ",0}, //1D STATUS
+    {LWL_PUMP_TIMEOUT, "Pump flow timeout ",0}// 2D CURRENT
    
 };
 

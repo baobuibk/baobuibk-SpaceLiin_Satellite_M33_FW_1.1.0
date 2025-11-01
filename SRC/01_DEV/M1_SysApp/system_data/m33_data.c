@@ -66,15 +66,15 @@ const int16_t table1_data_init[TABLE1_TOTAL_COUNT] = {
 /* ==================== TABLE 2 INITIAL DATA ==================== */
 const int16_t table2_data_init[TABLE2_TOTAL_COUNT] = {
     0x00,  // pump_1_ctl
-    100,  // pump_1_volt
-    100,  // pump_1_freq
+    100,  // pump_1_volt -> Change to default: 0
+    100,  // pump_1_freq -> Change to default: 0
     0x00,  // pump_2_ctl
     0x00,  // pump_2_volt
     0x00,  // pump_2_freq
 
-    0x00,  // sln_0_ctl
-    0x00,  // sln_1_ctl
-    0x00,  // sln_2_ctl
+    5000,  // sln_0_ctl
+    10,  // sln_1_ctl
+    0xFFFF,  // sln_2_ctl
     0x00,  // sln_3_ctl
     0x00,  // sln_4_ctl
     0x00,  // sln_5_ctl
@@ -144,10 +144,10 @@ const int16_t table5_data_init[] = {
 
     0x00,  // exp_fluidic_seq
     0x00,  // exp_mon_start
-    60,  // exp_mon_delay -> Thay đổi để test, nhớ đổi lại bằng 0
-    60,  // exp_mon_interval -> Thay đổi để test, nhớ đổi lại bằng 28800
+    0,  // exp_mon_delay
+    28800,  // exp_mon_interval
 
-    50,  // dls_ls_intensity -> Thay đổi để test, nhớ đổi lại bằng 25 
+    50,  // dls_ls_intensity 
     15,  // cam_ls_intensity
 
     100,  // exp_samp_rate
