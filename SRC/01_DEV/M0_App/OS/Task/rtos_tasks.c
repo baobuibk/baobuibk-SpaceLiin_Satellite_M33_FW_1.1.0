@@ -253,7 +253,6 @@ static void RPMSG_Task(void *pvParameters)
  * Task send telemetry
  * 
  ************************************************/
-
 static void RPMSG_Tx_Task(void *pvParameters)
 {
    remote_message_t message;

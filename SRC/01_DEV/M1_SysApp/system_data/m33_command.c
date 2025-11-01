@@ -33,6 +33,15 @@ int str2int(char *str, int32_t *ret) {
 
     int neg = 0;
     const char *p = str;
+    int32_t len = 0;
+    while (str[len] != 0) len++;
+
+    for (int32_t i = len; i >=0; i--)
+    {
+        if ((str[len] == "\r") || (str[len] == "\n"))  str[len] = 0;
+        else break;
+    }
+
 
     // Kiểm tra dấu âm
     if (*p == '-') {
