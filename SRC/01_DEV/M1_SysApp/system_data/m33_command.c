@@ -452,7 +452,7 @@ void usb_led_1_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])
         return;
     }
 
-    bsp_heater_turnon(USB_LED_1, status);
+    bsp_usb_led_turnon(1, status);
 }
 
 void usb_led_2_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])  
@@ -467,7 +467,7 @@ void usb_led_2_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])
         return;
     }
 
-    bsp_heater_turnon(USB_LED_2, status);
+    bsp_usb_led_turnon(2, status);
 }
 
 void htr_0_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
