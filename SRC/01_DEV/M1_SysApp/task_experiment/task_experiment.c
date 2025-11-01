@@ -64,7 +64,7 @@ void Task_Experiment(void *pvParameters)
         vTaskDelay(2000);
         systemStatus = COLLECTING_DATA;
         m33_data_set_u_lock(TABLE_ID_6, sys_status,systemStatus);
-        // Update_Onboard_ADC();
+        Update_Onboard_ADC();
         if (ERROR_OK == BMP390_sensor_read(&bmp390_data))
         {
             int16_t sensor_data = (int16_t) (bmp390_data.Pressure / 10.0);
@@ -404,7 +404,7 @@ static void main_exp_fluidic_flow()
 
     // 4. switch valve to DUMMY
     Valve_switch(VALVE_DIRECTION_DUMMY);
-    Valve_switch(VALVE_DIRECTION_DUMMY);
+    vTaskDelay(100);
     bsp_expander_ctrl(POW_ONOFF_TEC, 0);
 
     xSemaphoreTake(rptx_ram_mutex, portMAX_DELAY); // claim RAM

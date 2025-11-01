@@ -291,7 +291,7 @@ static void bsp_core_init_tec_cs_gpio(void)
     CLOCK_EnableClock(kCLOCK_Gpio3);
 
     // Option A: keep these pins Secure-only, leave others unchanged
-    // GPIO3->PCNS &= ~((1u << 28) | (1u << 29) | (1u << 30) | (1u << 31));
+    GPIO3->PCNS &= ~((1u << 28) | (1u << 29) | (1u << 30) | (1u << 31));
 
     /* Init output LED GPIO. */
     RGPIO_PinInit(GPIO3, 29U, &TEC_CS_config);
@@ -416,7 +416,7 @@ static void bsp_core_init_sensor_en_gpio(void)
     CLOCK_EnableClock(I2C_SENSOR_GPIO_EN0_CLOCK_GATE);
 
     /* Set PCNS register value to 0x0 to prepare the RGPIO initialization */
-    I2C_SENSOR_GPIO_EN0_PORT->PCNS = 0x0;
+    // I2C_SENSOR_GPIO_EN0_PORT->PCNS = 0x0;
 
     RGPIO_PinInit(I2C_SENSOR_GPIO_EN0_PORT, I2C_SENSOR_GPIO_EN0_PIN, &sensor_cs_config);
 
@@ -424,7 +424,7 @@ static void bsp_core_init_sensor_en_gpio(void)
     CLOCK_EnableClock(I2C_SENSOR_GPIO_EN1_CLOCK_GATE);
 
     /* Set PCNS register value to 0x0 to prepare the RGPIO initialization */
-    // I2C_SENSOR_GPIO_EN1_PORT->PCNS &= ~((1u << I2C_SENSOR_GPIO_EN1_PIN));
+    I2C_SENSOR_GPIO_EN1_PORT->PCNS &= ~((1u << I2C_SENSOR_GPIO_EN1_PIN));
 
     /* Init output LED GPIO. */
     RGPIO_PinInit(I2C_SENSOR_GPIO_EN1_PORT, I2C_SENSOR_GPIO_EN1_PIN, &sensor_cs_config);
@@ -504,7 +504,7 @@ static void bsp_core_init_pump_en_gpio(void)
     CLOCK_EnableClock(I2C_PUMP_GPIO_EN_CLOCK_GATE);
 
     /* Set PCNS register value to 0x0 to prepare the RGPIO initialization */
-    I2C_PUMP_GPIO_EN_PORT->PCNS = 0x0;
+    I2C_PUMP_GPIO_EN_PORT->PCNS &= ~((1 << I2C_PUMP_GPIO_EN_PIN) | (1 << I2C_PUMP_GPIO_EN2_PIN));
 
     RGPIO_PinInit(I2C_PUMP_GPIO_EN_PORT, I2C_PUMP_GPIO_EN_PIN,  &pump_en_config);
     RGPIO_PinInit(I2C_PUMP_GPIO_EN_PORT, I2C_PUMP_GPIO_EN2_PIN, &pump_en_config);
@@ -634,7 +634,7 @@ static void bsp_core_init_onboard_adc_cs_gpio(void)
     CLOCK_EnableClock(ONBOARD_ADC_GPIO_CS_CLOCK_GATE);
 
     /* Set PCNS register value to 0x0 to prepare the RGPIO initialization */
-    ONBOARD_ADC_GPIO_CS_PORT->PCNS = 0x0;
+    ONBOARD_ADC_GPIO_CS_PORT->PCNS &= ~((1 << ONBOARD_ADC_GPIO_CS0_PIN) | (1 << ONBOARD_ADC_GPIO_CS1_PIN) | (1 << ONBOARD_ADC_GPIO_SYNC0_PIN) | (1 << ONBOARD_ADC_GPIO_SYNC1_PIN));
 
     /* Init output LED GPIO. */
     RGPIO_PinInit(ONBOARD_ADC_GPIO_CS_PORT, ONBOARD_ADC_GPIO_CS0_PIN, &onboard_ADC_CS_config);
@@ -660,7 +660,7 @@ void bsp_core_init_laser_dac_gpio(void)
     rgpio_pin_config_t laser_DAC_CS_config =
     {
         kRGPIO_DigitalOutput,
-        0,
+        1,
     };
 
     rgpio_pin_config_t laser_DAC_latch_config =
@@ -683,7 +683,7 @@ void bsp_core_init_laser_dac_gpio(void)
     CLOCK_EnableClock(LASER_DAC_GPIO_CS_CLOCK_GATE);
 
     /* Set PCNS register value to 0x0 to prepare the RGPIO initialization */
-    LASER_DAC_GPIO_CS_PORT->PCNS = 0x0;
+    LASER_DAC_GPIO_CS_PORT->PCNS &= ~((1 << LASER_DAC_GPIO_CS_PIN) | (1 << LASER_DAC_GPIO_LATCH_PIN));
 
     /* Init output LED GPIO. */
     RGPIO_PinInit(LASER_DAC_GPIO_CS_PORT, LASER_DAC_GPIO_CS_PIN, &laser_DAC_CS_config);
@@ -724,7 +724,7 @@ static void bsp_core_init_laser_switch_gpio(void)
     CLOCK_EnableClock(LASER_SW_GPIO_CS_CLOCK_GATE);
 
     /* Set PCNS register value to 0x0 to prepare the RGPIO initialization */
-    LASER_SW_GPIO_CS_PORT->PCNS = 0x0;
+    LASER_SW_GPIO_CS_PORT->PCNS &= ~((1 << LASER_SW_GPIO_INT_CS_PIN) | (1 << LASER_SW_GPIO_EXT_CS_PIN));
 
     /* Init output LED GPIO. */
     RGPIO_PinInit(LASER_SW_GPIO_CS_PORT, LASER_SW_GPIO_INT_CS_PIN, &laser_SW_CS_config);
@@ -852,7 +852,7 @@ static void bsp_core_init_photo_adc_cs_gpio(void)
     CLOCK_EnableClock(PHOTO_ADC_GPIO_CS_CLOCK_GATE);
 
     /* Set PCNS register value to 0x0 to prepare the RGPIO initialization */
-    PHOTO_ADC_GPIO_CS_PORT->PCNS = 0x0;
+    PHOTO_ADC_GPIO_CS_PORT->PCNS &= ~((1 << PHOTO_ADC_GPIO_CS_PIN) | (1 << PHOTO_ADC_GPIO_CV_PIN));
 
     /* Init output LED GPIO. */
     RGPIO_PinInit(PHOTO_ADC_GPIO_CS_PORT, PHOTO_ADC_GPIO_CS_PIN, &photo_ADC_CS_config);
@@ -887,7 +887,7 @@ static void bsp_core_init_photo_switch_gpio(void)
     CLOCK_EnableClock(PHOTO_SW_GPIO_CS_CLOCK_GATE);
 
     /* Set PCNS register value to 0x0 to prepare the RGPIO initialization */
-    PHOTO_SW_GPIO_CS_PORT->PCNS = 0x0;
+    PHOTO_SW_GPIO_CS_PORT->PCNS &= ~((1 << PHOTO_SW_GPIO_CS_PIN));
 
     /* Init output LED GPIO. */
     RGPIO_PinInit(PHOTO_SW_GPIO_CS_PORT, PHOTO_SW_GPIO_CS_PIN, &photo_SW_CS_config);
@@ -916,7 +916,7 @@ static void bsp_core_init_dsub_i2c_en_gpio(void)
     CLOCK_EnableClock(kCLOCK_Gpio4);
 
     /* Set PCNS register value to 0x0 to prepare the RGPIO initialization */
-    GPIO4->PCNS = 0x0;
+    GPIO4->PCNS &= ~((1 << 15));
 
     /* Init output LED GPIO. */
     RGPIO_PinInit(GPIO4, 15U, &DSUB_en_gpio_config);
