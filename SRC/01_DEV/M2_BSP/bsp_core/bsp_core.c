@@ -431,7 +431,7 @@ static void bsp_core_init_sensor_en_gpio(void)
     CLOCK_EnableClock(I2C_SENSOR_GPIO_EN0_CLOCK_GATE);
 
     /* Set PCNS register value to 0x0 to prepare the RGPIO initialization */
-    // I2C_SENSOR_GPIO_EN0_PORT->PCNS = 0x0;
+    I2C_SENSOR_GPIO_EN0_PORT->PCNS = ~((1u << I2C_SENSOR_GPIO_EN0_PIN));
 
     RGPIO_PinInit(I2C_SENSOR_GPIO_EN0_PORT, I2C_SENSOR_GPIO_EN0_PIN, &sensor_cs_config);
 
