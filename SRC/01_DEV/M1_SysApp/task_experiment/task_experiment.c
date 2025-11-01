@@ -298,12 +298,14 @@ static void fluidic_test_flow()
     // 1. pump on
     // make sure valve dir is on dummy
     bsp_expander_ctrl(POW_ONOFF_TEC, 1);
+    vTaskDelay(100);
     Valve_switch(VALVE_DIRECTION_DUMMY);
     LWL_DATA_LOG(LWL_EXP_SWITCH_VALVE,LWL_1(VALVE_DIRECTION_DUMMY));
 
     vTaskDelay(100);
 
     bsp_expander_ctrl(POW_ONOFF_HD4, 1);
+    vTaskDelay(100);
     bsp_pump_init();
 
     I2C_HD_Pump_Set_Freq(100);
@@ -360,10 +362,12 @@ static void main_exp_fluidic_flow()
     // 1. pump on
     // make sure valve dir is on dummy
     bsp_expander_ctrl(POW_ONOFF_TEC, 1);
+    vTaskDelay(100);
     Valve_switch(VALVE_DIRECTION_DUMMY);
     LWL_DATA_LOG(LWL_EXP_SWITCH_VALVE,LWL_1(VALVE_DIRECTION_DUMMY));
 
     bsp_expander_ctrl(POW_ONOFF_HD4, 1);
+    vTaskDelay(100);
     bsp_pump_init();
     I2C_HD_Pump_Set_Freq(100);
     LWL_DATA_LOG(LWL_EXP_PUMP_SET_FREQ,LWL_2(100));

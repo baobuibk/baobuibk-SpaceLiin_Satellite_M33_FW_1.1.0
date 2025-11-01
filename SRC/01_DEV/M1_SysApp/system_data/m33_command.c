@@ -712,7 +712,17 @@ void sln_valve_1_ctl_cmd(uint32_t s, uint32_t a, char *v[])
         return;
     }
 
+    bsp_expander_ctrl(POW_ONOFF_TEC, 1);
+
+    vTaskDelay(100);
+
     Valve_switch(status);
+
+    vTaskDelay(100);
+
+    bsp_expander_ctrl(POW_ONOFF_TEC, 0);
+
+    vTaskDelay(100);
 }
 void sln_valve_2_ctl_cmd(uint32_t s, uint32_t a, char *v[]){(void)s;(void)a;(void)v;}//PRINTF("sln_valve_2_ctl\n");}
 
@@ -1152,27 +1162,13 @@ void custom_ctl_cmd(uint32_t s,uint32_t a,char *v[])
 
     if (status == 0)
     {
-        // bsp_expander_ctrl(POW_ONOFF_LASER, 0);
-        // bsp_laser_int_set_dac(0);
-        // bsp_laser_int_sw_off(1);
-        bsp_expander_ctrl(POW_ONOFF_HEATER, 0);
-        bsp_heater_turnon(1, 0);
+        bsp_expander_ctrl(POW_ONOFF_HD4, 0);
+        vTaskDelay(100);
     }
     else
     {
-        // bsp_core_init_laser_dac_gpio();
-
-        // vTaskDelay(10);
-
-        // bsp_expander_ctrl(POW_ONOFF_LASER, 1);
-
-        // vTaskDelay(10);
-        
-        // bsp_laser_int_set_dac(127);
-        // bsp_laser_int_sw_on(1);
-        // bsp_heater_enable();
-        bsp_expander_ctrl(POW_ONOFF_HEATER, 1);
-        bsp_heater_turnon(1, 50);
+        bsp_expander_ctrl(POW_ONOFF_HD4, 1);
+        vTaskDelay(100);
     }
 }
 
