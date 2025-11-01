@@ -54,8 +54,6 @@ static void Highdriver_setfrequency(uint16_t _frequency); // set pump frequency 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Public Function ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 void bsp_pump_init()
 {
-    bsp_expander_ctrl(POW_ONOFF_HD4, 1);
-
 	do_set(&pump_en_gpio);
 
 	vTaskDelay(pdMS_TO_TICKS(200));

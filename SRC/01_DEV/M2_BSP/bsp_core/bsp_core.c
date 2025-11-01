@@ -134,7 +134,7 @@ void bsp_core_init(void)
     bsp_i2c_sensor_init();
 
     bsp_heater_init();
-    bsp_pump_init();
+    // bsp_pump_init();
     bsp_core_init_dsub_i2c_en_gpio();
     
     for (uint32_t i = 0; i < 30000; i++)

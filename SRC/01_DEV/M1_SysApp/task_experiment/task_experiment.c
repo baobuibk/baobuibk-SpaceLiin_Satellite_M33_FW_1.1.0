@@ -64,7 +64,7 @@ void Task_Experiment(void *pvParameters)
         vTaskDelay(2000);
         systemStatus = COLLECTING_DATA;
         m33_data_set_u_lock(TABLE_ID_6, sys_status,systemStatus);
-        // Update_Onboard_ADC();
+        Update_Onboard_ADC();
         if (ERROR_OK == BMP390_sensor_read(&bmp390_data))
         {
             int16_t sensor_data = (int16_t) (bmp390_data.Pressure / 10.0);
@@ -297,10 +297,14 @@ static void fluidic_test_flow()
 
     // 1. pump on
     // make sure valve dir is on dummy
+    bsp_expander_ctrl(POW_ONOFF_TEC, 1);
     Valve_switch(VALVE_DIRECTION_DUMMY);
     LWL_DATA_LOG(LWL_EXP_SWITCH_VALVE,LWL_1(VALVE_DIRECTION_DUMMY));
 
     vTaskDelay(100);
+
+    bsp_expander_ctrl(POW_ONOFF_HD4, 1);
+    bsp_pump_init();
 
     I2C_HD_Pump_Set_Freq(100);
     LWL_DATA_LOG(LWL_EXP_PUMP_SET_FREQ,LWL_2(100));
@@ -336,7 +340,10 @@ static void fluidic_test_flow()
     
     // 4. pump off
     I2C_HD_Pump_set_Voltage(0); //<-- After this line, pump off.
+    bsp_expander_ctrl(POW_ONOFF_HD4, 0);
+
     LWL_DATA_LOG(LWL_EXP_PUMP_OFF);
+    bsp_expander_ctrl(POW_ONOFF_TEC, 0);
 
     PRINTF("[exp] main_exp_fluidic_flow exited\r\n");
 }
@@ -352,8 +359,12 @@ static void main_exp_fluidic_flow()
 
     // 1. pump on
     // make sure valve dir is on dummy
+    bsp_expander_ctrl(POW_ONOFF_TEC, 1);
     Valve_switch(VALVE_DIRECTION_DUMMY);
     LWL_DATA_LOG(LWL_EXP_SWITCH_VALVE,LWL_1(VALVE_DIRECTION_DUMMY));
+
+    bsp_expander_ctrl(POW_ONOFF_HD4, 1);
+    bsp_pump_init();
     I2C_HD_Pump_Set_Freq(100);
     LWL_DATA_LOG(LWL_EXP_PUMP_SET_FREQ,LWL_2(100));
 
@@ -385,10 +396,12 @@ static void main_exp_fluidic_flow()
     // 3. when volumn reach 5mL (5s at 1.5mL/min), pump off
     I2C_HD_Pump_set_Voltage(0); //<-- After this line, pump off.
     LWL_DATA_LOG(LWL_EXP_PUMP_SET_VOLT,LWL_2(0));
+    bsp_expander_ctrl(POW_ONOFF_HD4, 0);
 
     // 4. switch valve to DUMMY
     Valve_switch(VALVE_DIRECTION_DUMMY);
     Valve_switch(VALVE_DIRECTION_DUMMY);
+    bsp_expander_ctrl(POW_ONOFF_TEC, 0);
 
     xSemaphoreTake(rptx_ram_mutex, portMAX_DELAY); // claim RAM
     message.data = lwl_data_transfer();
