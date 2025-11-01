@@ -8,8 +8,8 @@
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Enum ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 typedef enum
 {
-    VALVE_DIRECTION_DUMMY = 1,
-    VALVE_DIRECTION_MAIN_EXP = 2,
+    VALVE_DIRECTION_MAIN_EXP = 1,
+    VALVE_DIRECTION_DUMMY = 2,
 } vale_direction;
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Struct ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */

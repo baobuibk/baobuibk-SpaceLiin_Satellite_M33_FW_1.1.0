@@ -136,7 +136,7 @@ void bsp_core_init(void)
     bsp_heater_init();
     bsp_pump_init();
     bsp_core_init_dsub_i2c_en_gpio();
-    bsp_expander_ctrl(POW_ONOFF_LASER,0);
+    
     for (uint32_t i = 0; i < 30000; i++)
     {
         __NOP();
