@@ -225,9 +225,18 @@ static void RPMSG_Task(void *pvParameters)
              PRINTF("\r\n[rpmsg] payload_length = %d \r\n",payload_len);
 
            char * papp_buff = app_buf;
-           while ((0x0A == (*papp_buff)) || (0x0D == (*papp_buff))) papp_buff++;
-           if (0 != (*papp_buff)) {
-                Command_Process(papp_buff);
+           while (* papp_buff)
+           {
+            if ((0x0A == (*papp_buff)) || (0x0D == (*papp_buff))) 
+                {
+                    *papp_buff = 0;
+                    break;
+                }
+                papp_buff++;
+           }
+
+           if (0 != (app_buf[0])) {
+                Command_Process(app_buf);
                 rpmsg_send(RPMSG_MSG_RESPONSE_OK,"OK");
            }
            
