@@ -334,7 +334,13 @@ static void RPMSG_Tx_Task(void *pvParameters)
         uint16_t param = 0;
         m33_data_get_u_lock(TABLE_ID_6,param_index, &param);
 
-        snprintf(msg_buf, 100, "update_param 0x%03X=%u\r\n", ((param_index + 0x600) & 0x0FFF), (uint16_t)param);
+        if (param_index < 0x0F) {
+
+            snprintf(msg_buf, 100, "update_param 0x%03X=%u\r\n", ((param_index + 0x600) & 0x0FFF), (uint16_t)param);
+        }
+        else {
+            snprintf(msg_buf, 100, "update_param 0x%03X=%u\r\n", ((param_index + 0x600 + 1) & 0x0FFF), (uint16_t)param); //avoid 0x1F
+        }
         rpmsg_send(RPMSG_MSG_UPDATE_PARAM, msg_buf);
 
         PRINTF("\r\n[RPMSG_Tx_Task] sent %s\r\n",msg_buf);

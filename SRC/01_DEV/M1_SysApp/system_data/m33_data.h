@@ -12,7 +12,7 @@
 //system status
 enum
 {
-    IDLE,
+    IDLE = 1,
     COLLECTING_DATA,
     EXPERIMENTING_DLS,
     TEST_LS_CURRENT,

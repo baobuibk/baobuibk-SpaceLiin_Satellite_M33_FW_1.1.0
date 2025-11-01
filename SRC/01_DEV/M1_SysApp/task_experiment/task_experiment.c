@@ -68,17 +68,17 @@ void Task_Experiment(void *pvParameters)
         if (ERROR_OK == BMP390_sensor_read(&bmp390_data))
         {
             int16_t sensor_data = (int16_t) (bmp390_data.Pressure / 10.0);
-            m33_data_set_i_lock(TABLE_ID_6, sen1_data_0,sensor_data);
-            sensor_data = (int16_t)(bmp390_data.Temp);
             m33_data_set_i_lock(TABLE_ID_6, sen1_data_1,sensor_data);
+            sensor_data = (int16_t)(bmp390_data.Temp);
+            m33_data_set_i_lock(TABLE_ID_6, sen1_data_0,sensor_data);
         }
         
         if (ERROR_OK == Flow_sensor_read(&flow_data))
         {          
             int16_t sensor_data = (int16_t) ( flow_data.flow);
-            m33_data_set_i_lock(TABLE_ID_6, sen2_data_0,sensor_data);
-            sensor_data = (int16_t)(flow_data.temp);
             m33_data_set_i_lock(TABLE_ID_6, sen2_data_1,sensor_data);
+            sensor_data = (int16_t)(flow_data.temp);
+            m33_data_set_i_lock(TABLE_ID_6, sen2_data_0,sensor_data);
         }
 
         // check if experiment is enabled
