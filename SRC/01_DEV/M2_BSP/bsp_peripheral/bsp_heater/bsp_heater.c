@@ -42,10 +42,10 @@ void bsp_heater_init()
 		pca9685_set_duty_permille(&pwmDev, channel, 0); //disable all output
 	}
 	
-	pca9685_set_duty_permille(&pwmDev, 4, 1000); //disable usb led
-	pca9685_set_duty_permille(&pwmDev, 3, 1000); //disable usb led
-	pca9685_set_duty_permille(&pwmDev, 14, 1000); //disable usb led
-	pca9685_set_duty_permille(&pwmDev, 15, 1000); //disable usb led
+	pca9685_set_duty_permille(&pwmDev, 4, 500); //disable usb led
+	pca9685_set_duty_permille(&pwmDev, 3, 500); //disable usb led
+	pca9685_set_duty_permille(&pwmDev, 14, 500); //disable usb led
+	pca9685_set_duty_permille(&pwmDev, 15, 500); //disable usb led
 
 	bsp_heater_enable();
 }
