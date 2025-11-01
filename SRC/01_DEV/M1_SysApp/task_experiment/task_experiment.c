@@ -51,13 +51,34 @@ extern osSemaphore rptx_ram_mutex;
 void Task_Experiment(void *pvParameters)
 {
     remote_message_t message;
-    // exp_last_delay = xTaskGetTickCount();
+    bmp390_data_t    bmp390_data;
+    slf3s_readings_t flow_data;
+    uint16_t systemStatus = IDLE;
     PRINTF("Experiment Control...\r\n");
 
     for(;;)
     {
+        systemStatus = IDLE;
+        m33_data_set_u_lock(TABLE_ID_6, sys_status,systemStatus);
         vTaskDelay(2000);
+        systemStatus = COLLECTING_DATA;
+        m33_data_set_u_lock(TABLE_ID_6, sys_status,systemStatus);
         Update_Onboard_ADC();
+        if (ERROR_OK == BMP390_sensor_read(&bmp390_data))
+        {
+            int16_t sensor_data = (int16_t) (bmp390_data.Pressure);
+            m33_data_set_i_lock(TABLE_ID_6, sen1_data_0,sensor_data);
+            sensor_data = (int16_t)(bmp390_data.Temp);
+            m33_data_set_i_lock(TABLE_ID_6, sen1_data_1,sensor_data);
+        }
+        
+        if (ERROR_OK == Flow_sensor_read(&flow_data))
+        {          
+            int16_t sensor_data = (int16_t) ( flow_data.flow);
+            m33_data_set_i_lock(TABLE_ID_6, sen2_data_0,sensor_data);
+            sensor_data = (int16_t)(flow_data.temp);
+            m33_data_set_i_lock(TABLE_ID_6, sen2_data_1,sensor_data);
+        }
 
         // check if experiment is enabled
         uint16_t exp_remain_time;
@@ -73,6 +94,9 @@ void Task_Experiment(void *pvParameters)
                 m33_data_get_u_lock(TABLE_ID_5, exp_mon_interval, &ext_interval);
                 m33_data_set_u_lock(TABLE_ID_5, exp_mon_delay, ext_interval);
                 PRINTF("[task_system_control] triggered dls experiment\r\n");
+                
+                systemStatus = EXPERIMENTING_DLS;
+                m33_data_set_u_lock(TABLE_ID_6, sys_status,systemStatus);
                 task_experiment_DLS();          
             }
         }
@@ -80,7 +104,9 @@ void Task_Experiment(void *pvParameters)
         //check if laser test is enabled
         m33_data_get_u_lock(TABLE_ID_5, test_ls_current, &is_start_exp);
         if (1 == is_start_exp)
-        {           
+        {     
+            systemStatus = TEST_LS_CURRENT;
+            m33_data_set_u_lock(TABLE_ID_6, sys_status,systemStatus);      
             task_experiment_test_laser();
             m33_data_set_u_lock(TABLE_ID_5, test_ls_current, 0);
 
@@ -94,6 +120,8 @@ void Task_Experiment(void *pvParameters)
         m33_data_get_u_lock(TABLE_ID_5, test_fluidic_seq, &is_start_exp);
         if (1 == is_start_exp)
         {
+            systemStatus = TEST_FLUIDIC_SEG;
+            m33_data_set_u_lock(TABLE_ID_6, sys_status,systemStatus); 
             fluidic_test_flow();
             m33_data_set_u_lock(TABLE_ID_5, test_fluidic_seq, 0);
 
@@ -106,6 +134,8 @@ void Task_Experiment(void *pvParameters)
         m33_data_get_u_lock(TABLE_ID_5, exp_fluidic_seq, &is_start_exp);
         if (1 == is_start_exp)
         {
+            systemStatus = EXPERIMENTING_FLUIDIC;
+            m33_data_set_u_lock(TABLE_ID_6, sys_status,systemStatus); 
             main_exp_fluidic_flow();
             m33_data_set_u_lock(TABLE_ID_5, exp_fluidic_seq, 0);
 

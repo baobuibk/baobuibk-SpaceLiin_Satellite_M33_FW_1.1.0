@@ -22,10 +22,11 @@ void task_system_control()
     // Create system control task here
 
     PRINTF("===== [System Control Started] =====\r\n");
-    
+
     while (1)
     {
         vTaskDelay(1000);
+        
     }
 }
 

@@ -68,7 +68,7 @@ void bsp_heater_turnon(uint32_t channel, uint32_t duty)
 void bsp_heater_list_turnoff(uint32_t heaters)	//error, turn off all heaters in the list, (0x03 mean heater 0,1)
 {
 	uint32_t index;
-	uint8_t real_channel;
+
 
 	for (index = 0; index < 8; index++)
 	{
@@ -82,7 +82,7 @@ void bsp_heater_list_turnoff(uint32_t heaters)	//error, turn off all heaters in 
 void bsp_heater_list_turnon(uint32_t heaters, uint32_t duty)
 {
 	uint32_t index;
-	uint8_t real_channel;
+
 
 	for (index = 0; index < 8; index++)
 	{

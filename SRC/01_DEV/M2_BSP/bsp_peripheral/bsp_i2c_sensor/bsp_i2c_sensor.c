@@ -33,15 +33,16 @@ void bsp_i2c_sensor_init()
 	slf3s_init(&sensor_i2c, true);
 }
 
-void Flow_sensor_read(slf3s_readings_t* p_value)
+uint32_t Flow_sensor_read(slf3s_readings_t* p_value)
 {
-	slf3s_read_all(&sensor_i2c, p_value);
+	return slf3s_read_all(&sensor_i2c, p_value);
 }
 
-void BMP390_sensor_read(bmp390_data_t* p_data)
+uint32_t BMP390_sensor_read(bmp390_data_t* p_data)
 {
-	BMP390_init(&sensor_i2c);
-	BMP390_read_value(&sensor_i2c, p_data);
+	if (!BMP390_init(&sensor_i2c)) return ERROR_FAIL;
+	if (!BMP390_read_value(&sensor_i2c, p_data)) return ERROR_FAIL;
+	return ERROR_OK;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Private Function ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */

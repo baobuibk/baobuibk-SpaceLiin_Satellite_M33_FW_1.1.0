@@ -18,7 +18,7 @@
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Class ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prototype ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 void bsp_i2c_sensor_init();
-void Flow_sensor_read(slf3s_readings_t* p_value);
-void BMP390_sensor_read(bmp390_data_t* p_data);
+uint32_t Flow_sensor_read(slf3s_readings_t* p_value);
+uint32_t BMP390_sensor_read(bmp390_data_t* p_data);
 
 #endif //_BSP_I2C_SENSOR_H_

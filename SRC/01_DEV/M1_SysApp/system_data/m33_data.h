@@ -9,6 +9,16 @@
 #define MIDDLEWARE_FLIGHTSYSTEM_SYSTEM_M33_DATA_H_
 #include "stdint.h"
 
+//system status
+enum
+{
+    IDLE,
+    COLLECTING_DATA,
+    EXPERIMENTING_DLS,
+    TEST_LS_CURRENT,
+    TEST_FLUIDIC_SEG,
+    EXPERIMENTING_FLUIDIC
+};
      //0: updateparam, 1: Send DLS data, 
     //2: Send Test Laser data, 3: Send Test Pump data
     //4: Send command AR2020 capture, 5: Send USB camera capture
