@@ -115,8 +115,7 @@ void bsp_core_init(void)
         __NOP();
     }
 
-    bsp_expander_ctrl(POW_ONOFF_LASER,0);
-    bsp_expander_ctrl(POW_ONOFF_PHOTO,0);
+    bsp_expander_ctrl(POW_ONOFF_PHOTO, 0);
 
     for (uint16_t i = 0; i < 30000; i++)
     {
@@ -129,6 +128,22 @@ void bsp_core_init(void)
     {
         __NOP();
     }
+
+    bsp_expander_ctrl(POW_ONOFF_LASER, 1);
+
+    for (uint32_t i = 0; i < 30000; i++)
+    {
+        __NOP();
+    }
+
+    bsp_core_init_laser_dac_gpio();
+
+    for (uint32_t i = 0; i < 30000; i++)
+    {
+        __NOP();
+    }
+
+    bsp_expander_ctrl(POW_ONOFF_LASER, 0);
     
    // TODO: Check I2C lib
     bsp_i2c_sensor_init();

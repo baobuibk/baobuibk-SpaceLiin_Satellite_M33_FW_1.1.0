@@ -64,7 +64,7 @@ void Task_Experiment(void *pvParameters)
         vTaskDelay(2000);
         systemStatus = COLLECTING_DATA;
         m33_data_set_u_lock(TABLE_ID_6, sys_status,systemStatus);
-        Update_Onboard_ADC();
+        // Update_Onboard_ADC();
         if (ERROR_OK == BMP390_sensor_read(&bmp390_data))
         {
             int16_t sensor_data = (int16_t) (bmp390_data.Pressure / 10.0);
@@ -173,6 +173,11 @@ static void task_experiment_DLS()
     wait_delay   = pdMS_TO_TICKS(5);
     bsp_expander_ctrl(POW_ONOFF_LASER,1);
     bsp_expander_ctrl(POW_ONOFF_PHOTO,1);
+
+    vTaskDelay(100);
+    bsp_laser_init();
+    bsp_photo_init();
+
     PRINTF("[exp] task_experiment_DLS started\r\n");
 
     // TODO: Comment for test
