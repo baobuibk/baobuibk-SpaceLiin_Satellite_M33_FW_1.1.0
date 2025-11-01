@@ -22,10 +22,14 @@ uint8_t bsp_laser_ext_get_dac(void);
 
 void bsp_laser_int_sw_on(uint8_t channel);
 void bsp_laser_int_sw_off(uint8_t channel);
+void bsp_laser_int_sw_on_manual(uint8_t channel);
+void bsp_laser_int_sw_off_manual(uint8_t channel);
 void bsp_laser_int_all_sw_off(void);
 
 void bsp_laser_ext_sw_on(uint8_t channel);
 void bsp_laser_ext_sw_off(uint8_t channel);
+void bsp_laser_ext_sw_on_manual(uint8_t channel);
+void bsp_laser_ext_sw_off_manual(uint8_t channel);
 void bsp_laser_ext_all_sw_off(void);
 
 void bsp_laser_setup_timmer(uint32_t sampling_rate_khz);

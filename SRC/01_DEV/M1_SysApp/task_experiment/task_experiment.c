@@ -64,7 +64,7 @@ void Task_Experiment(void *pvParameters)
         vTaskDelay(2000);
         systemStatus = COLLECTING_DATA;
         m33_data_set_u_lock(TABLE_ID_6, sys_status,systemStatus);
-        Update_Onboard_ADC();
+   //     Update_Onboard_ADC();
         if (ERROR_OK == BMP390_sensor_read(&bmp390_data))
         {
             int16_t sensor_data = (int16_t) (bmp390_data.Pressure / 10.0);
@@ -111,7 +111,7 @@ void Task_Experiment(void *pvParameters)
             task_experiment_test_laser();
             m33_data_set_u_lock(TABLE_ID_5, test_ls_current, 0);
 
-            message.address = UPDATE_PARAM | (0x0500 + test_ls_current);
+            message.address = UPDATE_PARAM | (0x0500 );
             message.data = 0;
             xQueueSend(remote_message_queue, &message, 1000);//send notification for log
             PRINTF("[task_system_control] test_ls_current finished\r\n");
@@ -126,7 +126,7 @@ void Task_Experiment(void *pvParameters)
             fluidic_test_flow();
             m33_data_set_u_lock(TABLE_ID_5, test_fluidic_seq, 0);
 
-            message.address = UPDATE_PARAM | (0x0500 + test_fluidic_seq);
+            message.address = UPDATE_PARAM | 0x0501 ;
             message.data = 0;
             xQueueSend(remote_message_queue, &message, 1000);//send notification for log
             PRINTF("[task_system_control] test_fluidic_seq finished\r\n");
@@ -140,7 +140,7 @@ void Task_Experiment(void *pvParameters)
             main_exp_fluidic_flow();
             m33_data_set_u_lock(TABLE_ID_5, exp_fluidic_seq, 0);
 
-            message.address = UPDATE_PARAM | (0x0500 + exp_fluidic_seq);
+            message.address = UPDATE_PARAM | 0x0502;
             message.data = 0;
             xQueueSend(remote_message_queue, &message, 1000);//send notification for log
             PRINTF("[task_system_control] exp_fluidic_seq finished\r\n");
@@ -258,10 +258,10 @@ static void task_experiment_DLS()
 
     }
 
-    for (current_channel = 0; current_channel < 3; current_channel++)
+    for (current_channel = 0; current_channel < 4; current_channel++)
     {
-        // bsp_laser_ext_sw_on_manual(2*current_channel);
-        // bsp_laser_ext_sw_on_manual(2*current_channel + 1);
+        bsp_laser_ext_sw_on_manual(2*current_channel + 1);
+        bsp_laser_ext_sw_on_manual(2*current_channel + 2);
 
         vTaskDelay(500);
 
@@ -292,10 +292,7 @@ static void fluidic_test_flow()
     remote_message_t message;
 
     PRINTF("[exp] main_exp_fluidic_flow started\r\n");
-    message.address = CAM_CAPTURE;
-    message.data = 4;
-    xQueueSend(remote_message_queue, &message, 1000);//send notification for log
-    vTaskDelay(5000);
+    
     lwl_data_log_init();
 
     // 1. pump on
@@ -394,12 +391,19 @@ static void main_exp_fluidic_flow()
     Valve_switch(VALVE_DIRECTION_DUMMY);
 
     xSemaphoreTake(rptx_ram_mutex, portMAX_DELAY); // claim RAM
-    message.data = lwl_sys_log_transfer();
-    message.address = TEST_PUMP_DATA;
+    message.data = lwl_data_transfer();
+    message.address = TEST_MAIN_PUMP_SEQ;
+    PRINTF("[task_experiment_test_laser] send TEST_MAIN_PUMP_SEQ data with size of%d\r\n", message.data);
+
     xQueueSend(remote_message_queue, &message, 1000);//send notification for log
 
     vTaskDelay(2000);
     xSemaphoreGive(rptx_ram_mutex);
+        message.address = CAM_CAPTURE;
+    message.data = 4;
+    xQueueSend(remote_message_queue, &message, 1000);//send notification for log
+    PRINTF("\r\n[task_system_control] sent DLS notification with size:%d\r\n", message.data);
+    vTaskDelay(2000);
 
     PRINTF("[exp] main_exp_fluidic_flow exited\r\n");
 }
@@ -480,9 +484,15 @@ static void task_experiment_test_laser()
     bsp_laser_int_sw_off(1);
 
     remote_message_t message;
+    message.address = CAM_CAPTURE;
+    message.data = 4;
+    xQueueSend(remote_message_queue, &message, 1000);//send notification for log
+    PRINTF("\r\n[task_system_control] sent DLS notification with size:%d\r\n", message.data);
+    vTaskDelay(2000);
     xSemaphoreTake(rptx_ram_mutex, portMAX_DELAY); // claim RAM
-    message.data = lwl_sys_log_transfer();
+    message.data = lwl_data_transfer();
     message.address = TEST_LASER_DATA;
+    PRINTF("[task_experiment_test_laser] send TEST LASER data with size of%d\r\n", message.data);
     xQueueSend(remote_message_queue, &message, 1000);//send notification for log
 
     vTaskDelay(2000);

@@ -27,8 +27,9 @@ enum {
     DLS_DATA = 0x8000,
     TEST_LASER_DATA=0x9000,
     TEST_PUMP_DATA = 0xA000,
-    CAM_CAPTURE = 0xB000,
-    SYS_LOG = 0xC000
+    TEST_MAIN_PUMP_SEQ = 0xB000,
+    CAM_CAPTURE = 0xC000,
+    SYS_LOG = 0xD000
 };
 enum {
     SLD_RUN = 0,

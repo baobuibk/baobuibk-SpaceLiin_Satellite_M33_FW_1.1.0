@@ -301,18 +301,22 @@ static void RPMSG_Tx_Task(void *pvParameters)
                     rpmsg_send(RPMSG_MSG_UPDATE_PARAM,msg_buf);
                     break;
                 case DLS_DATA:
-                    snprintf(msg_buf, 100, "daily_PLDD_%u.dat\r\n", (unsigned int)epoch);
+                    snprintf(msg_buf, 100, "daily_PLDD_%u.dat", (unsigned int)epoch);
                     PRINTF("[ RPMSG_Tx_Task]file request with size = %u\r\n",message.data);
                     RemoteCall_SendFileRequest(message.data,msg_buf);
                     break;
                 case TEST_LASER_DATA:
-                    snprintf(msg_buf, 100, "oneshot_TLPD_%d.dat\r\n", (unsigned int)epoch);
+                    snprintf(msg_buf, 100, "oneshot_TLPD_%d.dat", (unsigned int)epoch);
                     PRINTF("[ RPMSG_Tx_Task]file TEST_LASER_DATA %s\r\n",msg_buf);
                     RemoteCall_SendFileRequest(message.data,msg_buf);
 
                     break;
                 case TEST_PUMP_DATA:
-                    snprintf(msg_buf, 100, "oneshot_TLSR_%d.dat\r\n", (unsigned int)epoch);
+                    snprintf(msg_buf, 100, "oneshot_TLSR_%d.dat", (unsigned int)epoch);
+                    RemoteCall_SendFileRequest(message.data,msg_buf);
+                    break;
+                case TEST_MAIN_PUMP_SEQ:
+                    snprintf(msg_buf, 100, "oneshot_TMPS_%d.dat", (unsigned int)epoch);
                     RemoteCall_SendFileRequest(message.data,msg_buf);
                     break;
                 case CAM_CAPTURE:
@@ -321,7 +325,7 @@ static void RPMSG_Tx_Task(void *pvParameters)
                     break;
 
                 case SYS_LOG:
-                    snprintf(msg_buf, 100, "daily_SYSL_%d.dat\r\n",(unsigned int)epoch);
+                    snprintf(msg_buf, 100, "daily_SYSL_%d.dat",(unsigned int)epoch);
                     PRINTF("[ RPMSG_Tx_Task]file request with size = %d\r\n",message.data);
                     RemoteCall_SendFileRequest(message.data,msg_buf);
                     break;
