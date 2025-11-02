@@ -1125,7 +1125,14 @@ void dls_ls_intensity_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void
 	if (ret) return;
 	m33_data_set_u_lock(TABLE_ID_5,dls_ls_intensity,(uint32_t)status);
 }
-void cam_ls_intensity_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("cam_ls_intensity\n");}
+void cam_ls_intensity_cmd(uint32_t s,uint32_t a,char *v[])
+{(void)s;(void)a;(void)v;
+        int32_t status ;
+    uint32_t ret = str2int(v[1], &status);
+	if (ret) return;
+	m33_data_set_u_lock(TABLE_ID_5,cam_ls_intensity,(uint32_t)status);
+}
+
 void exp_samp_rate_cmd(uint32_t s,uint32_t a,char *v[]){(void)s;(void)a;(void)v;PRINTF("exp_samp_rate\n");
     int32_t status ;
     uint32_t ret = str2int(v[1], &status);
