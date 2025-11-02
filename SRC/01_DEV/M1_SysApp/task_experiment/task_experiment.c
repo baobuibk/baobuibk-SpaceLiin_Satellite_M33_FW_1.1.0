@@ -41,6 +41,7 @@ static void task_experiment_test_laser();
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Public Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 extern uint32_t photo_spi_set_count;
 extern uint32_t photo_spi_count;
+extern uint32_t num_sample;
 extern uint32_t current_channel;
 extern uint32_t  is_spi_counter_finish;
 
@@ -185,6 +186,7 @@ static void task_experiment_DLS()
     PRINTF("[task_experiment_DLS] photo set count = %d\r\n",photo_spi_set_count);
     //photo_spi_set_count = 128;
     photo_spi_count = 0;
+    num_sample      = 0;
     current_channel = 0;
     is_spi_counter_finish = 0;
 
@@ -197,10 +199,10 @@ static void task_experiment_DLS()
 
     bsp_photo_setup_timmer(s_exp_profile.sampling_rate_khz);
 
+    xSemaphoreTake(rptx_ram_mutex, portMAX_DELAY); // claim RAM
+
     for (current_channel = 0; current_channel < 24; current_channel++)
     {
-        xSemaphoreTake(rptx_ram_mutex, portMAX_DELAY); // claim RAM
-
     // PRE_TIME_STATE:
         PRINTF("\r\n channel %d started",current_channel + 1);
         is_spi_counter_finish = 0;
@@ -249,19 +251,20 @@ static void task_experiment_DLS()
         bsp_photo_spi_irq_deinit();
         bsp_laser_int_sw_off(current_channel + 1);
         bsp_photo_int_sw_off(current_channel + 1);
-        PRINTF("\r\n channel %d trigger writing to file",current_channel + 1);
-
-        message.address = DLS_DATA;
-        message.data = photo_spi_count * 2;
-        // xQueueSendToFront(remote_message_queue, &message, 1000);//send notification for log
-        xQueueSend(remote_message_queue, &message, 1000);//send notification for log
-
-        PRINTF("\r\n[task_system_control] sent DLS notification with size:%d\r\n", message.data);
-        vTaskDelay(2000);
-        xSemaphoreGive(rptx_ram_mutex);
-        vTaskDelay(1000);
-
     }
+
+    PRINTF("\r\n channel %d trigger writing to file",current_channel + 1);
+
+    message.address = DLS_DATA;
+    message.data = num_sample * 2;
+    // xQueueSendToFront(remote_message_queue, &message, 1000);//send notification for log
+    xQueueSend(remote_message_queue, &message, 1000);//send notification for log
+    num_sample = 0;
+
+    PRINTF("\r\n[task_system_control] sent DLS notification with size:%d\r\n", message.data);
+    vTaskDelay(2000);
+    xSemaphoreGive(rptx_ram_mutex);
+    vTaskDelay(1000);
 
     for (current_channel = 0; current_channel < 4; current_channel++)
     {

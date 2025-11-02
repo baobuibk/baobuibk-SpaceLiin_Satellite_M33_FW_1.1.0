@@ -162,56 +162,7 @@ void lwl_init(lwl_t *lwl) {
 
 }
 
-/*
- * @brief Record a lightweight log with start byte, length, and CRC.
- *
- * @param[in] id The log message ID (index into lwl_msg_table).
- * @param[in] ... Variable arguments, each 1 byte (from LWL_n macros).
- *
- * Each log record format: [START_BYTE (0xAA)][LENGTH][ID][ARG_BYTES][CRC]
- * LENGTH = 1 (length) + 1 (id) + num_arg_bytes + 1 (CRC)
- * CRC is calculated over [ID][ARG_BYTES]
- */
-// void LWL(lwl_t *lwl, uint8_t id, ...)
-// {
-//     va_list ap;
-//     uint32_t put_idx;
-//     struct lwl_data_buffer * lwl_data_buf = &lwl->lwl_data_buf;
-//     // Validate ID
-//     if (id == 0 || id >= LWL_MAX_NUM) {
-//         return; // Invalid ID
-//     }
-//     uint8_t length = 1 + 1 + message_num_arg[id] + 1; // length + id + args + CRC
-//     va_start(ap, id);
-//     put_idx = lwl_data_buf->put_idx % LWL_BUF_SIZE;
-//     lwl_data_buf->put_idx = (put_idx + length + 1) % LWL_BUF_SIZE; // +1 for START_BYTE
-//     // Write start byte
-//     *(lwl_data_buf->p_buf + put_idx) = LWL_START_BYTE;
-//     put_idx = (put_idx + 1) % LWL_BUF_SIZE;
-//     // Write length
-//     *(lwl_data_buf->p_buf + put_idx) = length;
-//     put_idx = (put_idx + 1) % LWL_BUF_SIZE;
-//     // Write ID
-//     *(lwl_data_buf->p_buf + put_idx) = id;
-//     uint8_t crc_data[1 + message_num_arg[id]]; // Buffer for CRC calculation
-//     crc_data[0] = id;
-//     put_idx = (put_idx + 1) % LWL_BUF_SIZE;
-//     // Write arguments and collect for CRC
-//     for (uint8_t i = 0; i <  message_num_arg[id]; i++) {
-//         uint32_t arg = va_arg(ap, unsigned);
-//         *(lwl_data_buf->p_buf + put_idx) = (uint8_t)(arg & 0xFF);
-//         crc_data[i + 1] = *(lwl_data_buf->p_buf + put_idx);
-//         put_idx = (put_idx + 1) % LWL_BUF_SIZE;
-//     }
-//     // Calculate and write CRC
-//     uint8_t crc = calculate_crc8(crc_data, 1 +  message_num_arg[id]);
-//     *(lwl_data_buf->p_buf + put_idx) = crc;
-//     if (lwl_data_buf->put_idx > LWL_BUF_THRESHOLD) 		//buffer nearly full
-//     {
-//     	lwl->lwl_buf_over_threshold = 1;
-//     }
-//     va_end(ap);
-// }
+
 
 void LWL(lwl_t *lwl, uint8_t id, va_list ap)
 {

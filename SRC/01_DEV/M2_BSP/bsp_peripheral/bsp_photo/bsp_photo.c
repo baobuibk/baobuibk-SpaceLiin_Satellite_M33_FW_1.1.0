@@ -26,6 +26,7 @@ static int8_t map_PD_position(int x);
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Public Variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 uint32_t photo_spi_set_count = 0;
 uint32_t photo_spi_count	 = 0;
+uint32_t num_sample          = 0;
 uint32_t current_channel	 = 0;
 uint8_t  is_spi_counter_finish = 0;
 
@@ -253,10 +254,11 @@ void LPSPI5_IRQHandler(void)
         // Push rx into buffer
 
 		//photo_data[current_channel][photo_spi_count] = rx;
-        uint8_t *addr = RAM_TEST_BASE + (2*photo_spi_count) ;
+        uint8_t *addr = RAM_TEST_BASE + (2 * num_sample) ;
 
         memcpy(addr  , &rx , 2); //copy to shared RAM
 
+        num_sample      += 1;
 		photo_spi_count += 1;
 
 		if (photo_spi_count < photo_spi_set_count)
