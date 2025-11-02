@@ -72,7 +72,7 @@ void Task_Experiment(void *pvParameters)
         systemStatus = (system_status_temp & 0xFF00) | COLLECTING_DATA;
         m33_data_set_u_lock(TABLE_ID_6, sys_status,systemStatus);
 
-        Update_Onboard_ADC();
+       // Update_Onboard_ADC();
         // if (ERROR_OK == BMP390_sensor_read(&bmp390_data))
         // {
         //     int16_t sensor_data = (int16_t) (bmp390_data.Pressure / 10.0);
@@ -281,7 +281,11 @@ static void task_experiment_DLS()
     vTaskDelay(2000);
     xSemaphoreGive(rptx_ram_mutex);
     vTaskDelay(1000);
+    uint16_t ext_laser_current;
+    m33_data_get_u_lock(TABLE_ID_5, cam_ls_intensity, &ext_laser_current);
+    DAC_code_from_percent = (uint8_t)((((float)ext_laser_current * 255.0) / 100.0));
 
+    bsp_laser_ext_set_dac(DAC_code_from_percent);
     for (current_channel = 0; current_channel < 4; current_channel++)
     {
         bsp_laser_ext_sw_on_manual(2*current_channel + 1);
@@ -296,7 +300,7 @@ static void task_experiment_DLS()
 
         bsp_laser_ext_all_sw_off();
     }
-
+    bsp_laser_ext_set_dac(0);
     bsp_expander_ctrl(POW_ONOFF_LASER,0);
     bsp_expander_ctrl(POW_ONOFF_PHOTO,0);
 
