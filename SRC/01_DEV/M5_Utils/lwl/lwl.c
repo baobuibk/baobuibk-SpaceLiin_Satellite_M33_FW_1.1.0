@@ -150,6 +150,8 @@ static const uint8_t message_num_arg[LWL_MAX_NUM] =
     0, //27
     0, //28
     0, //29
+    1, //30
+    1, //31
 };
 
 //static const uint8_t lwl_msg_table_size = sizeof(lwl_msg_table) / sizeof(lwl_msg_table[0]);

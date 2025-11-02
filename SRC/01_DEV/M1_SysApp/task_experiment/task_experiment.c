@@ -65,7 +65,7 @@ void Task_Experiment(void *pvParameters)
         vTaskDelay(2000);
         systemStatus = COLLECTING_DATA;
         m33_data_set_u_lock(TABLE_ID_6, sys_status,systemStatus);
-        // Update_Onboard_ADC();
+        Update_Onboard_ADC();
         // if (ERROR_OK == BMP390_sensor_read(&bmp390_data))
         // {
         //     int16_t sensor_data = (int16_t) (bmp390_data.Pressure / 10.0);

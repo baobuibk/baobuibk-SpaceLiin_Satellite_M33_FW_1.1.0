@@ -92,7 +92,8 @@ typedef enum {
     LWL_PUMP_FLOW_TOO_LOW, // NO ARGU
     LWL_PUMP_PASS_SETPOINT, // NO ARGU
     LWL_PUMP_TIMEOUT, // NO ARGU
-
+    LWL_PROFILE_HEATER_ON,
+    LWL_PROFILE_HEATER_OFF,
     LWL_MAX_NUM
 } log_msg_id_t;
 

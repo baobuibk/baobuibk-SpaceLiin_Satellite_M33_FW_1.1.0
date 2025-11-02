@@ -16,6 +16,7 @@
 #include "bsp_expander.h"
 #include "bsp_i2c_sensor.h"
 #include "error_codes.h"
+#include "lwl.h"
 
 
 
@@ -318,6 +319,7 @@ void task_temperature_control_use_bmp390()
             		{
             			prof0_ctrl_state[i] = TEMP_PROF0_HEAT;
          				PRINTF("\r\n[temperature_control]  profile %d heater ON, pri = %d sec=%d\r\n", i + 1,pri_temperature,sec_temperature);
+						LWL_SYS_LOG(LWL_PROFILE_HEATER_ON,LWL_1(i));
             		}
 				}
 				else
@@ -327,6 +329,8 @@ void task_temperature_control_use_bmp390()
             		if (TEMP_PROF0_STOP != prof0_ctrl_state[i])
             		{
             			prof0_ctrl_state[i] = TEMP_PROF0_STOP;
+						LWL_SYS_LOG(LWL_PROFILE_HEATER_OFF,LWL_1(i));
+
          				PRINTF("\r\n[temperature_control]  profile %d heater OFF, pri = %d sec=%d\r\n", i + 1,pri_temperature,sec_temperature);
             		}
 				}
