@@ -53,7 +53,7 @@ extern osSemaphore rptx_ram_mutex;
 void Task_Experiment(void *pvParameters)
 {
     remote_message_t message;
-    bmp390_data_t    bmp390_data;
+    // bmp390_data_t    bmp390_data;
     slf3s_readings_t flow_data;
     uint16_t systemStatus = IDLE;
     PRINTF("Experiment Control...\r\n");
@@ -66,13 +66,13 @@ void Task_Experiment(void *pvParameters)
         systemStatus = COLLECTING_DATA;
         m33_data_set_u_lock(TABLE_ID_6, sys_status,systemStatus);
         // Update_Onboard_ADC();
-        if (ERROR_OK == BMP390_sensor_read(&bmp390_data))
-        {
-            int16_t sensor_data = (int16_t) (bmp390_data.Pressure / 10.0);
-            m33_data_set_i_lock(TABLE_ID_6, sen1_data_1,sensor_data);
-            sensor_data = (int16_t)(bmp390_data.Temp);
-            m33_data_set_i_lock(TABLE_ID_6, sen1_data_0,sensor_data);
-        }
+        // if (ERROR_OK == BMP390_sensor_read(&bmp390_data))
+        // {
+        //     int16_t sensor_data = (int16_t) (bmp390_data.Pressure / 10.0);
+        //     m33_data_set_i_lock(TABLE_ID_6, sen1_data_1,sensor_data);
+        //     sensor_data = (int16_t)(bmp390_data.Temp * 10);
+        //     m33_data_set_i_lock(TABLE_ID_6, sen1_data_0,sensor_data);
+        // }
         
         if (ERROR_OK == Flow_sensor_read(&flow_data))
         {          

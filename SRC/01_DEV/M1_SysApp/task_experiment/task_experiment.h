@@ -12,6 +12,9 @@
 /* :::::::::: CMD Line Task ::::::::::::: */
 void Task_Experiment(void *pvParameters);
 
+void task_temperature_control_use_bmp390();
+
+
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ End of the program ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 #endif /* _TASK_EXPERIMENT_H_ */

@@ -14,6 +14,8 @@
 // #include "math.h"
 #include "fsl_debug_console.h"
 #include "bsp_expander.h"
+#include "bsp_i2c_sensor.h"
+#include "error_codes.h"
 
 
 
@@ -204,6 +206,128 @@ void task_temperature_control_profile_type0(void *param)
             		{
             			prof0_ctrl_state[i] = TEMP_PROF0_STOP;
          				PRINTF("\r\n[temperature_control]  profile %d heater OFF, pri = %d sec=%d\r\n", i,pri_temperature,sec_temperature);
+            		}
+				}
+			}
+		}
+	}
+}
+
+void task_temperature_control_use_bmp390()
+{
+	prof_type0_t 	 profile;
+	prof_type0_ena_t enaProfile;
+
+	bmp390_data_t    bmp390_data;
+	int16_t			 bmp390_temp;
+
+	// int16_t	 NTC_temperature[NUM_NTC];
+	int16_t	 pri_temperature, sec_temperature;
+	uint16_t heater_duty[8] = {0};
+	// portTick xLastWakeTime = osTaskGetTickCount();
+	
+	int16_t	 prof0_ctrl_state[6] = {TEMP_PROF0_STOP};
+	uint32_t i = 0;
+
+	// for ( i = 0; i < 6; i++)
+	// {
+	// 	pid_init(&PID_Controller[i], KP, KI, KD);
+	// }
+
+	while (1)
+	{
+        vTaskDelay(TEMPERTURE_CONTROL_INTERVAL); // Suspend task
+
+		if (ERROR_OK == BMP390_sensor_read(&bmp390_data))
+        {
+            int16_t sensor_data = (int16_t) (bmp390_data.Pressure / 10.0);
+            m33_data_set_i_lock(TABLE_ID_6, sen1_data_1,sensor_data);
+            sensor_data = (int16_t)(bmp390_data.Temp * 10.0);
+            m33_data_set_i_lock(TABLE_ID_6, sen1_data_0,sensor_data);
+        }
+
+		data_prof_type0_ena_get(&enaProfile);
+
+		if (!enaProfile.master_ena)
+		{
+			bsp_heater_list_turnoff(255);
+			continue;
+		}
+
+		for (i = 0; i < 8; i++)
+		{
+			m33_data_get_u(TABLE_ID_1, htr_0_set + i, &heater_duty[i]);
+		}
+
+		bmp390_temp = (int16_t)(bmp390_data.Temp * 10.0);
+
+		for ( i = 0; i < 6; i++)
+		{
+			data_prof_type0_get(&profile, i);
+
+			if (!enaProfile.prof_ena[i])
+			{
+				bsp_heater_list_turnoff(profile.heaters_list);
+				// PRINTF("\r\n[temperature_control]  profile %d heater OFF, pri = %d sec=%d\r\n", i,pri_temperature,sec_temperature);
+				if (TEMP_PROF0_STOP != prof0_ctrl_state[i])
+				{
+					prof0_ctrl_state[i] = TEMP_PROF0_STOP;
+					// PRINTF("\r\n[temperature_control]  profile %d heater OFF, pri = %d sec=%d\r\n", i,pri_temperature,sec_temperature);
+				}
+
+				continue;
+			}
+
+            PRINTF("\r\n[temperature_control] start profile %d\r\n", i);
+
+			pri_temperature = bmp390_temp;
+			sec_temperature = bmp390_temp;
+
+			if ((pri_temperature > (sec_temperature + TEMPERATURE_DELTA)) || (pri_temperature < (sec_temperature - TEMPERATURE_DELTA)))
+			{
+				// Error, turn off all heaters in the list (0x03 mean heater 0,1)
+				bsp_heater_list_turnoff(profile.heaters_list);
+
+                if (TEMP_PROF0_ERROR != prof0_ctrl_state[i])
+                {
+                	prof0_ctrl_state[i] = TEMP_PROF0_ERROR;
+                	// pid_init(&PID_Controller[i], KP, KI, KD);
+                    PRINTF("\r\n[temperature_control]  profile %d ERROR, pri = %d sec=%d\r\n", i,pri_temperature,sec_temperature);
+                }
+			}
+			else
+			{
+				if (pri_temperature < profile.setpoint)
+				{
+					// bsp_heater_list_turnon(profile.heaters_list, heater_duty);
+					bsp_expander_ctrl(POW_ONOFF_HEATER, 1);
+
+					for (uint16_t heater_index = 0; heater_index < 8; heater_index++)
+					{
+						if (profile.heaters_list & (1 << heater_index))
+						{	
+							PRINTF("\r\n[temperature_control]  heater %d ON, duty = %d\r\n", heater_index + 1, heater_duty[heater_index]);
+
+							bsp_heater_turnon(heater_index + 1, heater_duty[heater_index]);
+						}
+					}
+
+					PRINTF("\r\n[temperature_control]  profile %d heater ON, pri = %d sec=%d\r\n", i + 1,pri_temperature,sec_temperature);
+
+            		if (TEMP_PROF0_HEAT != prof0_ctrl_state[i])
+            		{
+            			prof0_ctrl_state[i] = TEMP_PROF0_HEAT;
+         				PRINTF("\r\n[temperature_control]  profile %d heater ON, pri = %d sec=%d\r\n", i + 1,pri_temperature,sec_temperature);
+            		}
+				}
+				else
+				{
+					bsp_heater_list_turnoff(profile.heaters_list);
+					PRINTF("\r\n[temperature_control]  profile %d heater OFF, pri = %d sec=%d\r\n", i + 1,pri_temperature,sec_temperature);
+            		if (TEMP_PROF0_STOP != prof0_ctrl_state[i])
+            		{
+            			prof0_ctrl_state[i] = TEMP_PROF0_STOP;
+         				PRINTF("\r\n[temperature_control]  profile %d heater OFF, pri = %d sec=%d\r\n", i + 1,pri_temperature,sec_temperature);
             		}
 				}
 			}

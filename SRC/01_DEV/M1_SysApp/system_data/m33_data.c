@@ -52,14 +52,14 @@ const int16_t table1_data_init[TABLE1_TOTAL_COUNT] = {
     0x00,  // tec_3_en
     0x00,  // usb_led_1_set
     0x00,  // usb_led_2_set
-    0x00,  // htr_0_set
-    0x00,  // htr_1_set
-    0x00,  // htr_2_set
-    0x00,  // htr_3_set
-    0x00,  // htr_4_set
-    0x00,  // htr_5_set
-    0x00,  // htr_6_set
-    0x00,  // htr_7_set
+    10,  // htr_0_set
+    10,  // htr_1_set
+    10,  // htr_2_set
+    10,  // htr_3_set
+    10,  // htr_4_set
+    10,  // htr_5_set
+    10,  // htr_6_set
+    10,  // htr_7_set
     0x00   // custom_cmd
 };
 
@@ -103,13 +103,13 @@ const int16_t table3_data_init[] = {
     200,  // temp_p_1_setpoint
     0x00,  // temp_p_1_ntcp
     2,  // temp_p_1_ntcs
-    0x01,  // temp_p_1_htr
+    0x1,  // temp_p_1_htr cai lai 
     0x00,  // temp_p_1_tec
 
     200,  // temp_p_2_setpoint
     4,  // temp_p_2_ntcp
     4,  // temp_p_2_ntcs
-    0x06,  // temp_p_2_htr
+    0x06,  // temp_p_2_htr 
     0x00,  // temp_p_2_tec
 
     250,  // temp_p_3_setpoint

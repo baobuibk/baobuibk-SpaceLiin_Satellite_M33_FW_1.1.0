@@ -481,8 +481,9 @@ void htr_0_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])
     {
         return;
     }
+    m33_data_set_u_lock(TABLE_ID_1,htr_0_set,(uint32_t)status);
 
-    bsp_heater_turnon(HEATER_PWM_1, status);
+   // bsp_heater_turnon(HEATER_PWM_1, status);
 }
 
 void htr_1_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
@@ -496,8 +497,9 @@ void htr_1_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])
     {
         return;
     }
+    m33_data_set_u_lock(TABLE_ID_1,htr_1_set,(uint32_t)status);
 
-    bsp_heater_turnon(HEATER_PWM_2, status);
+ //   bsp_heater_turnon(HEATER_PWM_2, status);
 }
 
 void htr_2_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
@@ -511,8 +513,9 @@ void htr_2_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])
     {
         return;
     }
+    m33_data_set_u_lock(TABLE_ID_1,htr_2_set,(uint32_t)status);
 
-    bsp_heater_turnon(HEATER_PWM_3, status);
+ //   bsp_heater_turnon(HEATER_PWM_3, status);
 }
 
 void htr_3_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
@@ -526,8 +529,9 @@ void htr_3_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])
     {
         return;
     }
+    m33_data_set_u_lock(TABLE_ID_1,htr_3_set,(uint32_t)status);
 
-    bsp_heater_turnon(HEATER_PWM_4, status);
+ //   bsp_heater_turnon(HEATER_PWM_4, status);
 }
 
 void htr_4_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
@@ -541,8 +545,9 @@ void htr_4_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])
     {
         return;
     }
+    m33_data_set_u_lock(TABLE_ID_1,htr_4_set,(uint32_t)status);
 
-    bsp_heater_turnon(HEATER_PWM_5, status);
+   // bsp_heater_turnon(HEATER_PWM_5, status);
 }
 
 void htr_5_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
@@ -556,8 +561,9 @@ void htr_5_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])
     {
         return;
     }
+    m33_data_set_u_lock(TABLE_ID_1,htr_5_set,(uint32_t)status);
 
-    bsp_heater_turnon(HEATER_PWM_6, status);
+  //  bsp_heater_turnon(HEATER_PWM_6, status);
 }
 
 void htr_6_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
@@ -571,8 +577,9 @@ void htr_6_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])
     {
         return;
     }
+    m33_data_set_u_lock(TABLE_ID_1,htr_6_set,(uint32_t)status);
 
-    bsp_heater_turnon(HEATER_PWM_7, status);
+ //   bsp_heater_turnon(HEATER_PWM_7, status);
 }
 
 void htr_7_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])      
@@ -586,8 +593,9 @@ void htr_7_set_cmd(uint32_t stdio, uint32_t argc, char *argv[])
     {
         return;
     }
+    m33_data_set_u_lock(TABLE_ID_1,htr_7_set,(uint32_t)status);
 
-    bsp_heater_turnon(HEATER_PWM_8, status);
+ //   bsp_heater_turnon(HEATER_PWM_8, status);
 }
 
 void custom_cmd_cmd(uint32_t stdio, uint32_t argc, char *argv[])     { (void)stdio;(void)argc;(void)argv; }//PRINTF("custom_cmd\n"); }

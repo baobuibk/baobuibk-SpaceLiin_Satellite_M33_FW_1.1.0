@@ -276,12 +276,14 @@ static void RPMSG_Tx_Task(void *pvParameters)
         if (lwl_is_sys_log_full())
         {
             xSemaphoreTake(rptx_ram_mutex, portMAX_DELAY);
+            m33_data_get_epoch_lock(&epoch);
             uint32_t length = lwl_sys_log_transfer();
             lwl_sys_log_clear_notification();
 
-            message.address = SYS_LOG;
-            message.data = length;
-            xQueueSend(remote_message_queue, &message, 1000);//send notification for log
+            snprintf(msg_buf, 100, "daily_SYSL_%d.dat",(unsigned int)epoch);
+            PRINTF("[ RPMSG_Tx_Task]file request with size = %d\r\n",length);
+            RemoteCall_SendFileRequest(length,msg_buf);
+          
             vTaskDelay(2000); //make sure data is read
             xSemaphoreGive(rptx_ram_mutex);
             PRINTF("\r\n[task_system_control] sent syslog notification\r\n", msg_buf);

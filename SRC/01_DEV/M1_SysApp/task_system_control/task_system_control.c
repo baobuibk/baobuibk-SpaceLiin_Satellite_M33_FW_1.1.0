@@ -11,6 +11,7 @@
 #include "lwl.h"
 #include "task_update_onboard_adc.h"
 #include "bsp_onboard_adc.h"
+#include "app_temperature.h"
 
 extern QueueHandle_t experiment_command_queue;
 extern QueueHandle_t remote_message_queue;
@@ -25,7 +26,7 @@ void task_system_control()
 
     while (1)
     {
-        vTaskDelay(1000);
+        task_temperature_control_use_bmp390();
         
     }
 }
