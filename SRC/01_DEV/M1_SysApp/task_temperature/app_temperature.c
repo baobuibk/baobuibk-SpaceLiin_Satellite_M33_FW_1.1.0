@@ -252,6 +252,7 @@ void task_temperature_control_use_bmp390()
 		if (!enaProfile.master_ena)
 		{
 			bsp_heater_list_turnoff(255);
+			m33_sys_status_set_off_all_profile();
 			continue;
 		}
 
@@ -269,6 +270,7 @@ void task_temperature_control_use_bmp390()
 			if (!enaProfile.prof_ena[i])
 			{
 				bsp_heater_list_turnoff(profile.heaters_list);
+				m33_sys_status_set_profile(i, 0);
 				// PRINTF("\r\n[temperature_control]  profile %d heater OFF, pri = %d sec=%d\r\n", i,pri_temperature,sec_temperature);
 				if (TEMP_PROF0_STOP != prof0_ctrl_state[i])
 				{

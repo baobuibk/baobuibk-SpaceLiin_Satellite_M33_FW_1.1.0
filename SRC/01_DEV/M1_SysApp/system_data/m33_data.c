@@ -660,3 +660,21 @@ uint32_t m33_sys_status_set_profile(uint32_t profile_index, uint32_t  status)
     osSemaphoreGiven(&m33_data_sem);   
     return (uint32_t)sem_ret; 
 }
+
+uint32_t m33_sys_status_set_off_all_profile()
+{
+
+    int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
+
+    if (sem_ret != pdPASS)
+    {
+        return (uint32_t)sem_ret;
+    }
+    uint16_t system_status;
+    sem_ret += m33_data_get_u(TABLE_ID_6, sys_status, &system_status);
+    system_status &= 0x00FF;
+    sem_ret += m33_data_set_u(TABLE_ID_6, sys_status, system_status);
+
+    osSemaphoreGiven(&m33_data_sem);   
+    return (uint32_t)sem_ret; 
+}
