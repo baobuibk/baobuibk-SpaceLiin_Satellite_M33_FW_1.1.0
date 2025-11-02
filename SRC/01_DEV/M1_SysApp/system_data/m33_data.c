@@ -147,8 +147,8 @@ const int16_t table5_data_init[] = {
     0,  // exp_mon_delay
     28800,  // exp_mon_interval
 
-    50,  // dls_ls_intensity 
-    30,  // cam_ls_intensity
+    25,  // dls_ls_intensity 
+    15,  // cam_ls_intensity
 
     100,  // exp_samp_rate
     1,  // exp_pre_time

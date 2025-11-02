@@ -581,6 +581,8 @@ static void bsp_core_init_onboard_adc_spi(void)
     srcClock_Hz = ONBOARD_ADC_SPI_CLK_FREQ;
     LPSPI_MasterInit(ONBOARD_ADC_SPI_BASE, &masterConfig, srcClock_Hz);
 
+    
+
     // Disable before config
     ONBOARD_ADC_SPI_BASE->CR &= ~LPSPI_CR_MEN_MASK;
 
