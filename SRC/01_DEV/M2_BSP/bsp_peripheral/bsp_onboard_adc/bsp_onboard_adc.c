@@ -129,7 +129,7 @@ uint32_t bsp_onboard_adc_init()
     // ad4114_read_id(&onboard_adc_dev0, &id);
     // PRINTF("> [bsp_onboard_adc_init] ADC 0 CHIP ID %x\r\n", id);
 
-	// // 0xFFFF Enable all channel of ADC 0
+	// 0xFFFF Enable all channel of ADC 0
 	// ret = bsp_onboard_adc_config_channels(&onboard_adc_dev0, 0xFFFF);
 
 	// if (ret != ERROR_OK)
@@ -184,6 +184,8 @@ uint32_t bsp_onboard_adc_update_raw()
 	uint32_t ret;
 
 	spi_io_onboard_adc_config(&onboard_adc_spi, 1);
+
+    // vTaskDelay(100);
 
     // ret = ad4114_read_all(&onboard_adc_dev0, 500u, &out_mask_adc0, adc0_raw);
 
@@ -464,11 +466,11 @@ static uint32_t spi_io_onboard_adc_config(SPI_Io_t *me, uint8_t is_flip)
     uint32_t temp_tcr = base->TCR;
 
     /* Clear CPOL and CPHA bits first */
-    temp_tcr &= ~(LPSPI_TCR_CPOL_MASK | LPSPI_TCR_CPHA_MASK);
+    // temp_tcr &= ~(LPSPI_TCR_CPOL_MASK | LPSPI_TCR_CPHA_MASK);
 
-    // Implement cpol, cpha accordingly
-    temp_tcr |=  (LPSPI_TCR_CPOL(1) | LPSPI_TCR_CPHA(1));
-    base->TCR = temp_tcr;
+    // // Implement cpol, cpha accordingly
+    // temp_tcr |=  (LPSPI_TCR_CPOL(1) | LPSPI_TCR_CPHA(1));
+    // base->TCR = temp_tcr;
 
     /* Enable SPI again */
     base->CR |= (LPSPI_CR_MEN_MASK);

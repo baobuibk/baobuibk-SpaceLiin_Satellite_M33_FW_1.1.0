@@ -314,6 +314,7 @@ void task_temperature_control_use_bmp390()
 					}
 
 					PRINTF("\r\n[temperature_control]  profile %d heater ON, pri = %d sec=%d\r\n", i + 1,pri_temperature,sec_temperature);
+					m33_sys_status_set_profile(i, 1);
 
             		if (TEMP_PROF0_HEAT != prof0_ctrl_state[i])
             		{
@@ -326,6 +327,7 @@ void task_temperature_control_use_bmp390()
 				{
 					bsp_heater_list_turnoff(profile.heaters_list);
 					PRINTF("\r\n[temperature_control]  profile %d heater OFF, pri = %d sec=%d\r\n", i + 1,pri_temperature,sec_temperature);
+					m33_sys_status_set_profile(i, 0);
             		if (TEMP_PROF0_STOP != prof0_ctrl_state[i])
             		{
             			prof0_ctrl_state[i] = TEMP_PROF0_STOP;

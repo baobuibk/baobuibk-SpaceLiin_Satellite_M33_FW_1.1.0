@@ -639,3 +639,24 @@ uint32_t m33_get_set_mon_interval(uint16_t mon_interval)
     osSemaphoreGiven(&m33_data_sem);   
     return (uint32_t)sem_ret; 
 }
+
+
+
+uint32_t m33_sys_status_set_profile(uint32_t profile_index, uint32_t  status)
+{
+    if (profile_index > 6) return 1;
+    int sem_ret = osSemaphoreTake(&m33_data_sem, M33_DATA_SEMAPHOR_TIMEOUT);
+
+    if (sem_ret != pdPASS)
+    {
+        return (uint32_t)sem_ret;
+    }
+    uint16_t system_status;
+    sem_ret += m33_data_get_u(TABLE_ID_6, sys_status, &system_status);
+    if (status) system_status |= (1 << (8 + profile_index));
+    else system_status &= ~(1 << (8 + profile_index));
+    sem_ret += m33_data_set_u(TABLE_ID_6, sys_status, system_status);
+
+    osSemaphoreGiven(&m33_data_sem);   
+    return (uint32_t)sem_ret; 
+}
