@@ -52,9 +52,9 @@ void task_temperature_control_profile_type0()
 	int16_t	 prof0_ctrl_state[6] = {TEMP_PROF0_STOP};
 	uint32_t i = 0;
 
-	while (1)
-	{
-        vTaskDelay(TEMPERTURE_CONTROL_INTERVAL); // Suspend task
+	// while (1)
+	// {
+    //     vTaskDelay(TEMPERTURE_CONTROL_INTERVAL); // Suspend task
 
 		data_prof_type0_ena_get(&enaProfile);
 
@@ -64,7 +64,8 @@ void task_temperature_control_profile_type0()
 
 			bsp_heater_list_turnoff(255);
 			m33_sys_status_set_off_all_profile();
-			continue;
+			//continue;
+			return ;
 		}
 
 		m33_data_ntc_temp_get(NTC_temperature);
@@ -163,7 +164,7 @@ void task_temperature_control_profile_type0()
 				}
 			}
 		}
-	}
+//	}
 }
 
 
@@ -188,9 +189,9 @@ void task_temperature_control_use_bmp390()
 	// 	pid_init(&PID_Controller[i], KP, KI, KD);
 	// }
 
-	while (1)
-	{
-        vTaskDelay(TEMPERTURE_CONTROL_INTERVAL); // Suspend task
+	// while (1)
+	// {
+    //     vTaskDelay(TEMPERTURE_CONTROL_INTERVAL); // Suspend task
 
 		if (ERROR_OK == BMP390_sensor_read(&bmp390_data))
         {
@@ -206,7 +207,8 @@ void task_temperature_control_use_bmp390()
 		{
 			bsp_heater_list_turnoff(255);
 			m33_sys_status_set_off_all_profile();
-			continue;
+			//continue;
+			return;
 		}
 
 		for (i = 0; i < 8; i++)
@@ -293,5 +295,5 @@ void task_temperature_control_use_bmp390()
 				}
 			}
 		}
-	}
+//	}
 }

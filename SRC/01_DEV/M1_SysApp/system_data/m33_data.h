@@ -302,5 +302,6 @@ uint32_t m33_data_get_remaining_time_lock(uint32_t * value);
 uint32_t m33_sys_status_set_profile(uint32_t profile_index, uint32_t  status);
 uint32_t m33_sys_status_set_off_all_profile();
 
-
+void m33_set_ADC_status(uint16_t status);
+uint16_t m33_get_ADC_status();
 #endif /* MIDDLEWARE_FLIGHTSYSTEM_SYSTEM_M33_DATA_H_ */

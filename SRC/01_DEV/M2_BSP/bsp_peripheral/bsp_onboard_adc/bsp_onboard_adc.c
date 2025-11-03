@@ -105,7 +105,7 @@ ad4114_t onboard_adc_dev1 =
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Public Function ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 uint32_t bsp_onboard_adc_init()
 {
-	uint32_t ret;
+	uint32_t ret = 0;
     uint16_t id = 0;
     
 	spi_io_onboard_adc_config(&onboard_adc_spi, 1);
@@ -115,7 +115,7 @@ uint32_t bsp_onboard_adc_init()
         __NOP();
     }
     
-	ret = ad4114_init(&onboard_adc_dev0, &onboard_adc_spi, &onboard_adc0_cs);
+	ret += ad4114_init(&onboard_adc_dev0, &onboard_adc_spi, &onboard_adc0_cs);
 
     if (ret != ERROR_OK)
 	{
@@ -126,11 +126,12 @@ uint32_t bsp_onboard_adc_init()
         PRINTF("> [bsp_onboard_adc_init] SPI FOR ADC 0 CHIP INIT OK\r\n");
     }
 
-    ad4114_read_id(&onboard_adc_dev0, &id);
+    ret += ad4114_read_id(&onboard_adc_dev0, &id);
+    if (0x30de != id) ret +=1;
     PRINTF("> [bsp_onboard_adc_init] ADC 0 CHIP ID %x\r\n", id);
 
 	
-	ret = bsp_onboard_adc_config_channels(&onboard_adc_dev0, 0xFFFF);
+	ret += bsp_onboard_adc_config_channels(&onboard_adc_dev0, 0xFFFF);
 
 	if (ret != ERROR_OK)
 	{
@@ -141,7 +142,7 @@ uint32_t bsp_onboard_adc_init()
         PRINTF("> [bsp_onboard_adc_init] SPI FOR ADC 0 CHIP INIT OK\r\n");
     }
 
-	ret = ad4114_init(&onboard_adc_dev1, &onboard_adc_spi, &onboard_adc1_cs);
+	ret += ad4114_init(&onboard_adc_dev1, &onboard_adc_spi, &onboard_adc1_cs);
 
 	if (ret != ERROR_OK)
 	{
@@ -152,12 +153,13 @@ uint32_t bsp_onboard_adc_init()
         PRINTF("> [bsp_onboard_adc_init] SPI FOR ADC 1 CHIP INIT OK\r\n");
     }
 
-    ad4114_read_id(&onboard_adc_dev1, &id);
+    ret += ad4114_read_id(&onboard_adc_dev1, &id);
+    if (0x30de != id) ret +=1;
     PRINTF("> [bsp_onboard_adc_init] ADC 1 CHIP ID %x\r\n", id);
 
 	// ((1 << 10) - 1) << 2: Enable 10 pin, start at pin 2
     // start at channel 2 to channel 11
-	ret = bsp_onboard_adc_config_channels(&onboard_adc_dev1, (((1 << 10) - 1) << 2));
+	ret += bsp_onboard_adc_config_channels(&onboard_adc_dev1, (((1 << 10) - 1) << 2));
 
     if (ret != ERROR_OK)
 	{
@@ -168,14 +170,15 @@ uint32_t bsp_onboard_adc_init()
         PRINTF("> [bsp_onboard_adc_init] SPI FOR ADC 1 CHIP INIT OK\r\n");
     }
 
-	spi_io_onboard_adc_config(&onboard_adc_spi, 0);
+	ret += spi_io_onboard_adc_config(&onboard_adc_spi, 0);
 
     for (uint16_t i = 0; i < 10000; i++)
     {
         __NOP();
     }
-
-    return ERROR_OK;
+    if (ret) m33_set_ADC_status(1);
+    else m33_set_ADC_status(0);
+    return ret;
 }
 
 uint32_t bsp_onboard_adc_update_raw()

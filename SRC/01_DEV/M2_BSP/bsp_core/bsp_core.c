@@ -590,7 +590,7 @@ static void bsp_core_init_onboard_adc_spi(void)
     ONBOARD_ADC_SPI_BASE->CFGR1 &= ~LPSPI_CFGR1_NOSTALL_MASK;
 
     // Force 8-bit frames; choose PCS1; hold PCS internally (no real pin toggling)
-    ONBOARD_ADC_SPI_BASE->TCR = (ONBOARD_ADC_SPI_BASE->TCR & ~(LPSPI_TCR_FRAMESZ_MASK |
+    ONBOARD_ADC_SPI_BASE->TCR = (ONBOARD_ADC_SPI_BASE->TCR & (~(LPSPI_TCR_FRAMESZ_MASK |
                             LPSPI_TCR_RXMSK_MASK   |
                             LPSPI_TCR_TXMSK_MASK   |
                             LPSPI_TCR_PCS_MASK     |
@@ -602,7 +602,7 @@ static void bsp_core_init_onboard_adc_spi(void)
             |  LPSPI_TCR_TXMSK(0)
  //           |  LPSPI_TCR_CONT(1)            // keep PCS asserted internally
             |  LPSPI_TCR_CONTC(1)
-            |  LPSPI_TCR_PRESCALE(64));
+            |  LPSPI_TCR_PRESCALE(64)));
 
     // Clean state
     ONBOARD_ADC_SPI_BASE->CR |=  (LPSPI_CR_RTF_MASK | LPSPI_CR_RRF_MASK);       // flush TX/RX FIFOs

@@ -26,7 +26,16 @@ void task_system_control()
 
     while (1)
     {
-        task_temperature_control_use_bmp390();
+        vTaskDelay(2000);
+        if (0 == m33_get_ADC_status()) 
+        {
+            PRINTF("Use task_temperature_control_profile_type0\r\n");
+            task_temperature_control_profile_type0();
+        }
+        else{
+            PRINTF("Use task_temperature_control_use_bmp390\r\n");
+            task_temperature_control_use_bmp390();
+        }
         
     }
 }
