@@ -185,17 +185,17 @@ uint32_t bsp_onboard_adc_update_raw()
 
 	spi_io_onboard_adc_config(&onboard_adc_spi, 1);
 
-    // vTaskDelay(100);
+    vTaskDelay(100);
 
-    // ret = ad4114_read_all(&onboard_adc_dev0, 500u, &out_mask_adc0, adc0_raw);
+    ret = ad4114_read_all(&onboard_adc_dev0, 500u, &out_mask_adc0, adc0_raw);
 
 
-	// if (ret != ERROR_OK)
-	// {
-    //     PRINTF("[bsp_onboard_adc_update_raw] ERROR\r\n");
-	// 	spi_io_onboard_adc_config(&onboard_adc_spi, 0);
-	// 	return ret;
-	// }
+	if (ret != ERROR_OK)
+	{
+        PRINTF("[bsp_onboard_adc_update_raw] ERROR\r\n");
+		spi_io_onboard_adc_config(&onboard_adc_spi, 0);
+		return ret;
+	}
 
 	ret = ad4114_read_all(&onboard_adc_dev1, 500u, &out_mask_adc1, adc1_raw);
 
@@ -416,7 +416,7 @@ static uint32_t spi_io_onboard_adc_config(SPI_Io_t *me, uint8_t is_flip)
     {
         return ERROR_INVALID_PARAM;
     }
-
+   return 0;
     int sem_ret = osSemaphoreTake(&me->lock, 1000);
 
     if (sem_ret != pdPASS)
@@ -466,11 +466,29 @@ static uint32_t spi_io_onboard_adc_config(SPI_Io_t *me, uint8_t is_flip)
     uint32_t temp_tcr = base->TCR;
 
     /* Clear CPOL and CPHA bits first */
-    // temp_tcr &= ~(LPSPI_TCR_CPOL_MASK | LPSPI_TCR_CPHA_MASK);
+    temp_tcr &= ~(LPSPI_TCR_CPOL_MASK | LPSPI_TCR_CPHA_MASK);
 
-    // // Implement cpol, cpha accordingly
-    // temp_tcr |=  (LPSPI_TCR_CPOL(1) | LPSPI_TCR_CPHA(1));
-    // base->TCR = temp_tcr;
+    // Implement cpol, cpha accordingly
+    temp_tcr |=  (LPSPI_TCR_CPOL(1) | LPSPI_TCR_CPHA(1));
+    temp_tcr |=   LPSPI_TCR_PRESCALE(64);
+  //  base->TCR = temp_tcr;
+     ONBOARD_ADC_SPI_BASE->TCR = (ONBOARD_ADC_SPI_BASE->TCR & ~(LPSPI_TCR_FRAMESZ_MASK |
+                            LPSPI_TCR_RXMSK_MASK   |
+                            LPSPI_TCR_TXMSK_MASK   |
+                            LPSPI_TCR_PCS_MASK     |
+                           // LPSPI_TCR_CONT_MASK    |
+                            LPSPI_TCR_CONTC_MASK) |
+              LPSPI_TCR_FRAMESZ(7)         // 8-bit
+            |  LPSPI_TCR_PCS(1)             // "PCS1" (not pin-muxed)
+            |  LPSPI_TCR_RXMSK(0)
+            |  LPSPI_TCR_TXMSK(0)
+ //           |  LPSPI_TCR_CONT(1)            // keep PCS asserted internally
+            |  LPSPI_TCR_CONTC(1)
+            |  LPSPI_TCR_PRESCALE(64));
+
+    // Clean state
+    ONBOARD_ADC_SPI_BASE->CR |=  (LPSPI_CR_RTF_MASK | LPSPI_CR_RRF_MASK);       // flush TX/RX FIFOs
+    ONBOARD_ADC_SPI_BASE->SR  =   LPSPI_SR_WCF_MASK | LPSPI_SR_FCF_MASK | LPSPI_SR_TCF_MASK; // clear sticky
 
     /* Enable SPI again */
     base->CR |= (LPSPI_CR_MEN_MASK);
