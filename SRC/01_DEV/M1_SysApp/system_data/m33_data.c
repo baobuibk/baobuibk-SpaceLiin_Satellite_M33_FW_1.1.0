@@ -108,8 +108,8 @@ const int16_t table3_data_init[] = {
     0x00,  // temp_p_6_en
 
     200,  // temp_p_1_setpoint
-    0x00,  // temp_p_1_ntcp
-    2,  // temp_p_1_ntcs
+    0,  // temp_p_1_ntcp mac dinh la 0
+    2,  // temp_p_1_ntcs mac dinh la 2
     0x1,  // temp_p_1_htr cai lai 
     0x00,  // temp_p_1_tec
 
@@ -154,7 +154,7 @@ const int16_t table5_data_init[] = {
     0,  // exp_mon_delay
     28800,  // exp_mon_interval
 
-    50,  // dls_ls_intensity 
+    25,  // dls_ls_intensity 
     15,  // cam_ls_intensity
 
     100,  // exp_samp_rate

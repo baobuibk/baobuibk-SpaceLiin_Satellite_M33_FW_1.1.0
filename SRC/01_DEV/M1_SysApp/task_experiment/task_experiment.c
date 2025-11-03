@@ -71,8 +71,9 @@ void Task_Experiment(void *pvParameters)
         m33_data_get_u_lock(TABLE_ID_6, sys_status,&system_status_temp);
         systemStatus = (system_status_temp & 0xFF00) | COLLECTING_DATA;
         m33_data_set_u_lock(TABLE_ID_6, sys_status,systemStatus);
-        if (0 == m33_get_ADC_status()) Update_Onboard_ADC();
-       // Update_Onboard_ADC();
+       // if (0 == m33_get_ADC_status()) Update_Onboard_ADC();
+       // else PRINTF("ADC value error\r\n");
+        Update_Onboard_ADC();
         // if (ERROR_OK == BMP390_sensor_read(&bmp390_data))
         // {
         //     int16_t sensor_data = (int16_t) (bmp390_data.Pressure / 10.0);

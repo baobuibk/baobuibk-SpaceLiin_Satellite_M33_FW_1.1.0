@@ -68,6 +68,8 @@ void task_temperature_control_profile_type0()
 			return ;
 		}
 
+		PRINTF("[task_temperature_control_profile_type0] getting NTC val \r\n");
+
 		m33_data_ntc_temp_get(NTC_temperature);
 		for (i = 0; i < 8; i++)
 		{
@@ -79,7 +81,7 @@ void task_temperature_control_profile_type0()
 
 			data_prof_type0_get(&profile, i);
 
-			if (!enaProfile.prof_ena[i])
+			if (!(enaProfile.prof_ena[i] & 0x000F))
 			{
 				bsp_heater_list_turnoff(profile.heaters_list);
 				m33_sys_status_set_profile(i, 0);
@@ -87,9 +89,9 @@ void task_temperature_control_profile_type0()
 				if (TEMP_PROF0_STOP != prof0_ctrl_state[i])
 				{
 					prof0_ctrl_state[i] = TEMP_PROF0_STOP;
-					// PRINTF("\r\n[temperature_control]  profile %d heater OFF, pri = %d sec=%d\r\n", i,pri_temperature,sec_temperature);
 				}
 
+			 PRINTF("\r\n[temperature_control]  profile %d disabled\r\n", i);
 				continue;
 			}
 

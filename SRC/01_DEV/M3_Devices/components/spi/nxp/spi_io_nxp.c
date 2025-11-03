@@ -280,6 +280,10 @@ uint32_t spi_io_set_mode(SPI_Io_t *me, uint8_t spi_mode)
 
     // Implement cpol, cpha accordingly
     temp_tcr |=  (LPSPI_TCR_CPOL(cpol) | LPSPI_TCR_CPHA(cpha));
+
+
+    temp_tcr |=  (LPSPI_TCR_PRESCALE(128));
+
     base->TCR = temp_tcr;
 
     /* Enable SPI again */

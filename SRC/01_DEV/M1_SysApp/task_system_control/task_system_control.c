@@ -21,18 +21,22 @@ extern int16_t NTC_temp_C[NTC_CHANNEL_NUM];
 void task_system_control()
 {
     // Create system control task here
+    uint16_t master_ena = 0;
 
     PRINTF("===== [System Control Started] =====\r\n");
 
     while (1)
     {
         vTaskDelay(2000);
-        if (0 == m33_get_ADC_status()) 
+        m33_data_get_u_lock(TABLE_ID_3, temp_master_en, &master_ena);
+        if (0 == master_ena) continue;
+        if (0 ==( master_ena & 0xF000)) 
         {
             PRINTF("Use task_temperature_control_profile_type0\r\n");
             task_temperature_control_profile_type0();
         }
-        else{
+        else if (0x1000 == ( master_ena & 0xF000))
+        {
             PRINTF("Use task_temperature_control_use_bmp390\r\n");
             task_temperature_control_use_bmp390();
         }
