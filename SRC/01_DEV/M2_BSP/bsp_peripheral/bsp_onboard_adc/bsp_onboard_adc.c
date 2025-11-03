@@ -237,14 +237,19 @@ void bsp_convert_TEC()
 
 void bsp_convert_NTC()
 {
-	//int16_t NTC_temp_C[NTC_CHANNEL_NUM] = {0};
+	int16_t temp;
+    uint16_t ret = 0;
 	
 	for (uint8_t index = 0; index < NTC_CHANNEL_NUM; index++)
 	{
-		NTC_temp_C[NTC_channel_map[index]] = ntc_convert_from_volt(adc0_volt_mv[PIN_NTC_CHANNEL_12 + index], 5000.0);
+		 temp = ntc_convert_from_volt(adc0_volt_mv[PIN_NTC_CHANNEL_12 + index], 5000.0);
+         NTC_temp_C[NTC_channel_map[index]] = temp;
+        if ((-100 > temp) || (1000 < temp)) ret++;
     }
 
     m33_data_update_NTC(NTC_temp_C);
+    if (ret) m33_set_ADC_status(1);
+    else m33_set_ADC_status(0);
 
     // for (uint8_t index = 0; index < NTC_CHANNEL_NUM; index++)
 	// {
