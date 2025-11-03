@@ -296,7 +296,7 @@ static void task_experiment_DLS()
         message.address = CAM_CAPTURE;
         message.data = current_channel;
         xQueueSend(remote_message_queue, &message, 1000);//send notification for log
-        vTaskDelay(5000);
+        vTaskDelay(10000); //add more time for camera capture
 
         bsp_laser_ext_all_sw_off();
     }
@@ -327,7 +327,7 @@ static void fluidic_test_flow()
     message.data = 4;
     xQueueSend(remote_message_queue, &message, 1000);//send notification for log
     PRINTF("\r\n[task_system_control] sent DLS notification with size:%d\r\n", message.data);
-    vTaskDelay(2000);
+    vTaskDelay(10000); //add more time for CAM capture
 
     // 1. pump on
     // make sure valve dir is on dummy
@@ -364,7 +364,7 @@ static void fluidic_test_flow()
     message.data = 4;
     xQueueSend(remote_message_queue, &message, 1000);//send notification for log
     PRINTF("\r\n[task_system_control] sent DLS notification with size:%d\r\n", message.data);
-    vTaskDelay(2000);
+    vTaskDelay(10000); //add more time for CAM capture
 
     xSemaphoreTake(rptx_ram_mutex, portMAX_DELAY); // claim RAM
     message.data = lwl_data_transfer();
@@ -417,7 +417,7 @@ static void main_exp_fluidic_flow()
     message.data = 4;
     xQueueSend(remote_message_queue, &message, 1000);//send notification for log
     PRINTF("\r\n[task_system_control] sent DLS notification with size:%d\r\n", message.data);
-    vTaskDelay(2000);
+    vTaskDelay(10000);  //add more time for CAM capture
 
     // 1. pump on
     // make sure valve dir is on dummy
@@ -511,7 +511,7 @@ static void main_exp_fluidic_flow()
     message.data = 4;
     xQueueSend(remote_message_queue, &message, 1000);//send notification for log
     PRINTF("\r\n[task_system_control] sent DLS notification with size:%d\r\n", message.data);
-    vTaskDelay(2000);
+    vTaskDelay(10000); //add more time for CAM capture
 
     PRINTF("[exp] main_exp_fluidic_flow exited\r\n");
 }
@@ -531,7 +531,7 @@ static void task_experiment_test_ext_laser(uint8_t dac_code)
     message.address = CAM_CAPTURE;
     message.data = 10;
     xQueueSend(remote_message_queue, &message, 1000);//send notification for log
-    vTaskDelay(5000);
+    vTaskDelay(10000);  //add more time for CAM capture
 
     bsp_laser_ext_all_sw_off();
 
@@ -550,7 +550,7 @@ static void task_experiment_test_ext_laser(uint8_t dac_code)
     message.address = CAM_CAPTURE;
     message.data = 12;
     xQueueSend(remote_message_queue, &message, 1000);//send notification for log
-    vTaskDelay(5000);
+    vTaskDelay(10000);  //add more time for CAM capture
 
     bsp_laser_ext_all_sw_off();
 
