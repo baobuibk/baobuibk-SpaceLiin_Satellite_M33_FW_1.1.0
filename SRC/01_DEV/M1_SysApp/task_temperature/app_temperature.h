@@ -8,9 +8,10 @@
 #ifndef APP_INCLUDE_APP_SYSTEM_APP_TEMPERATURE_H_
 #define APP_INCLUDE_APP_SYSTEM_APP_TEMPERATURE_H_
 
-void task_temperature_control_profile_type0(void *param);
+void task_temperature_control_profile_type0();
 void taskTemperatureProfile1(void *param);
 
 void task_temperature_control_use_bmp390();
+void task_temperature_control_profile_type0();
 
 #endif /* APP_INCLUDE_APP_SYSTEM_APP_TEMPERATURE_H_ */

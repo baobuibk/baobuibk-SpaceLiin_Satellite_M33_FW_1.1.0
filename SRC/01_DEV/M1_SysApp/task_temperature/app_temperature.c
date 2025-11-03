@@ -17,6 +17,7 @@
 #include "bsp_i2c_sensor.h"
 #include "error_codes.h"
 #include "lwl.h"
+#include "app_temperature.h"
 
 
 
@@ -36,86 +37,20 @@ enum
 	TEMP_PROF0_ERROR
 };
 #define NUM_NTC 12
-// Struct để lưu trạng thái PID (tránh biến toàn cục)
-// typedef struct PID_Controller{
-//     float Kp;      // Proportional gain
-//     float Ki;      // Integral gain
-//     float Kd;      // Derivative gain
-//     float integral; // Tích phân lỗi hiện tại
-//     float prev_error; // Lỗi trước đó
-//     uint32_t prev_output;
-// } PID_Controller_t;
 
-
-// PID_Controller_t PID_Controller[6];
-
-// Hàm khởi tạo PID với tham số đầu vào
-// void pid_init(PID_Controller_t * pid, double kp, double ki, double kd) ;
-// void pid_init(PID_Controller_t * pid, double kp, double ki, double kd) {
-
-//     pid->Kp = kp;
-//     pid->Ki = ki;
-//     pid->Kd = kd;
-//     pid->integral = 0.0;
-//     pid->prev_error = 0.0;
-//     return ;
-// }
-
-// Hàm cập nhật PID: nhận pointer đến PID struct, setpoint, current_temp, dt
-// Trả về output (0-100), cập nhật trạng thái bên trong struct
-// float pid_update(PID_Controller_t *pid, int32_t setpoint, int32_t current_temp, uint32_t dt) ;
-
-// float pid_update(PID_Controller_t *pid, int32_t setpoint, int32_t current_temp, uint32_t dt) {
-//     float error = setpoint - current_temp;
-
-//     if (fabs(error) <= TEMPERATURE_CONTROL_DEADBAND) {
-
-//             return pid->prev_output;  // Giả sử lưu prev_output trong struct
-//         }
-//     // Tích phân lỗi
-//     pid->integral += error * dt;
-
-//     // Đạo hàm lỗi
-//     float derivative = (error - pid->prev_error) / dt;
-
-//     // Tính output PID
-//     float output = pid->Kp * error + pid->Ki * pid->integral + pid->Kd * derivative;
-//     pid->prev_error = error;
-
-//     // Giới hạn output trong 0-100 với anti-windup cơ bản
-//     if (output > 100.0) {
-//         output = 100.0;
-//         // Anti-windup: không tích lũy integral nếu saturated và error cùng dấu
-//         if (error > 0.0) pid->integral -= error * dt;
-//     } else if (output < 0.0) {
-//         output = 0.0;
-//         if (error < 0.0) pid->integral -= error * dt;
-//     }
-//     pid->prev_output = output;
-//     return output;
-// }
-
-
-// Định nghĩa hàm CLAMP để giới hạn giá trị trong khoảng [lo, hi]
-// #define CLAMP(x, lo, hi) ((x) < (lo) ? (lo) : ((x) > (hi) ? (hi) : (x)))
 
 /* Hàm điều khiển nhiệt độ cho profile 0 */
-void task_temperature_control_profile_type0(void *param)
+void task_temperature_control_profile_type0()
 {
 	prof_type0_t 	 profile;
 	prof_type0_ena_t enaProfile;
 
 	int16_t	 NTC_temperature[NUM_NTC];
 	int16_t	 pri_temperature, sec_temperature;
-	// portTick xLastWakeTime = osTaskGetTickCount();
+	uint16_t heater_duty[8] = {0};
 	
 	int16_t	 prof0_ctrl_state[6] = {TEMP_PROF0_STOP};
 	uint32_t i = 0;
-
-	// for ( i = 0; i < 6; i++)
-	// {
-	// 	pid_init(&PID_Controller[i], KP, KI, KD);
-	// }
 
 	while (1)
 	{
@@ -125,11 +60,18 @@ void task_temperature_control_profile_type0(void *param)
 
 		if (!enaProfile.master_ena)
 		{
+			bsp_expander_ctrl(POW_ONOFF_HEATER, 0);
+
 			bsp_heater_list_turnoff(255);
+			m33_sys_status_set_off_all_profile();
 			continue;
 		}
 
 		m33_data_ntc_temp_get(NTC_temperature);
+		for (i = 0; i < 8; i++)
+		{
+			m33_data_get_u(TABLE_ID_1, htr_0_set + i, &heater_duty[i]);
+		}
 
 		for ( i = 0; i < 6; i++)
 		{
@@ -139,6 +81,7 @@ void task_temperature_control_profile_type0(void *param)
 			if (!enaProfile.prof_ena[i])
 			{
 				bsp_heater_list_turnoff(profile.heaters_list);
+				m33_sys_status_set_profile(i, 0);
 				// PRINTF("\r\n[temperature_control]  profile %d heater OFF, pri = %d sec=%d\r\n", i,pri_temperature,sec_temperature);
 				if (TEMP_PROF0_STOP != prof0_ctrl_state[i])
 				{
@@ -173,6 +116,7 @@ void task_temperature_control_profile_type0(void *param)
 			{
 				// Error, turn off all heaters in the list (0x03 mean heater 0,1)
 				bsp_heater_list_turnoff(profile.heaters_list);
+				m33_sys_status_set_profile(i, 0);
 
                 if (TEMP_PROF0_ERROR != prof0_ctrl_state[i])
                 {
@@ -183,29 +127,37 @@ void task_temperature_control_profile_type0(void *param)
 			}
 			else
 			{
-				uint32_t heater_duty = 50;
 				if (pri_temperature < profile.setpoint)
 				{
 					// bsp_heater_list_turnon(profile.heaters_list, heater_duty);
 					bsp_expander_ctrl(POW_ONOFF_HEATER, 1);
-					bsp_heater_list_turnon(profile.heaters_list, heater_duty);
+					for (uint16_t heater_index = 0; heater_index < 8; heater_index++)
+						{
+							if (profile.heaters_list & (1 << heater_index))
+							{	
+								PRINTF("\r\n[temperature_control]  heater %d ON, duty = %d\r\n", heater_index + 1, heater_duty[heater_index]);
 
+								bsp_heater_turnon(heater_index + 1, heater_duty[heater_index]);
+							}
+						}
 					PRINTF("\r\n[temperature_control]  profile %d heater ON, pri = %d sec=%d\r\n", i,pri_temperature,sec_temperature);
-
+					m33_sys_status_set_profile(i, 1);
             		if (TEMP_PROF0_HEAT != prof0_ctrl_state[i])
             		{
             			prof0_ctrl_state[i] = TEMP_PROF0_HEAT;
          				PRINTF("\r\n[temperature_control]  profile %d heater ON, pri = %d sec=%d\r\n", i,pri_temperature,sec_temperature);
-            		}
+						LWL_SYS_LOG(LWL_PROFILE_HEATER_ON,LWL_1(i));
+					}
 				}
 				else
 				{
-					bsp_expander_ctrl(POW_ONOFF_HEATER, 0);
 					bsp_heater_list_turnoff(profile.heaters_list);
 					PRINTF("\r\n[temperature_control]  profile %d heater OFF, pri = %d sec=%d\r\n", i,pri_temperature,sec_temperature);
-            		if (TEMP_PROF0_STOP != prof0_ctrl_state[i])
+            		m33_sys_status_set_profile(i, 0);
+					if (TEMP_PROF0_STOP != prof0_ctrl_state[i])
             		{
             			prof0_ctrl_state[i] = TEMP_PROF0_STOP;
+						LWL_SYS_LOG(LWL_PROFILE_HEATER_OFF,LWL_1(i));
          				PRINTF("\r\n[temperature_control]  profile %d heater OFF, pri = %d sec=%d\r\n", i,pri_temperature,sec_temperature);
             		}
 				}
@@ -213,6 +165,7 @@ void task_temperature_control_profile_type0(void *param)
 		}
 	}
 }
+
 
 void task_temperature_control_use_bmp390()
 {

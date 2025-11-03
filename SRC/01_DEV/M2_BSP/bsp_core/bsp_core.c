@@ -594,14 +594,15 @@ static void bsp_core_init_onboard_adc_spi(void)
                             LPSPI_TCR_RXMSK_MASK   |
                             LPSPI_TCR_TXMSK_MASK   |
                             LPSPI_TCR_PCS_MASK     |
-                            LPSPI_TCR_CONT_MASK    |
-                            LPSPI_TCR_CONTC_MASK))
-            |  LPSPI_TCR_FRAMESZ(7)         // 8-bit
+                           // LPSPI_TCR_CONT_MASK    |
+                            LPSPI_TCR_CONTC_MASK) |
+              LPSPI_TCR_FRAMESZ(7)         // 8-bit
             |  LPSPI_TCR_PCS(1)             // "PCS1" (not pin-muxed)
             |  LPSPI_TCR_RXMSK(0)
             |  LPSPI_TCR_TXMSK(0)
-            |  LPSPI_TCR_CONT(1)            // keep PCS asserted internally
-            |  LPSPI_TCR_CONTC(1);
+ //           |  LPSPI_TCR_CONT(1)            // keep PCS asserted internally
+            |  LPSPI_TCR_CONTC(1)
+            |  LPSPI_TCR_PRESCALE(64));
 
     // Clean state
     ONBOARD_ADC_SPI_BASE->CR |=  (LPSPI_CR_RTF_MASK | LPSPI_CR_RRF_MASK);       // flush TX/RX FIFOs

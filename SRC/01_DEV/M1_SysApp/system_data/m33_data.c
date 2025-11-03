@@ -12,7 +12,14 @@
 static osSemaphore m33_data_sem = NULL;
 #define M33_DATA_SEMAPHOR_TIMEOUT 2000
 
+
+enum {
+    ADC_ERROR = 0,
+    ADC_OK = 1
+};
 uint32_t epoch = 1759322096;
+uint16_t ADC_status; 
+
 
 value16_t table1_data[TABLE1_TOTAL_COUNT];
 value16_t table2_data[TABLE2_TOTAL_COUNT];
@@ -677,4 +684,14 @@ uint32_t m33_sys_status_set_off_all_profile()
 
     osSemaphoreGiven(&m33_data_sem);   
     return (uint32_t)sem_ret; 
+}
+
+void m33_set_ADC_status(uint16_t status)
+{
+    ADC_status = status;
+}
+
+uint16_t m33_get_ADC_status()
+{
+    return ADC_status;
 }
