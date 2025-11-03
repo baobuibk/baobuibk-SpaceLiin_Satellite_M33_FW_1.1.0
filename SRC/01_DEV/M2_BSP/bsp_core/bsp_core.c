@@ -575,7 +575,7 @@ static void bsp_core_init_onboard_adc_spi(void)
     masterConfig.cpha                           = kLPSPI_ClockPhaseSecondEdge;
 
     // fix cứng, có thể chỉnh lại
-     masterConfig.pinCfg                         = kLPSPI_SdoInSdiOut;
+    // masterConfig.pinCfg                         = kLPSPI_SdoInSdiOut;
     masterConfig.whichPcs = kLPSPI_Pcs1;
     
     srcClock_Hz = ONBOARD_ADC_SPI_CLK_FREQ;
