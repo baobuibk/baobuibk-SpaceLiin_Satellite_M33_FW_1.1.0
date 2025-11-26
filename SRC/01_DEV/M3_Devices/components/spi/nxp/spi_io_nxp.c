@@ -371,21 +371,21 @@ uint32_t spi_io_read_sync(SPI_Io_t *me, uint8_t *pui8RxBuff, uint32_t ui32Length
        - Tắt MEN để flush (một số bản RM yêu cầu MEN=0 trước khi set RTF/RRF)
        - Flush TX/RX FIFO
        - Clear các cờ kết thúc cũ (TCF) */
-    uint32_t cr_saved = base->CR;
-    base->CR &= ~LPSPI_CR_MEN_MASK;                 // MEN = 0
-    base->CR |= (LPSPI_CR_RTF_MASK | LPSPI_CR_RRF_MASK); // flush FIFO
-    base->SR  = LPSPI_SR_TCF_MASK;                  // clear TCF
-    base->CR  = cr_saved | LPSPI_CR_MEN_MASK;       // bật lại MEN
+    // uint32_t cr_saved = base->CR;
+    // base->CR &= ~LPSPI_CR_MEN_MASK;                 // MEN = 0
+    // base->CR |= (LPSPI_CR_RTF_MASK | LPSPI_CR_RRF_MASK); // flush FIFO
+    // base->SR  = LPSPI_SR_TCF_MASK;                  // clear TCF
+    // base->CR  = cr_saved | LPSPI_CR_MEN_MASK;       // bật lại MEN
 
-    /* 3) Prime 1 command vào Command FIFO:
-          LPSPI chỉ clock-out khi có cả TCR (command) và TDR (data).
-          Ghi lại chính TCR hiện tại để đẩy một command vào FIFO. */
-    uint32_t tcr_val = base->TCR;
-    /* Bảo đảm FRAMESZ >= 7 (8-bit). Nếu FRAMESZ đang =0 (1-bit) sẽ khó nhìn thấy sóng/data */
-    if (((tcr_val & LPSPI_TCR_FRAMESZ_MASK) >> LPSPI_TCR_FRAMESZ_SHIFT) < 7u) {
-        tcr_val = (tcr_val & ~LPSPI_TCR_FRAMESZ_MASK) | LPSPI_TCR_FRAMESZ(7u);
-    }
-    base->TCR = tcr_val; // đẩy command vào FIFO
+    // /* 3) Prime 1 command vào Command FIFO:
+    //       LPSPI chỉ clock-out khi có cả TCR (command) và TDR (data).
+    //       Ghi lại chính TCR hiện tại để đẩy một command vào FIFO. */
+    // uint32_t tcr_val = base->TCR;
+    // /* Bảo đảm FRAMESZ >= 7 (8-bit). Nếu FRAMESZ đang =0 (1-bit) sẽ khó nhìn thấy sóng/data */
+    // if (((tcr_val & LPSPI_TCR_FRAMESZ_MASK) >> LPSPI_TCR_FRAMESZ_SHIFT) < 7u) {
+    //     tcr_val = (tcr_val & ~LPSPI_TCR_FRAMESZ_MASK) | LPSPI_TCR_FRAMESZ(7u);
+    // }
+    // base->TCR = tcr_val; // đẩy command vào FIFO
 
     for (uint32_t i = 0; i < ui32Length; i++)
     {
@@ -442,19 +442,19 @@ uint32_t spi_io_write_sync(SPI_Io_t *me, uint8_t *pui8TxBuff, uint32_t ui32Lengt
         return ERROR_TIMEOUT;
 
     /* 2) Chuẩn bị FIFO/flags sạch sẽ (MEN=0 -> flush -> clear TCF -> MEN=1) */
-    uint32_t cr_saved = base->CR;
-    base->CR &= ~LPSPI_CR_MEN_MASK;                           // MEN = 0
-    base->CR |= (LPSPI_CR_RTF_MASK | LPSPI_CR_RRF_MASK);      // flush TX/RX FIFO
-    base->SR  = LPSPI_SR_TCF_MASK;                            // clear TCF
-    base->CR  = cr_saved | LPSPI_CR_MEN_MASK;                 // bật lại MEN
+    // uint32_t cr_saved = base->CR;
+    // base->CR &= ~LPSPI_CR_MEN_MASK;                           // MEN = 0
+    // base->CR |= (LPSPI_CR_RTF_MASK | LPSPI_CR_RRF_MASK);      // flush TX/RX FIFO
+    // base->SR  = LPSPI_SR_TCF_MASK;                            // clear TCF
+    // base->CR  = cr_saved | LPSPI_CR_MEN_MASK;                 // bật lại MEN
 
-    /* 3) Prime 1 command vào Command FIFO: ghi lại TCR hiện tại
-          & đảm bảo FRAMESZ >= 7 (tức 8-bit) */
-    uint32_t tcr_val = base->TCR;
-    if (((tcr_val & LPSPI_TCR_FRAMESZ_MASK) >> LPSPI_TCR_FRAMESZ_SHIFT) < 7u) {
-        tcr_val = (tcr_val & ~LPSPI_TCR_FRAMESZ_MASK) | LPSPI_TCR_FRAMESZ(7u);
-    }
-    base->TCR = tcr_val; // đẩy command vào FIFO
+    // /* 3) Prime 1 command vào Command FIFO: ghi lại TCR hiện tại
+    //       & đảm bảo FRAMESZ >= 7 (tức 8-bit) */
+    // uint32_t tcr_val = base->TCR;
+    // if (((tcr_val & LPSPI_TCR_FRAMESZ_MASK) >> LPSPI_TCR_FRAMESZ_SHIFT) < 7u) {
+    //     tcr_val = (tcr_val & ~LPSPI_TCR_FRAMESZ_MASK) | LPSPI_TCR_FRAMESZ(7u);
+    // }
+    // base->TCR = tcr_val; // đẩy command vào FIFO
 
     /* 4) Ghi từng byte: chờ TDF -> ghi TDR; chờ RDF -> đọc bỏ RDR để giải phóng RX FIFO */
     for (uint32_t i = 0; i < ui32Length; i++)
@@ -510,18 +510,18 @@ uint32_t spi_io_transfer_sync(SPI_Io_t *me, uint8_t *pui8TxBuff, uint8_t *pui8Rx
         return ERROR_TIMEOUT;
 
     /* 2) MEN=0 -> flush FIFO -> clear TCF -> MEN=1 */
-    uint32_t cr_saved = base->CR;
-    base->CR &= ~LPSPI_CR_MEN_MASK;                         // MEN = 0
-    base->CR |= (LPSPI_CR_RTF_MASK | LPSPI_CR_RRF_MASK);    // flush TX/RX FIFO
-    base->SR  = LPSPI_SR_TCF_MASK;                          // clear TCF
-    base->CR  = cr_saved | LPSPI_CR_MEN_MASK;               // bật lại MEN
+    // uint32_t cr_saved = base->CR;
+    // base->CR &= ~LPSPI_CR_MEN_MASK;                         // MEN = 0
+    // base->CR |= (LPSPI_CR_RTF_MASK | LPSPI_CR_RRF_MASK);    // flush TX/RX FIFO
+    // base->SR  = LPSPI_SR_TCF_MASK;                          // clear TCF
+    // base->CR  = cr_saved | LPSPI_CR_MEN_MASK;               // bật lại MEN
 
-    /* 3) Prime 1 command vào Command FIFO & đảm bảo FRAMESZ >= 7 (8-bit) */
-    uint32_t tcr_val = base->TCR;
-    if (((tcr_val & LPSPI_TCR_FRAMESZ_MASK) >> LPSPI_TCR_FRAMESZ_SHIFT) < 7u) {
-        tcr_val = (tcr_val & ~LPSPI_TCR_FRAMESZ_MASK) | LPSPI_TCR_FRAMESZ(7u);
-    }
-    base->TCR = tcr_val;   // đẩy command vào FIFO
+    // /* 3) Prime 1 command vào Command FIFO & đảm bảo FRAMESZ >= 7 (8-bit) */
+    // uint32_t tcr_val = base->TCR;
+    // if (((tcr_val & LPSPI_TCR_FRAMESZ_MASK) >> LPSPI_TCR_FRAMESZ_SHIFT) < 7u) {
+    //     tcr_val = (tcr_val & ~LPSPI_TCR_FRAMESZ_MASK) | LPSPI_TCR_FRAMESZ(7u);
+    // }
+    // base->TCR = tcr_val;   // đẩy command vào FIFO
 
     /* 4) Full-duplex: ghi từng byte và đọc lại byte tương ứng */
     for (uint32_t i = 0; i < ui32Length; i++)

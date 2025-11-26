@@ -567,13 +567,13 @@ static void bsp_core_init_onboard_adc_spi(void)
      */
     LPSPI_MasterGetDefaultConfig(&masterConfig);
     masterConfig.baudRate = ONBOARD_ADC_SPI_BAUDRATE;
-    masterConfig.pcsToSckDelayInNanoSec         = 0;
-    masterConfig.lastSckToPcsDelayInNanoSec     = 0;
-    masterConfig.betweenTransferDelayInNanoSec  = 0;
+    masterConfig.pcsToSckDelayInNanoSec         = 10;
+    masterConfig.lastSckToPcsDelayInNanoSec     = 10;
+    masterConfig.betweenTransferDelayInNanoSec  = 10;
     masterConfig.direction                      = kLPSPI_MsbFirst;
     masterConfig.cpol                           = kLPSPI_ClockPolarityActiveLow;
     masterConfig.cpha                           = kLPSPI_ClockPhaseSecondEdge;
-
+    masterConfig.enableInputDelay               = true;   
     // fix cứng, có thể chỉnh lại
     // masterConfig.pinCfg                         = kLPSPI_SdoInSdiOut;
     masterConfig.whichPcs = kLPSPI_Pcs1;

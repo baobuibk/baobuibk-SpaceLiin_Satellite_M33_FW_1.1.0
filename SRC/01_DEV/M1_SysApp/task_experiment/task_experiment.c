@@ -57,6 +57,7 @@ void Task_Experiment(void *pvParameters)
     slf3s_readings_t flow_data;
     uint16_t systemStatus = IDLE;
     uint16_t system_status_temp = 0;
+    bmp390_data_t    bmp390_data;
     PRINTF("Experiment Control...\r\n");
 
     for(;;)
@@ -74,13 +75,13 @@ void Task_Experiment(void *pvParameters)
        // if (0 == m33_get_ADC_status()) Update_Onboard_ADC();
        // else PRINTF("ADC value error\r\n");
         Update_Onboard_ADC();
-        // if (ERROR_OK == BMP390_sensor_read(&bmp390_data))
-        // {
-        //     int16_t sensor_data = (int16_t) (bmp390_data.Pressure / 10.0);
-        //     m33_data_set_i_lock(TABLE_ID_6, sen1_data_1,sensor_data);
-        //     sensor_data = (int16_t)(bmp390_data.Temp * 10);
-        //     m33_data_set_i_lock(TABLE_ID_6, sen1_data_0,sensor_data);
-        // }
+        if (ERROR_OK == BMP390_sensor_read(&bmp390_data))
+        {
+            int16_t sensor_data = (int16_t) (bmp390_data.Pressure / 10.0);
+            m33_data_set_i_lock(TABLE_ID_6, sen1_data_1,sensor_data);
+            sensor_data = (int16_t)(bmp390_data.Temp * 10);
+            m33_data_set_i_lock(TABLE_ID_6, sen1_data_0,sensor_data);
+        }
         
         if (ERROR_OK == Flow_sensor_read(&flow_data))
         {          
