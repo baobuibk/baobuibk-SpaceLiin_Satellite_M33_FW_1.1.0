@@ -38,17 +38,17 @@ int osSemaphoreCreateBinnary(osSemaphore* semaphore){
 
 int osSemaphoreTake(osSemaphore *mutex, uint32_t timeout){
 
-	if (xSemaphoreTake(*mutex, timeout) == pdPASS) {
-		return OS_SEMAPHORE_OK;
-	} else {
-		return OS_SEMAPHORE_ERROR;
-	}
+	// if (xSemaphoreTake(*mutex, timeout) == pdPASS) {
+	// 	return OS_SEMAPHORE_OK;
+	// } else {
+	// 	return OS_SEMAPHORE_ERROR;
+	// }
 }
 
 int osSemaphoreGiven(osSemaphore *mutex){
-	if (xSemaphoreGive(*mutex) == pdPASS) {
-		return OS_SEMAPHORE_OK;
-	} else {
-		return OS_SEMAPHORE_ERROR;
-	}
+	// if (xSemaphoreGive(*mutex) == pdPASS) {
+	// 	return OS_SEMAPHORE_OK;
+	// } else {
+	// 	return OS_SEMAPHORE_ERROR;
+	// }
 }

@@ -35,11 +35,11 @@ void task_system_control()
             PRINTF("Use task_temperature_control_profile_type0\r\n");
             task_temperature_control_profile_type0();
         }
-        else if (0x1000 == ( master_ena & 0xF000))
-        {
-            PRINTF("Use task_temperature_control_use_bmp390\r\n");
-            task_temperature_control_use_bmp390();
-        }
+        // else if (0x1000 == ( master_ena & 0xF000))
+        // {
+        //     PRINTF("Use task_temperature_control_use_bmp390\r\n");
+        //     task_temperature_control_use_bmp390();
+        // }
         
     }
 }
