@@ -115,31 +115,31 @@ uint32_t bsp_onboard_adc_init()
         __NOP();
     }
     
-	// ret = ad4114_init(&onboard_adc_dev0, &onboard_adc_spi, &onboard_adc0_cs);
+	ret = ad4114_init(&onboard_adc_dev0, &onboard_adc_spi, &onboard_adc0_cs);
 
-    // if (ret != ERROR_OK)
-	// {
-	// 	PRINTF("> [bsp_onboard_adc_init] SPI FOR ADC 0 CHIP INIT ERROR\r\n");
-	// }
-    // else
-    // {
-    //     PRINTF("> [bsp_onboard_adc_init] SPI FOR ADC 0 CHIP INIT OK\r\n");
-    // }
+    if (ret != ERROR_OK)
+	{
+		PRINTF("> [bsp_onboard_adc_init] SPI FOR ADC 0 CHIP INIT ERROR\r\n");
+	}
+    else
+    {
+        PRINTF("> [bsp_onboard_adc_init] SPI FOR ADC 0 CHIP INIT OK\r\n");
+    }
 
-    // ad4114_read_id(&onboard_adc_dev0, &id);
-    // PRINTF("> [bsp_onboard_adc_init] ADC 0 CHIP ID %x\r\n", id);
+    ad4114_read_id(&onboard_adc_dev0, &id);
+    PRINTF("> [bsp_onboard_adc_init] ADC 0 CHIP ID %x\r\n", id);
 
-	// 0xFFFF Enable all channel of ADC 0
-	// ret = bsp_onboard_adc_config_channels(&onboard_adc_dev0, 0xFFFF);
+	
+	ret = bsp_onboard_adc_config_channels(&onboard_adc_dev0, 0xFFFF);
 
-	// if (ret != ERROR_OK)
-	// {
-	// 	PRINTF("> [bsp_onboard_adc_init] SPI FOR ADC 0 CHIP INIT ERROR\r\n");
-	// }
-    // else
-    // {
-    //     PRINTF("> [bsp_onboard_adc_init] SPI FOR ADC 0 CHIP INIT OK\r\n");
-    // }
+	if (ret != ERROR_OK)
+	{
+		PRINTF("> [bsp_onboard_adc_init] SPI FOR ADC 0 CHIP INIT ERROR\r\n");
+	}
+    else
+    {
+        PRINTF("> [bsp_onboard_adc_init] SPI FOR ADC 0 CHIP INIT OK\r\n");
+    }
 
 	ret = ad4114_init(&onboard_adc_dev1, &onboard_adc_spi, &onboard_adc1_cs);
 
@@ -187,15 +187,15 @@ uint32_t bsp_onboard_adc_update_raw()
 
     // vTaskDelay(100);
 
-    // ret = ad4114_read_all(&onboard_adc_dev0, 500u, &out_mask_adc0, adc0_raw);
+    ret = ad4114_read_all(&onboard_adc_dev0, 500u, &out_mask_adc0, adc0_raw);
 
 
-	// if (ret != ERROR_OK)
-	// {
-    //     PRINTF("[bsp_onboard_adc_update_raw] ERROR\r\n");
-	// 	spi_io_onboard_adc_config(&onboard_adc_spi, 0);
-	// 	return ret;
-	// }
+	if (ret != ERROR_OK)
+	{
+        PRINTF("[bsp_onboard_adc_update_raw] ERROR\r\n");
+		spi_io_onboard_adc_config(&onboard_adc_spi, 0);
+		return ret;
+	}
 
 	ret = ad4114_read_all(&onboard_adc_dev1, 500u, &out_mask_adc1, adc1_raw);
 
